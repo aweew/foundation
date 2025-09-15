@@ -1,0 +1,21 @@
+package com.awe.foundation.core.controller;
+
+import com.awe.foundation.common.api.Result;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * @author Awe
+ * @since 2025/9/9 14:06
+ */
+@RestController
+@RequestMapping("/test")
+public class TestController {
+
+    @GetMapping("/user")
+    public Result<?> getUser() {
+        return Result.success();
+    }
+
+}

@@ -1,0 +1,61 @@
+server:
+  port:
+    6001
+  servlet:
+    context-path: /foundation
+
+spring:
+  application:
+    name: foundation
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    hikari:
+      maximum-pool-size: 20
+      idle-timeout: 10000
+    url: jdbc:p6spy:mysql://101.35.54.152:3306/foundation?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true
+    username: root
+    password: 2wsx@WSX
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*.xml
+  type-aliases-package: com.awe.foundation.manager.domain
+  global-config:
+    dbConfig:
+      # 主键类型
+      # AUTO 自增 NONE 空 INPUT 用户输入 ASSIGN_ID 雪花 ASSIGN_UUID 唯一 UUID
+      # 如需改为自增 需要将数据库表全部设置为自增
+      idType: ASSIGN_ID
+      # 逻辑删除
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tagsSorter: alpha
+    use-root-path: true
+  cache:
+    disabled: true
+
+logging:
+  level:
+    org.springframework: warn
+    com.awe: debug
+  config: classpath:logback-plus.xml
+
+# 全局线程池相关配置
+thread-pool:
+  # 是否开启线程池
+  enabled: true
+  # 队列最大长度
+  queueCapacity: 128
+  # 线程池维护线程所允许的空闲时间
+  keepAliveSeconds: 300
