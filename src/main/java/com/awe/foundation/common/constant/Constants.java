@@ -13,4 +13,14 @@ public interface Constants {
      */
     String TRACE_ID = "traceId";
 
+    /**
+     * UTF-8 字符集
+     */
+    String UTF8 = "UTF-8";
+
+    /**
+     * 用户标识
+     */
+    String USER_ID = "userId";
+
 }

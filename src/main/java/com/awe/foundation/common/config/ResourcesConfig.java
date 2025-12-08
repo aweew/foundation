@@ -1,46 +1,24 @@
 package com.awe.foundation.common.config;
 
-import cn.hutool.core.collection.CollUtil;
-import com.awe.foundation.common.convert.LocalDateConverter;
-import com.awe.foundation.common.convert.LocalDateTimeConverter;
-import com.awe.foundation.common.convert.LocalTimeConverter;
 import com.awe.foundation.common.interceptor.LogInterceptor;
 import com.awe.foundation.common.interceptor.WebInvokeTimeInterceptor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
- * web配置
+ * 通用配置
  *
  * @author Awe
- * @date 2023/4/4 14:03
+ * @since 2025/7/30 13:22
  */
-@Configuration
-public class WebConfig implements WebMvcConfigurer {
-
-    private final List<String> defaultPath = CollUtil.newArrayList("/**");
-
-    private final List<String> excludePath = Arrays.asList(
-            "/swagger-ui.html",
-            "/swagger-ui/**",
-            "/v2/**",
-            "/v3/**",
-            "/**/doc.html",
-            "/webjars/**",
-            "/swagger-resources/**",
-            "/test/**",
-            "/**/login",
-            "/csrf"
-    );
+@AutoConfiguration
+public class ResourcesConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -51,10 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new LocalDateConverter());
-        registry.addConverter(new LocalDateTimeConverter());
-        registry.addConverter(new LocalTimeConverter());
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
     }
 
     /**
