@@ -49,7 +49,7 @@ logging:
   level:
     org.springframework: warn
     com.awe: debug
-  config: classpath:logback-plus.xml
+  config: classpath:logback-spring.xml
 
 # 全局线程池相关配置
 thread-pool:

@@ -1,6 +1,8 @@
 package com.awe.foundation.module.doc.handler;
 
 import cn.hutool.core.io.IoUtil;
+import com.github.therapi.runtimejavadoc.MethodJavadoc;
+import com.github.therapi.runtimejavadoc.RuntimeJavadoc;
 import io.swagger.v3.core.jackson.TypeNameResolver;
 import io.swagger.v3.core.util.AnnotationsUtils;
 import io.swagger.v3.oas.annotations.tags.Tags;
@@ -198,6 +200,21 @@ public class OpenApiHandler extends OpenAPIService {
             } else {
                 String tagAutoName = splitCamelCase(handlerMethod.getBeanType().getSimpleName());
                 operation.addTagsItem(tagAutoName);
+            }
+        }
+
+        // 使用方法级 Javadoc 作为接口的 summary 与 description（若未显式填写）
+        // 优先使用 Therapi 直接读取方法 Javadoc
+        MethodJavadoc mj = RuntimeJavadoc.getJavadoc(handlerMethod.getMethod());
+        if (mj != null && mj.getComment() != null) {
+            String methodDoc = mj.getComment().toString();
+            List<String> lines = IoUtil.readLines(new StringReader(methodDoc), new ArrayList<>());
+            String firstLine = lines.isEmpty() ? null : lines.get(0);
+            if (StringUtils.isBlank(operation.getSummary()) && StringUtils.isNotBlank(firstLine)) {
+                operation.setSummary(firstLine);
+            }
+            if (StringUtils.isBlank(operation.getDescription()) && StringUtils.isNotBlank(methodDoc)) {
+                operation.setDescription(methodDoc);
             }
         }
 

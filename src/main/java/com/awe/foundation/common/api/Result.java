@@ -77,7 +77,7 @@ public class Result<T> implements Serializable {
         return new Result<>(ErrorCodeEnum.FAILURE.getCode(), data, msg);
     }
 
-    public static <T> Result<T> fail(int code, String msg, T data) {
+    public static <T> Result<T> failure(int code, String msg, T data) {
         return new Result<>(code, data, msg);
     }
 
