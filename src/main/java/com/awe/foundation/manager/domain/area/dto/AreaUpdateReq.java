@@ -1,12 +1,9 @@
-package com.awe.foundation.manager.domain.req;
+package com.awe.foundation.manager.domain.area.dto;
 
-import com.awe.foundation.common.convert.ConvertTo;
-import com.awe.foundation.manager.domain.Area;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.beans.BeanUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -22,7 +19,7 @@ import java.math.BigDecimal;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AreaUpdateReq implements Serializable, ConvertTo<Area> {
+public class AreaUpdateReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -45135731367908511L;
@@ -81,12 +78,5 @@ public class AreaUpdateReq implements Serializable, ConvertTo<Area> {
      * 纬度
      */
     private BigDecimal lat;
-
-    @Override
-    public Area convert() {
-        Area po = Area.builder().build();
-        BeanUtils.copyProperties(this, po);
-        return po;
-    }
 
 }

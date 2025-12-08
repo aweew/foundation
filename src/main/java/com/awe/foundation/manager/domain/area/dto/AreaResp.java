@@ -1,10 +1,9 @@
-package com.awe.foundation.manager.domain.req;
+package com.awe.foundation.manager.domain.area.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.beans.BeanUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,7 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 区域查询请求对象
+ * 区域响应对象
  *
  * @author Awe
  * @since 2025-09-09 15:09:22
@@ -21,10 +20,10 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AreaReq implements Serializable {
+public class AreaResp implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 865812739318387513L;
+    private static final long serialVersionUID = -67950779015019075L;
 
     /**
      * 主键id
@@ -80,5 +79,25 @@ public class AreaReq implements Serializable {
      * 纬度
      */
     private BigDecimal lat;
+
+    /**
+     * 创建人id
+     */
+    private Long createUserId;
+
+    /**
+     * 更新人id
+     */
+    private Long updateUserId;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
 
 }

@@ -1,15 +1,10 @@
-package com.awe.foundation.manager.domain;
+package com.awe.foundation.manager.domain.area.entity;
 
-import com.awe.foundation.common.convert.ConvertTo;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.awe.foundation.manager.domain.resp.AreaResp;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.beans.BeanUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -27,7 +22,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("base_area")
-public class Area implements Serializable, ConvertTo<AreaResp> {
+public class Area implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -77332475216483029L;
@@ -101,23 +96,19 @@ public class Area implements Serializable, ConvertTo<AreaResp> {
     /**
      * 创建时间
      */
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
+    @TableField(fill = FieldFill.UPDATE)
     private LocalDateTime updateTime;
 
     /**
      * 逻辑删除状态：0=未删除，1=已删除
      */
+    @TableLogic
     private Integer deleted;
-
-    @Override
-    public AreaResp convert() {
-        AreaResp resp = AreaResp.builder().build();
-        BeanUtils.copyProperties(this, resp);
-        return resp;
-    }
 
 }

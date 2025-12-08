@@ -2,22 +2,20 @@ package com.awe.foundation.manager.controller;
 
 import com.awe.foundation.common.api.PageResponse;
 import com.awe.foundation.common.api.Result;
-import com.awe.foundation.manager.domain.Area;
-import com.awe.foundation.manager.domain.req.AreaAddReq;
-import com.awe.foundation.manager.domain.req.AreaReq;
-import com.awe.foundation.manager.domain.req.AreaUpdateReq;
-import com.awe.foundation.manager.domain.resp.AreaResp;
+import com.awe.foundation.manager.domain.area.convert.AreaConvert;
+import com.awe.foundation.manager.domain.area.dto.AreaAddReq;
+import com.awe.foundation.manager.domain.area.dto.AreaReq;
+import com.awe.foundation.manager.domain.area.dto.AreaResp;
+import com.awe.foundation.manager.domain.area.dto.AreaUpdateReq;
+import com.awe.foundation.manager.domain.area.entity.Area;
 import com.awe.foundation.manager.service.IAreaService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 区域管理
@@ -32,6 +30,9 @@ public class AreaController {
     @Resource
     private IAreaService areaService;
 
+    @Resource
+    private AreaConvert areaConvert;
+
     /**
      * 根据筛选条件获取区域列表(分页)
      *
@@ -40,12 +41,19 @@ public class AreaController {
      * @return 查询结果
      */
     @GetMapping("/page")
-    public Result<PageResponse<AreaResp>> page(Page pageRequest, AreaReq req) {
-        Area area = Area.builder().build();
-        BeanUtils.copyProperties(req, area);
+    public Result<PageResponse<AreaResp>> page(Page<Area> pageRequest, AreaReq req) {
+        // 1. Req -> Entity
+        Area area = areaConvert.toEntity(req);
+
+        // 2. 构建查询条件
         LambdaQueryWrapper<Area> qw = new LambdaQueryWrapper<>(area);
+
+        // 3. 分页查询
         Page<Area> page = this.areaService.page(pageRequest, qw);
-        PageResponse<AreaResp> pageResponse = PageResponse.create(page, Area::convert);
+
+        // 4. 转换成 Resp
+        PageResponse<AreaResp> pageResponse = PageResponse.create(page, areaConvert::toResp);
+
         return Result.success(pageResponse);
     }
 
@@ -57,10 +65,19 @@ public class AreaController {
      */
     @GetMapping("/list")
     public Result<List<AreaResp>> list(AreaReq req) {
-        Area area = Area.builder().build();
-        BeanUtils.copyProperties(req, area);
+        // 1. Req -> Entity
+        Area area = areaConvert.toEntity(req);
+
+        // 2. 构建查询条件
         LambdaQueryWrapper<Area> qw = new LambdaQueryWrapper<>(area);
-        return Result.success(this.areaService.list(qw).stream().map(Area::convert).toList());
+
+        // 3. 查询列表
+        List<Area> list = this.areaService.list(qw);
+
+        // 4. Entity -> Resp
+        List<AreaResp> respList = areaConvert.toRespList(list);
+
+        return Result.success(respList);
     }
 
     /**
@@ -72,10 +89,7 @@ public class AreaController {
     @GetMapping("/{id}")
     public Result<AreaResp> getById(@PathVariable("id") Long id) {
         Area area = this.areaService.getById(id);
-        if (Objects.nonNull(area)) {
-            return Result.success(area.convert());
-        }
-        return Result.success();
+        return Result.success(areaConvert.toResp(area));
     }
 
     /**
@@ -86,11 +100,7 @@ public class AreaController {
      */
     @PostMapping
     public Result<Void> save(@Valid @RequestBody AreaAddReq req) {
-        Area area = Area.builder().build();
-        BeanUtils.copyProperties(req, area);
-        area.setCreateTime(LocalDateTime.now());
-        area.setUpdateTime(LocalDateTime.now());
-        this.areaService.save(area);
+        this.areaService.save(areaConvert.toEntity(req));
         return Result.success();
     }
 
@@ -102,9 +112,8 @@ public class AreaController {
      */
     @PutMapping
     public Result<Void> update(@Valid @RequestBody AreaUpdateReq req) {
-        Area area = Area.builder().build();
-        BeanUtils.copyProperties(req, area);
-        area.setUpdateTime(LocalDateTime.now());
+        Area area = this.areaService.getById(req.getId());
+        areaConvert.updateEntity(req, area);
         this.areaService.updateById(area);
         return Result.success();
     }

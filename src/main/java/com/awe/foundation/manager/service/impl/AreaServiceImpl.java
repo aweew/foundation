@@ -1,7 +1,7 @@
 package com.awe.foundation.manager.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.awe.foundation.manager.domain.Area;
+import com.awe.foundation.manager.domain.area.entity.Area;
 import com.awe.foundation.manager.mapper.AreaMapper;
 import com.awe.foundation.manager.service.IAreaService;
 import org.springframework.stereotype.Service;

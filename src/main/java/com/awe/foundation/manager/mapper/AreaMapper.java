@@ -1,7 +1,7 @@
 package com.awe.foundation.manager.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.awe.foundation.manager.domain.Area;
+import com.awe.foundation.manager.domain.area.entity.Area;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

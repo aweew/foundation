@@ -1,7 +1,7 @@
 package com.awe.foundation.manager.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.awe.foundation.manager.domain.Area;
+import com.awe.foundation.manager.domain.area.entity.Area;
 
 /**
  * 区域服务接口

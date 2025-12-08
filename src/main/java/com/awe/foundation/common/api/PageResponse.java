@@ -89,9 +89,7 @@ public class PageResponse<T> {
 
     @FunctionalInterface
     public interface DataProcessor<R, T> {
-
         R process(T data);
-
     }
 
 }
