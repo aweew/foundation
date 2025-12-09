@@ -1,4 +1,4 @@
-package com.awe.foundation.common.executor.executor;
+package com.awe.foundation.common.executor;
 
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;

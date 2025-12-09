@@ -1,9 +1,11 @@
+# 服务配置
 server:
   port:
     6001
   servlet:
     context-path: /foundation
 
+# spring 配置
 spring:
   application:
     name: foundation
@@ -19,6 +21,7 @@ spring:
     password: 2wsx@WSX
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
 
+# mybatis-plus 配置
 mybatis-plus:
   mapper-locations: classpath*:/mapper/*.xml
   type-aliases-package: com.awe.foundation.manager.domain
@@ -34,6 +37,8 @@ mybatis-plus:
       logic-not-delete-value: 0
   configuration:
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+
+# Swagger3 配置
 springdoc:
   api-docs:
     enabled: true
@@ -45,6 +50,7 @@ springdoc:
   cache:
     disabled: true
 
+# 日志
 logging:
   level:
     org.springframework: warn
