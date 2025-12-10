@@ -80,7 +80,7 @@ public class AreaController {
      */
     @PostMapping
     public Result<Void> save(@Valid @RequestBody AreaAddReq req) {
-        this.areaService.save(areaConvert.toEntity(req));
+        this.areaService.save(areaConvert.addToEntity(req));
         return Result.success();
     }
 
@@ -93,7 +93,7 @@ public class AreaController {
     @PutMapping
     public Result<Void> update(@Valid @RequestBody AreaUpdateReq req) {
         Area entity = this.areaService.getById(req.getId());
-        areaConvert.updateEntity(req, entity);
+        areaConvert.updateToEntity(req, entity);
         this.areaService.updateById(entity);
         return Result.success();
     }

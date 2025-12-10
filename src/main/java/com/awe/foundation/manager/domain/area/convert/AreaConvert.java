@@ -2,6 +2,7 @@ package com.awe.foundation.manager.domain.area.convert;
 
 import com.awe.foundation.common.convert.BaseConvert;
 import com.awe.foundation.manager.domain.area.dto.AreaAddReq;
+import com.awe.foundation.manager.domain.area.dto.AreaReq;
 import com.awe.foundation.manager.domain.area.dto.AreaResp;
 import com.awe.foundation.manager.domain.area.dto.AreaUpdateReq;
 import com.awe.foundation.manager.domain.area.entity.Area;
@@ -14,6 +15,6 @@ import org.mapstruct.Mapper;
  * @since 2025/12/8 16:54
  */
 @Mapper(componentModel = "spring")
-public interface AreaConvert extends BaseConvert<Area, AreaAddReq, AreaUpdateReq, AreaResp> {
+public interface AreaConvert extends BaseConvert<Area, AreaAddReq, AreaUpdateReq, AreaReq, AreaResp> {
 
 }

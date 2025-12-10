@@ -13,21 +13,21 @@ import java.util.List;
  * @author Awe
  * @since 2025/12/8 16:52
  */
-public interface BaseConvert<E, AddReq, UpdateReq, Resp> {
+public interface BaseConvert<E, AddReq, UpdateReq, Req, Resp> {
 
     // Req -> Entity（查询）
-    E toEntity(AreaReq req);
+    E toEntity(Req req);
 
     // AddReq -> Entity（新增）
-    E toEntity(AddReq req);
+    E addToEntity(AddReq req);
 
     // UpdateReq -> Entity（更新，覆盖目标对象）
-    void updateEntity(UpdateReq req, @MappingTarget E entity);
+    void updateToEntity(UpdateReq req, @MappingTarget E entity);
 
-    // Entity -> Resp（返回）
+    // Entity -> Resp（返回展示对象）
     Resp toResp(E entity);
 
-    // List 转换
+    // List<Entity> -> List<Resp>
     List<Resp> toRespList(List<E> list);
 
     // 分页转换（MyBatis Plus）
