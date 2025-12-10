@@ -10,6 +10,9 @@ p6spy
 sa-token
 mapstruct
 
+### 使用步骤
+下载easyCode插件，导入easyCode配置文件`docs/easyCode/EasyCodeConfig.json`，在数据库表上点击生成即可
+
 
 ### 规范
 #### 枚举值规范
