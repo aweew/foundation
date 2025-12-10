@@ -26,6 +26,7 @@
         <transmittable.version>2.14.3</transmittable.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok.version>1.18.30</lombok.version>
+        <saToken.version>1.44.0</saToken.version>
     </properties>
 
     <dependencies>
@@ -119,6 +120,20 @@
             <version>${mapstruct.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Sa-Token 权限认证 -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot3-starter</artifactId>
+            <version>${saToken.version}</version>
+        </dependency>
+        <!-- Sa-Token 整合 jwt -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-jwt</artifactId>
+            <version>${saToken.version}</version>
+        </dependency>
+
 
     </dependencies>
 

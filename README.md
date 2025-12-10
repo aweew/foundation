@@ -1,5 +1,14 @@
 ## 基地
 
+- [项目地址](https://gitee.com/dtstack/foundation)
+- [文档地址](https://dtstack.gitee.io/foundation/)
+
+### 技术栈
+hutool
+mybatis-plus
+p6spy
+sa-token
+mapstruct
 
 
 ### 规范
