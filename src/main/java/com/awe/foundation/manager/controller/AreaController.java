@@ -9,7 +9,7 @@ import com.awe.foundation.manager.domain.area.dto.AreaResp;
 import com.awe.foundation.manager.domain.area.dto.AreaUpdateReq;
 import com.awe.foundation.manager.domain.area.entity.Area;
 import com.awe.foundation.manager.service.IAreaService;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -42,19 +42,9 @@ public class AreaController {
      */
     @GetMapping("/page")
     public Result<PageResponse<AreaResp>> page(Page<Area> pageRequest, AreaReq req) {
-        // 1. Req -> Entity
-        Area area = areaConvert.toEntity(req);
-
-        // 2. 构建查询条件
-        LambdaQueryWrapper<Area> qw = new LambdaQueryWrapper<>(area);
-
-        // 3. 分页查询
-        Page<Area> page = this.areaService.page(pageRequest, qw);
-
-        // 4. 转换成 Resp
-        PageResponse<AreaResp> pageResponse = PageResponse.create(page, areaConvert::toResp);
-
-        return Result.success(pageResponse);
+        Area entity = areaConvert.toEntity(req);
+        Page<Area> page = areaService.page(pageRequest, Wrappers.lambdaQuery(entity));
+        return Result.success(PageResponse.create(page, areaConvert::toResp));
     }
 
     /**
@@ -65,19 +55,9 @@ public class AreaController {
      */
     @GetMapping("/list")
     public Result<List<AreaResp>> list(AreaReq req) {
-        // 1. Req -> Entity
-        Area area = areaConvert.toEntity(req);
-
-        // 2. 构建查询条件
-        LambdaQueryWrapper<Area> qw = new LambdaQueryWrapper<>(area);
-
-        // 3. 查询列表
-        List<Area> list = this.areaService.list(qw);
-
-        // 4. Entity -> Resp
-        List<AreaResp> respList = areaConvert.toRespList(list);
-
-        return Result.success(respList);
+        Area entity = areaConvert.toEntity(req);
+        List<Area> list = areaService.list(Wrappers.lambdaQuery(entity));
+        return Result.success(areaConvert.toRespList(list));
     }
 
     /**
@@ -88,8 +68,8 @@ public class AreaController {
      */
     @GetMapping("/{id}")
     public Result<AreaResp> getById(@PathVariable("id") Long id) {
-        Area area = this.areaService.getById(id);
-        return Result.success(areaConvert.toResp(area));
+        Area entity = this.areaService.getById(id);
+        return Result.success(areaConvert.toResp(entity));
     }
 
     /**
@@ -112,9 +92,9 @@ public class AreaController {
      */
     @PutMapping
     public Result<Void> update(@Valid @RequestBody AreaUpdateReq req) {
-        Area area = this.areaService.getById(req.getId());
-        areaConvert.updateEntity(req, area);
-        this.areaService.updateById(area);
+        Area entity = this.areaService.getById(req.getId());
+        areaConvert.updateEntity(req, entity);
+        this.areaService.updateById(entity);
         return Result.success();
     }
 
