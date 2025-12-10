@@ -3,6 +3,7 @@ package com.awe.foundation.core.controller;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestLoginController {
 
     // 测试登录，浏览器访问： http://localhost:6001/user/doLogin?username=zhang&password=123456
-    @RequestMapping("/doLogin")
+    @GetMapping("/doLogin")
     public String doLogin(String username, String password) {
         // 此处仅作模拟示例，真实项目需要从数据库中查询数据进行比对
         if ("zhang".equals(username) && "123456".equals(password)) {
@@ -32,7 +33,7 @@ public class TestLoginController {
     }
 
     // 查询登录状态，浏览器访问： http://localhost:6001/user/isLogin
-    @RequestMapping("/isLogin")
+    @GetMapping("/isLogin")
     public String isLogin() {
 
         // 获取扩展参数

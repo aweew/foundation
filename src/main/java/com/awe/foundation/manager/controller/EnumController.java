@@ -20,6 +20,11 @@ public class EnumController {
     @Resource
     private EnumCollector enumCollector;
 
+    /**
+     * 获取所有枚举列表
+     *
+     * @return 枚举列表
+     */
     @GetMapping("/list")
     public Result<?> listAllEnums() {
         return Result.success(enumCollector.getAllEnums());
