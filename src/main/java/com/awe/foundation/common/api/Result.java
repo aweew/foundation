@@ -1,6 +1,7 @@
 package com.awe.foundation.common.api;
 
 import com.awe.foundation.common.constant.ErrorCodeEnum;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,9 +49,13 @@ public class Result<T> implements Serializable {
         return new Result<>(ErrorCodeEnum.SUCCESS.getCode(), data, ErrorCodeEnum.SUCCESS.getMsg());
     }
 
-    @SuppressWarnings("rawtypes")
-    public static <T, R> Result success(T data, Function<T, R> function) {
+    public static <T, R> Result<R> success(T data, Function<T, R> function) {
         return new Result<>(ErrorCodeEnum.SUCCESS.getCode(), Objects.nonNull(data) ? function.apply(data) : null, ErrorCodeEnum.SUCCESS.getMsg());
+    }
+
+    public static <T, R> Result<PageResponse<R>> success(IPage<T> page, Function<T, R> converter) {
+        PageResponse<R> pageResponse = PageResponse.create(page, converter::apply);
+        return new Result<>(ErrorCodeEnum.SUCCESS.getCode(), pageResponse, ErrorCodeEnum.SUCCESS.getMsg());
     }
 
     public static <T> Result<T> failure() {

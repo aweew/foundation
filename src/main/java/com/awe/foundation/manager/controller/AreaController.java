@@ -44,7 +44,7 @@ public class AreaController {
     public Result<PageResponse<AreaResp>> page(Page<Area> pageRequest, AreaReq req) {
         Area entity = areaConvert.toEntity(req);
         Page<Area> page = areaService.page(pageRequest, Wrappers.lambdaQuery(entity));
-        return Result.success(PageResponse.create(page, areaConvert::toResp));
+        return Result.success(page, areaConvert::toResp);
     }
 
     /**
@@ -57,7 +57,7 @@ public class AreaController {
     public Result<List<AreaResp>> list(AreaReq req) {
         Area entity = areaConvert.toEntity(req);
         List<Area> list = areaService.list(Wrappers.lambdaQuery(entity));
-        return Result.success(areaConvert.toRespList(list));
+        return Result.success(list, areaConvert::toRespList);
     }
 
     /**
@@ -69,7 +69,7 @@ public class AreaController {
     @GetMapping("/{id}")
     public Result<AreaResp> getById(@PathVariable("id") Long id) {
         Area entity = this.areaService.getById(id);
-        return Result.success(areaConvert.toResp(entity));
+        return Result.success(entity, areaConvert::toResp);
     }
 
     /**
