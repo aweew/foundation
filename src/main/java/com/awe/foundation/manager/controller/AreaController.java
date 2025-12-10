@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 区域管理
@@ -93,8 +94,10 @@ public class AreaController {
     @PutMapping
     public Result<Void> update(@Valid @RequestBody AreaUpdateReq req) {
         Area entity = this.areaService.getById(req.getId());
-        areaConvert.updateToEntity(req, entity);
-        this.areaService.updateById(entity);
+        if (Objects.nonNull(entity)) {
+            areaConvert.updateToEntity(req, entity);
+            this.areaService.updateById(entity);
+        }
         return Result.success();
     }
 
