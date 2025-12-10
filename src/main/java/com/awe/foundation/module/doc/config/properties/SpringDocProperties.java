@@ -37,19 +37,19 @@ public class SpringDocProperties {
     /**
      * 标签
      */
-    private List<Tag> tags = null;
+    private List<Tag> tags;
 
     /**
      * 路径
      */
     @NestedConfigurationProperty
-    private Paths paths = null;
+    private Paths paths;
 
     /**
      * 组件
      */
     @NestedConfigurationProperty
-    private Components components = null;
+    private Components components;
 
     /**
      * <p>
@@ -66,29 +66,29 @@ public class SpringDocProperties {
         /**
          * 标题
          */
-        private String title = null;
+        private String title;
 
         /**
          * 描述
          */
-        private String description = null;
+        private String description;
 
         /**
          * 联系人信息
          */
         @NestedConfigurationProperty
-        private Contact contact = null;
+        private Contact contact;
 
         /**
          * 许可证
          */
         @NestedConfigurationProperty
-        private License license = null;
+        private License license;
 
         /**
          * 版本
          */
-        private String version = null;
+        private String version;
 
     }
 

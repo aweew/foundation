@@ -24,6 +24,7 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -115,9 +116,11 @@ public class SpringDocConfig {
     /**
      * 单独使用一个类便于判断 解决springdoc路径拼接重复问题
      *
-     * @author Lion Li
      */
     static class PlusPaths extends Paths {
+
+        @Serial
+        private static final long serialVersionUID = -5667044523697848800L;
 
         public PlusPaths() {
             super();
