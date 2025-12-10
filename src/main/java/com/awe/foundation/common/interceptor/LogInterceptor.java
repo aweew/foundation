@@ -1,5 +1,6 @@
 package com.awe.foundation.common.interceptor;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.awe.foundation.common.constant.Constants;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,6 +37,12 @@ public class LogInterceptor implements HandlerInterceptor {
 
         // 记录当前登录人员信息
         String userId = request.getHeader(Constants.USER_ID);
+        if (StringUtils.isEmpty(userId)) {
+            try {
+                userId = StpUtil.getLoginIdAsString();
+            } catch (Exception e) {
+            }
+        }
 
         MDC.put(Constants.USER_ID, userId);
         response.addHeader(Constants.USER_ID, userId);
