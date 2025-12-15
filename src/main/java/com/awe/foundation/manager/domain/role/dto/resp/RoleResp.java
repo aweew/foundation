@@ -1,4 +1,4 @@
-package com.awe.foundation.manager.domain.user.dto.resp;
+package com.awe.foundation.manager.domain.role.dto.resp;
 
 import com.awe.foundation.common.constant.enums.StatusEnum;
 import lombok.AllArgsConstructor;
@@ -11,19 +11,19 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 系统用户响应对象
+ * 系统角色响应对象
  *
  * @author Awe
- * @since 2025-12-10 16:03:20
+ * @since 2025-12-15 11:12:59
  */
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResp implements Serializable {
+public class RoleResp implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 242643548623177216L;
+    private static final long serialVersionUID = -18878859868491618L;
 
     /**
      * 主键id
@@ -31,54 +31,19 @@ public class UserResp implements Serializable {
     private Long id;
 
     /**
-     * 电话
+     * 角色编码
      */
-    private String phone;
+    private String code;
 
     /**
-     * 用户密码
+     * 角色名称
      */
-    private String password;
+    private String name;
 
     /**
-     * 昵称
+     * 是否系统内置角色
      */
-    private String nickName;
-
-    /**
-     * 真实姓名
-     */
-    private String realName;
-
-    /**
-     * 性别（1男，2女）
-     */
-    private Integer sex;
-
-    /**
-     * 邮箱
-     */
-    private String email;
-
-    /**
-     * 头像地址
-     */
-    private String avatar;
-
-    /**
-     * 注册时间
-     */
-    private LocalDateTime registerTime;
-
-    /**
-     * 最近登录ip
-     */
-    private String lastLoginIp;
-
-    /**
-     * 最近登录时间
-     */
-    private LocalDateTime lastLoginTime;
+    private Boolean isSystem;
 
     /**
      * 状态（1启用，2禁用）
@@ -86,7 +51,7 @@ public class UserResp implements Serializable {
     private StatusEnum status;
 
     /**
-     * 备注
+     * 角色描述
      */
     private String remark;
 

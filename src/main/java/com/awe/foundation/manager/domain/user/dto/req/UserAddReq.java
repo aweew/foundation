@@ -75,11 +75,6 @@ public class UserAddReq implements Serializable {
     private LocalDateTime lastLoginTime;
 
     /**
-     * 状态（1启用，2禁用）
-     */
-    private Integer status;
-
-    /**
      * 备注
      */
     private String remark;

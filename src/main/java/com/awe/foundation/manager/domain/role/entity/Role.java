@@ -1,6 +1,9 @@
-package com.awe.foundation.manager.domain.user.dto.resp;
+package com.awe.foundation.manager.domain.role.entity;
 
 import com.awe.foundation.common.constant.enums.StatusEnum;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,74 +14,41 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 系统用户响应对象
+ * 系统角色实体类
  *
  * @author Awe
- * @since 2025-12-10 16:03:20
+ * @since 2025-12-12 16:17:39
  */
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResp implements Serializable {
+@TableName("sys_role")
+public class Role implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 242643548623177216L;
+    private static final long serialVersionUID = -65593716951227319L;
 
     /**
      * 主键id
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * 电话
+     * 角色编码
      */
-    private String phone;
+    private String code;
 
     /**
-     * 用户密码
+     * 角色名称
      */
-    private String password;
+    private String name;
 
     /**
-     * 昵称
+     * 是否系统内置角色
      */
-    private String nickName;
-
-    /**
-     * 真实姓名
-     */
-    private String realName;
-
-    /**
-     * 性别（1男，2女）
-     */
-    private Integer sex;
-
-    /**
-     * 邮箱
-     */
-    private String email;
-
-    /**
-     * 头像地址
-     */
-    private String avatar;
-
-    /**
-     * 注册时间
-     */
-    private LocalDateTime registerTime;
-
-    /**
-     * 最近登录ip
-     */
-    private String lastLoginIp;
-
-    /**
-     * 最近登录时间
-     */
-    private LocalDateTime lastLoginTime;
+    private Boolean isSystem;
 
     /**
      * 状态（1启用，2禁用）
@@ -86,7 +56,7 @@ public class UserResp implements Serializable {
     private StatusEnum status;
 
     /**
-     * 备注
+     * 角色描述
      */
     private String remark;
 
@@ -109,5 +79,10 @@ public class UserResp implements Serializable {
      * 更新时间
      */
     private LocalDateTime updateTime;
+
+    /**
+     * 逻辑删除（0未删除，1已删除）
+     */
+    private Boolean isDelete;
 
 }

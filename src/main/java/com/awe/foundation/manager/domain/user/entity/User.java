@@ -1,5 +1,6 @@
 package com.awe.foundation.manager.domain.user.entity;
 
+import com.awe.foundation.common.constant.enums.StatusEnum;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -87,7 +88,7 @@ public class User implements Serializable {
     /**
      * 状态（1启用，2禁用）
      */
-    private Integer status;
+    private StatusEnum status;
 
     /**
      * 备注
@@ -117,6 +118,6 @@ public class User implements Serializable {
     /**
      * 逻辑删除（0未删除，1已删除）
      */
-    private Integer isDelete;
+    private Boolean isDelete;
 
 }
