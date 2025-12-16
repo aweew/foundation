@@ -6,12 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * 授权类型枚举
+ *
  * @author Awe
  * @since 2025/12/11 13:18
  */
 @Getter
 @AllArgsConstructor
-@EnumDict
 public enum GrantTypeEnum {
 
     // ===== 10 段：基础账号 =====

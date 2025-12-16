@@ -17,11 +17,7 @@ public interface MenuMapper extends BaseMapper<Menu> {
 
     List<MenuResp> listAllMenusByUserId(@Param("userId") Long userId);
 
-    List<MenuResp> treeAllMenusByUserId(@Param("userId") Long userId);
-
     List<MenuResp> listAllMenusByRoleId(@Param("roleId") Long roleId);
-
-    List<MenuResp> treeAllMenusByRoleId(@Param("roleId") Long roleId);
 
     List<String> listPermissionsByUserId(@Param("userId") Long userId);
 

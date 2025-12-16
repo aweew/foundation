@@ -25,7 +25,7 @@ import java.util.Objects;
  * @since 2025-12-11 16:45:01
  */
 @RestController
-@RequestMapping("/menu")
+@RequestMapping("/sys/menu")
 public class MenuController {
 
     @Resource

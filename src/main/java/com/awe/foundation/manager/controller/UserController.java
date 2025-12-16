@@ -25,7 +25,7 @@ import java.util.Objects;
  * @since 2025-12-10 16:03:46
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/sys/user")
 public class UserController {
 
     @Resource
@@ -37,8 +37,8 @@ public class UserController {
     /**
      * 根据筛选条件获取系统用户列表(分页)
      *
-     * @param pageReq   分页对象
-     * @param req       筛选条件
+     * @param pageReq 分页对象
+     * @param req     筛选条件
      * @return 查询结果
      */
     @GetMapping("/page")

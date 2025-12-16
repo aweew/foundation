@@ -126,7 +126,8 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 
     @Override
     public List<MenuResp> treeAllMenusByRoleId(Long roleId) {
-        return this.baseMapper.treeAllMenusByRoleId(roleId);
+        List<MenuResp> menuRespList = this.baseMapper.listAllMenusByRoleId(roleId);
+        return null;
     }
 
     @Override
@@ -139,9 +140,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         return this.baseMapper.listPermissionsByRoleId(roleId);
     }
 
-    private List<MenuResp> getChild(Long id, List<MenuResp> rootAcl, Predicate<MenuResp> predicate) {
+    private List<MenuResp> getChild(Long id, List<MenuResp> rootMenu, Predicate<MenuResp> predicate) {
         List<MenuResp> childList = new ArrayList<>();
-        for (MenuResp Menu : rootAcl) {
+        for (MenuResp Menu : rootMenu) {
             if (Objects.nonNull(Menu.getParentId())) {
                 if (Menu.getParentId().equals(id)) {
                     if (predicate.test(Menu)) {
@@ -151,7 +152,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
             }
         }
         for (MenuResp Menu : childList) {
-            Menu.setChildList(getChild(Menu.getId(), rootAcl, predicate));
+            Menu.setChildList(getChild(Menu.getId(), rootMenu, predicate));
         }
         if (CollUtil.isEmpty(childList)) {
             return null;

@@ -25,7 +25,7 @@ import java.util.Objects;
  * @since 2025-12-11 16:44:59
  */
 @RestController
-@RequestMapping("/role")
+@RequestMapping("/sys/role")
 public class RoleController {
 
     @Resource

@@ -36,10 +36,6 @@
           AND t1.is_delete = 0
     </select>
 
-    <select id="treeAllMenusByUserId" resultType="com.awe.foundation.manager.domain.menu.dto.resp.MenuResp">
-
-    </select>
-
     <select id="listAllMenusByRoleId" resultType="com.awe.foundation.manager.domain.menu.dto.resp.MenuResp">
         SELECT
             DISTINCT t4.id,
@@ -73,16 +69,22 @@
           AND t1.is_delete = 0
     </select>
 
-    <select id="treeAllMenusByRoleId" resultType="com.awe.foundation.manager.domain.menu.dto.resp.MenuResp">
-
-    </select>
-
     <select id="listPermissionsByUserId" resultType="java.lang.String">
-
+        SELECT DISTINCT t3.code
+        FROM sys_user_role t1
+        LEFT JOIN sys_role_menu t2 ON t2.role_id = t1.role_id AND t2.is_delete = 0
+        LEFT JOIN sys_menu t3 ON t2.menu_id = t3.id AND t3.is_delete = 0
+        WHERE t1.user_id = #{userId}
+          AND t1.is_delete = 0
     </select>
 
     <select id="listPermissionsByRoleId" resultType="java.lang.String">
-
+        SELECT DISTINCT t3.code
+        FROM sys_user_role t1
+        LEFT JOIN sys_role_menu t2 ON t2.role_id = t1.role_id AND t2.is_delete = 0
+        LEFT JOIN sys_menu t3 ON t2.menu_id = t3.id AND t3.is_delete = 0
+        WHERE t1.role_id = #{roleId}
+          AND t1.is_delete = 0
     </select>
 
 </mapper>
