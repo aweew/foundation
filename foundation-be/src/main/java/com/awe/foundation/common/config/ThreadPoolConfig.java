@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -93,18 +94,21 @@ public class ThreadPoolConfig {
 
         @Override
         public void run() {
-            MDC.setContextMap(this.logContextMap);
-            String traceId = MDC.get(Constants.TRACE_ID);
-            if (traceId != null) {
-                MDC.put(Constants.TRACE_ID, traceId);
-            }
-
+            Map<String, String> previousContext = MDC.getCopyOfContextMap();
             try {
+                if (this.logContextMap == null) {
+                    MDC.clear();
+                } else {
+                    MDC.setContextMap(this.logContextMap);
+                }
                 delegate.run();
             } finally {
-                // 清理MDC，避免内存泄漏
-                this.delegate.run();
-                MDC.clear();
+                // 恢复线程池线程原有上下文，避免串号和上下文泄漏
+                if (previousContext == null) {
+                    MDC.clear();
+                } else {
+                    MDC.setContextMap(new HashMap<>(previousContext));
+                }
             }
         }
 

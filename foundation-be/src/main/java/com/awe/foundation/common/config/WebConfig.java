@@ -1,11 +1,14 @@
 package com.awe.foundation.common.config;
 
-import cn.hutool.core.collection.CollUtil;
 import com.awe.foundation.common.convert.LocalDateConverter;
 import com.awe.foundation.common.convert.LocalDateTimeConverter;
 import com.awe.foundation.common.convert.LocalTimeConverter;
+import com.awe.foundation.common.filter.RepeatableFilter;
+import com.awe.foundation.common.filter.XssFilter;
 import com.awe.foundation.common.interceptor.LogInterceptor;
 import com.awe.foundation.common.interceptor.WebInvokeTimeInterceptor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -15,7 +18,6 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,20 +29,11 @@ import java.util.List;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final List<String> defaultPath = CollUtil.newArrayList("/**");
+    @Value("${app.cors.allowed-origins}")
+    private List<String> allowedOrigins;
 
-    private final List<String> excludePath = Arrays.asList(
-            "/swagger-ui.html",
-            "/swagger-ui/**",
-            "/v2/**",
-            "/v3/**",
-            "/**/doc.html",
-            "/webjars/**",
-            "/swagger-resources/**",
-            "/test/**",
-            "/**/login",
-            "/csrf"
-    );
+    @Value("${app.security.xss-excludes:}")
+    private String xssExcludes;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -64,12 +57,9 @@ public class WebConfig implements WebMvcConfigurer {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        // 设置访问源地址
-        config.addAllowedOriginPattern("*");
-        // 设置访问源请求头
-        config.addAllowedHeader("*");
-        // 设置访问源请求方法
-        config.addAllowedMethod("*");
+        config.setAllowedOriginPatterns(allowedOrigins);
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Trace-Id"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         // 有效期 1800秒
         config.setMaxAge(1800L);
         // 添加映射路径，拦截一切请求
@@ -77,6 +67,31 @@ public class WebConfig implements WebMvcConfigurer {
         source.registerCorsConfiguration("/**", config);
         // 返回新的CorsFilter
         return new CorsFilter(source);
+    }
+
+    /**
+     * 注册可重复读取请求体的过滤器
+     */
+    @Bean
+    public FilterRegistrationBean<RepeatableFilter> repeatableFilter() {
+        FilterRegistrationBean<RepeatableFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new RepeatableFilter());
+        registration.addUrlPatterns("/*");
+        registration.setOrder(1);
+        return registration;
+    }
+
+    /**
+     * 注册 XSS 请求过滤器
+     */
+    @Bean
+    public FilterRegistrationBean<XssFilter> xssFilter() {
+        FilterRegistrationBean<XssFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new XssFilter());
+        registration.addInitParameter("excludes", xssExcludes);
+        registration.addUrlPatterns("/*");
+        registration.setOrder(2);
+        return registration;
     }
 
 }

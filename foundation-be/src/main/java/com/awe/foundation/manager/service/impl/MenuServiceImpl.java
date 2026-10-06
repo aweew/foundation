@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -66,7 +67,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
             }
             return allRootMenus;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -90,7 +91,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
             }
             return allRootMenus;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -116,7 +117,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
             }
             return allRootMenus;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -127,7 +128,21 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     @Override
     public List<MenuResp> treeAllMenusByRoleId(Long roleId) {
         List<MenuResp> menuRespList = this.baseMapper.listAllMenusByRoleId(roleId);
-        return null;
+        if (CollUtil.isEmpty(menuRespList)) {
+            return Collections.emptyList();
+        }
+
+        List<MenuResp> enabledMenus = menuRespList.stream()
+                .filter(menu -> StatusEnum.ENABLE.equals(menu.getStatus()))
+                .sorted(Comparator.comparing(MenuResp::getSort, Comparator.nullsLast(Comparator.naturalOrder())))
+                .collect(Collectors.toList());
+        List<MenuResp> rootMenus = enabledMenus.stream()
+                .filter(menu -> Objects.isNull(menu.getParentId()))
+                .toList();
+        for (MenuResp rootMenu : rootMenus) {
+            rootMenu.setChildList(getChild(rootMenu.getId(), enabledMenus, menuResp -> true));
+        }
+        return rootMenus;
     }
 
     @Override
@@ -155,7 +170,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
             Menu.setChildList(getChild(Menu.getId(), rootMenu, predicate));
         }
         if (CollUtil.isEmpty(childList)) {
-            return null;
+            return Collections.emptyList();
         }
         return childList.stream()
                 .sorted(Comparator.comparing(MenuResp::getSort,

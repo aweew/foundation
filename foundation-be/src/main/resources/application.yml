@@ -21,6 +21,14 @@ spring:
     password: "qazWSX123"
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
 
+# Web 安全配置
+app:
+  cors:
+    allowed-origins:
+      - http://localhost:3000
+  security:
+    xss-excludes: /swagger-ui.html,/swagger-ui/**,/v3/**,/test/**,/auth/login
+
 # mybatis-plus 配置
 mybatis-plus:
   mapper-locations: classpath*:/mapper/*.xml

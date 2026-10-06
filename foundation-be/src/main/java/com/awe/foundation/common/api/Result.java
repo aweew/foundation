@@ -64,36 +64,53 @@ public class Result<T> implements Serializable {
 
     // 失败，无参数
     public static <T> Result<T> failure() {
-        return new Result<>(ErrorCodeEnum.FAILURE.getCode(), null, ErrorCodeEnum.FAILURE.getMsg());
+        return buildFailure(ErrorCodeEnum.FAILURE.getCode(), ErrorCodeEnum.FAILURE.getMsg(), null);
     }
 
     // 失败，带错误消息
     public static <T> Result<T> failure(String msg) {
-        return new Result<>(ErrorCodeEnum.FAILURE.getCode(), null, msg);
+        return failure(ErrorCodeEnum.FAILURE, msg, null);
     }
 
     // 失败，带错误编码和错误消息
     public static <T> Result<T> failure(int code, String msg) {
-        return new Result<>(code, null, msg);
+        return buildFailure(code, msg, null);
     }
 
     // 失败，带错误枚举
     public static <T> Result<T> failure(ErrorCodeEnum codeEnum) {
-        return new Result<>(codeEnum.getCode(), null, codeEnum.getMsg());
+        return failure(codeEnum, codeEnum.getMsg(), null);
     }
 
     // 失败，带错误枚举和自定义消息
     public static <T> Result<T> failure(ErrorCodeEnum codeEnum, String msg) {
-        return new Result<>(codeEnum.getCode(), null, codeEnum.getMsg() + ": " + msg);
+        return failure(codeEnum, msg, null);
+    }
+
+    /**
+     * 构建统一错误响应
+     *
+     * @param codeEnum 错误编码
+     * @param msg      错误消息
+     * @param data     错误详情
+     * @param <T>      错误详情类型
+     * @return 错误响应
+     */
+    public static <T> Result<T> failure(ErrorCodeEnum codeEnum, String msg, T data) {
+        return buildFailure(codeEnum.getCode(), msg, data);
     }
 
     // 失败，带数据和错误消息
     public static <T> Result<T> failure(String msg, T data) {
-        return new Result<>(ErrorCodeEnum.FAILURE.getCode(), data, msg);
+        return failure(ErrorCodeEnum.FAILURE, msg, data);
     }
 
     // 失败，带错误编码、错误消息和数据
     public static <T> Result<T> failure(int code, String msg, T data) {
+        return buildFailure(code, msg, data);
+    }
+
+    private static <T> Result<T> buildFailure(int code, String msg, T data) {
         return new Result<>(code, data, msg);
     }
 

@@ -25,10 +25,12 @@ public class XssFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         String tempExcludes = filterConfig.getInitParameter("excludes");
-        if (StringUtils.isEmpty(tempExcludes)) {
+        if (StringUtils.isNotBlank(tempExcludes)) {
             String[] url = tempExcludes.split(StringUtils.SEPARATOR);
             for (int i = 0; url != null && i < url.length; i++) {
-                excludes.add(url[i]);
+                if (StringUtils.isNotBlank(url[i])) {
+                    excludes.add(url[i].trim());
+                }
             }
         }
     }

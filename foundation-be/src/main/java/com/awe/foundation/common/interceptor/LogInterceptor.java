@@ -44,8 +44,12 @@ public class LogInterceptor implements HandlerInterceptor {
             }
         }
 
-        MDC.put(Constants.USER_ID, userId);
-        response.addHeader(Constants.USER_ID, userId);
+        if (StringUtils.isNotBlank(userId)) {
+            MDC.put(Constants.USER_ID, userId);
+            response.addHeader(Constants.USER_ID, userId);
+        } else {
+            MDC.remove(Constants.USER_ID);
+        }
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 
@@ -57,6 +61,7 @@ public class LogInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception ex) throws Exception {
         MDC.remove(Constants.TRACE_ID);
+        MDC.remove(Constants.USER_ID);
 
         HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }
