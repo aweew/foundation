@@ -13,6 +13,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.*;
 
 /**
@@ -96,7 +97,7 @@ public class ThreadPoolConfig {
         public void run() {
             Map<String, String> previousContext = MDC.getCopyOfContextMap();
             try {
-                if (this.logContextMap == null) {
+                if (Objects.isNull(this.logContextMap)) {
                     MDC.clear();
                 } else {
                     MDC.setContextMap(this.logContextMap);
@@ -104,7 +105,7 @@ public class ThreadPoolConfig {
                 delegate.run();
             } finally {
                 // 恢复线程池线程原有上下文，避免串号和上下文泄漏
-                if (previousContext == null) {
+                if (Objects.isNull(previousContext)) {
                     MDC.clear();
                 } else {
                     MDC.setContextMap(new HashMap<>(previousContext));

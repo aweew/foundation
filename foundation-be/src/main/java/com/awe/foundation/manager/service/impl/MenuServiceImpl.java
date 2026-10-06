@@ -34,6 +34,11 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     private MenuConvert menuConvert;
 
     @Override
+    /**
+     * 查询全部启用菜单
+     *
+     * @return 菜单列表
+     */
     public List<MenuResp> listAllMenus() {
         // 全部权限，树状
         List<Menu> allMenus = this.list();
@@ -47,6 +52,11 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     }
 
     @Override
+    /**
+     * 查询全部启用菜单树
+     *
+     * @return 菜单树
+     */
     public List<MenuResp> treeAllMenus() {
         // 全部权限，树状
         List<Menu> allMenus = this.list();
@@ -71,6 +81,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     }
 
     @Override
+    /**
+     * 按条件查询菜单树
+     *
+     * @param req 菜单查询条件
+     * @return 菜单树
+     */
     public List<MenuResp> treeAllMenus(MenuReq req) {
         // 全部权限，树状
         List<Menu> allMenus = this.list(Wrappers.lambdaQuery(menuConvert.toEntity(req)));
@@ -95,11 +111,23 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     }
 
     @Override
+    /**
+     * 查询用户可见菜单
+     *
+     * @param userId 用户 ID
+     * @return 菜单列表
+     */
     public List<MenuResp> listAllMenusByUserId(Long userId) {
         return this.baseMapper.listAllMenusByUserId(userId);
     }
 
     @Override
+    /**
+     * 查询用户可见菜单树
+     *
+     * @param userId 用户 ID
+     * @return 菜单树
+     */
     public List<MenuResp> treeAllMenusByUserId(Long userId) {
         List<MenuResp> allUserMenus = this.listAllMenusByUserId(userId);
         // 过滤和排序
@@ -121,11 +149,23 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     }
 
     @Override
+    /**
+     * 查询角色关联菜单
+     *
+     * @param roleId 角色 ID
+     * @return 菜单列表
+     */
     public List<MenuResp> listAllMenusByRoleId(Long roleId) {
         return this.baseMapper.listAllMenusByRoleId(roleId);
     }
 
     @Override
+    /**
+     * 查询角色关联菜单树
+     *
+     * @param roleId 角色 ID
+     * @return 菜单树
+     */
     public List<MenuResp> treeAllMenusByRoleId(Long roleId) {
         List<MenuResp> menuRespList = this.baseMapper.listAllMenusByRoleId(roleId);
         if (CollUtil.isEmpty(menuRespList)) {
@@ -146,15 +186,35 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     }
 
     @Override
+    /**
+     * 查询用户权限标识
+     *
+     * @param userId 用户 ID
+     * @return 权限标识列表
+     */
     public List<String> listPermissionsByUserId(Long userId) {
         return this.baseMapper.listPermissionsByUserId(userId);
     }
 
     @Override
+    /**
+     * 查询角色权限标识
+     *
+     * @param roleId 角色 ID
+     * @return 权限标识列表
+     */
     public List<String> listPermissionsByRoleId(Long roleId) {
         return this.baseMapper.listPermissionsByRoleId(roleId);
     }
 
+    /**
+     * 递归组装菜单子节点
+     *
+     * @param id 父菜单 ID
+     * @param rootMenu 菜单集合
+     * @param predicate 子菜单过滤条件
+     * @return 子菜单列表
+     */
     private List<MenuResp> getChild(Long id, List<MenuResp> rootMenu, Predicate<MenuResp> predicate) {
         List<MenuResp> childList = new ArrayList<>();
         for (MenuResp Menu : rootMenu) {

@@ -128,9 +128,9 @@ public class OpenApiHandler extends OpenAPIService {
         super(openAPI, securityParser, springDocConfigProperties, propertyResolverUtils, openApiBuilderCustomizers, serverBaseUrlCustomizers, javadocProvider);
         if (openAPI.isPresent()) {
             this.openAPI = openAPI.get();
-            if (this.openAPI.getComponents() == null)
+            if (Objects.isNull(this.openAPI.getComponents()))
                 this.openAPI.setComponents(new Components());
-            if (this.openAPI.getPaths() == null)
+            if (Objects.isNull(this.openAPI.getPaths()))
                 this.openAPI.setPaths(new Paths());
             if (!CollectionUtils.isEmpty(this.openAPI.getServers()))
                 this.isServersPresent = true;
@@ -162,7 +162,7 @@ public class OpenApiHandler extends OpenAPIService {
         if (springdocTags.containsKey(handlerMethod)) {
             Tag tag = springdocTags.get(handlerMethod);
             tagsStr.add(tag.getName());
-            if (openAPI.getTags() == null || !openAPI.getTags().contains(tag)) {
+            if (Objects.isNull(openAPI.getTags()) || !openAPI.getTags().contains(tag)) {
                 openAPI.addTagsItem(tag);
             }
         }
@@ -193,7 +193,7 @@ public class OpenApiHandler extends OpenAPIService {
                     operation.addTagsItem(list.get(0));
 
                     tag.setDescription(description);
-                    if (openAPI.getTags() == null || !openAPI.getTags().contains(tag)) {
+                    if (Objects.isNull(openAPI.getTags()) || !openAPI.getTags().contains(tag)) {
                         openAPI.addTagsItem(tag);
                     }
                 }
@@ -206,7 +206,7 @@ public class OpenApiHandler extends OpenAPIService {
         // 使用方法级 Javadoc 作为接口的 summary 与 description（若未显式填写）
         // 优先使用 Therapi 直接读取方法 Javadoc
         MethodJavadoc mj = RuntimeJavadoc.getJavadoc(handlerMethod.getMethod());
-        if (mj != null && mj.getComment() != null) {
+        if (Objects.nonNull(mj) && Objects.nonNull(mj.getComment())) {
             String methodDoc = mj.getComment().toString();
             List<String> lines = IoUtil.readLines(new StringReader(methodDoc), new ArrayList<>());
             String firstLine = lines.isEmpty() ? null : lines.get(0);
@@ -229,7 +229,7 @@ public class OpenApiHandler extends OpenAPIService {
         // Handle SecurityRequirement at operation level
         io.swagger.v3.oas.annotations.security.SecurityRequirement[] securityRequirements = securityParser
                 .getSecurityRequirements(handlerMethod);
-        if (securityRequirements != null) {
+        if (Objects.nonNull(securityRequirements)) {
             if (securityRequirements.length == 0)
                 operation.setSecurity(Collections.emptyList());
             else

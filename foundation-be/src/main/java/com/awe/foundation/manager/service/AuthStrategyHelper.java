@@ -1,6 +1,8 @@
 package com.awe.foundation.manager.service;
 
 import com.awe.foundation.common.constant.enums.GrantTypeEnum;
+import com.awe.foundation.common.constant.ErrorCodeEnum;
+import com.awe.foundation.common.exception.BusinessException;
 import com.awe.foundation.manager.service.impl.PasswordAuthStrategy;
 
 /**
@@ -14,7 +16,7 @@ public class AuthStrategyHelper {
             case PASSWORD:
                 return new PasswordAuthStrategy();
             default:
-                throw new IllegalArgumentException("Unsupported auth type: " + grantType);
+                throw new BusinessException(ErrorCodeEnum.AUTH_TYPE_UNSUPPORTED);
         }
     }
 

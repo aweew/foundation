@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 /**
  * XSS过滤处理
@@ -33,7 +34,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String[] getParameterValues(String name) {
         String[] values = super.getParameterValues(name);
-        if (values != null) {
+        if (Objects.nonNull(values)) {
             int length = values.length;
             String[] escapseValues = new String[length];
             for (int i = 0; i < length; i++) {

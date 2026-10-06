@@ -22,7 +22,25 @@ public enum ErrorCodeEnum {
     FAILURE(9000, "失败"),
 
     // 异常
-    ERROR(9999, "异常"),
+    ERROR(9999, "未知异常，请联系管理员"),
+
+    // 系统异常
+    SYSTEM_ERROR(500, "系统异常，请联系管理员"),
+
+    // 参数校验失败
+    PARAMETER_ERROR(9001, "参数校验失败"),
+
+    // 请求过于频繁
+    TOO_MANY_REQUESTS(429, "请求过于频繁，请稍后再试"),
+
+    // 请求体无法记录
+    REQUEST_BODY_NOT_LOGGED(10001, "请求体未记录"),
+
+    // 用户不存在
+    USER_NOT_FOUND(10002, "用户不存在"),
+
+    // 不支持的认证类型
+    AUTH_TYPE_UNSUPPORTED(10003, "不支持的认证类型"),
     ;
 
     /**

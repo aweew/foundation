@@ -18,6 +18,12 @@ public class LocalDateConverter implements Converter<String, LocalDate> {
     public static final String DATE = "yyyy-MM-dd";
     public static final String TIME = "yyyy-MM-dd HH:mm:ss";
 
+    /**
+     * 将字符串转换为日期
+     *
+     * @param s 日期字符串
+     * @return 日期对象
+     */
     @Override
     public LocalDate convert(String s) {
         return LocalDate.parse(s, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -27,7 +33,7 @@ public class LocalDateConverter implements Converter<String, LocalDate> {
      * 当月第一天
      */
     public static LocalDate firstDayOfMonth(LocalDate date) {
-        if (null == date) {
+        if (java.util.Objects.isNull(date)) {
             return null;
         }
         return date.with(TemporalAdjusters.firstDayOfMonth());
@@ -37,7 +43,7 @@ public class LocalDateConverter implements Converter<String, LocalDate> {
      * LocalDate 转为 String
      */
     public static String dateToString(LocalDate date, String pattern) {
-        if (null == date) {
+        if (java.util.Objects.isNull(date)) {
             return "";
         }
         return date.format(DateTimeFormatter.ofPattern(pattern));

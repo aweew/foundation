@@ -21,6 +21,12 @@ import java.util.List;
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
 
     @Override
+    /**
+     * 查询用户关联角色
+     *
+     * @param userId 用户 ID
+     * @return 角色列表
+     */
     public List<RoleResp> listByUserId(Long userId) {
         return this.baseMapper.listByUserId(userId);
     }

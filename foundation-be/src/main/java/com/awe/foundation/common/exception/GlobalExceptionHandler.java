@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -27,19 +28,23 @@ public class GlobalExceptionHandler {
     // 业务异常
     @ExceptionHandler(BusinessException.class)
     public Result<?> handleBusinessException(BusinessException e) {
-        return Result.failure(e.getCode(), e.getMessage());
+        Integer code = e.getCode();
+        if (Objects.isNull(code)) {
+            return Result.failure(ErrorCodeEnum.FAILURE);
+        }
+        return Result.failure(code, e.getMessage());
     }
 
     // 系统异常
     @ExceptionHandler(SystemException.class)
     public Result<?> handleSystemException(SystemException e) {
-        return Result.failure(e.getCode(), "系统异常，请联系管理员");
+        return Result.failure(ErrorCodeEnum.SYSTEM_ERROR);
     }
 
     // 参数校验异常（如 @Valid 抛出的）
     @ExceptionHandler(ConstraintViolationException.class)
     public Result<?> handleValidationException(ConstraintViolationException e) {
-        return Result.failure(ErrorCodeEnum.FAILURE.getCode(), e.getMessage());
+        return Result.failure(ErrorCodeEnum.PARAMETER_ERROR);
     }
 
     // 参数校验异常
@@ -53,20 +58,20 @@ public class GlobalExceptionHandler {
                         (msg1, msg2) -> msg1 // 字段重复时取第一个
                 ));
 
-        return Result.failure(ErrorCodeEnum.FAILURE.getCode(), "参数校验失败", errors);
+        return Result.failure(ErrorCodeEnum.PARAMETER_ERROR.getCode(), ErrorCodeEnum.PARAMETER_ERROR.getMsg(), errors);
     }
 
     // 参数校验异常（如 @Valid 抛出的）
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Result<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        return Result.failure(ErrorCodeEnum.FAILURE.getCode(), e.getMessage());
+        return Result.failure(ErrorCodeEnum.PARAMETER_ERROR);
     }
 
     // 兜底异常
     @ExceptionHandler(Exception.class)
     public Result<?> handleException(Exception e) {
         log.error("系统异常：", e);
-        return Result.failure(ErrorCodeEnum.ERROR.getCode(), "未知异常，请联系管理员");
+        return Result.failure(ErrorCodeEnum.ERROR);
     }
 
 }

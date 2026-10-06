@@ -33,11 +33,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private IMenuService menuService;
 
     @Override
+    /**
+     * 根据手机号查询用户
+     *
+     * @param phone 手机号
+     * @return 用户信息
+     */
     public User getByPhone(String phone) {
         return this.baseMapper.selectOne(Wrappers.lambdaQuery(User.class).eq(User::getPhone, phone));
     }
 
     @Override
+    /**
+     * 查询用户登录后的权限信息
+     *
+     * @param userId 用户 ID
+     * @return 用户信息
+     */
     public UserInfoResp getUserInfo(Long userId) {
         User user = this.getById(userId);
         if (Objects.isNull(user)) {

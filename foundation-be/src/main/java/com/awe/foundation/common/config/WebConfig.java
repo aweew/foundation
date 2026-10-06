@@ -4,6 +4,8 @@ import com.awe.foundation.common.convert.LocalDateConverter;
 import com.awe.foundation.common.convert.LocalDateTimeConverter;
 import com.awe.foundation.common.convert.LocalTimeConverter;
 import com.awe.foundation.common.filter.RepeatableFilter;
+import com.awe.foundation.common.filter.RateLimitFilter;
+import com.awe.foundation.common.filter.TraceIdFilter;
 import com.awe.foundation.common.filter.XssFilter;
 import com.awe.foundation.common.interceptor.LogInterceptor;
 import com.awe.foundation.common.interceptor.WebInvokeTimeInterceptor;
@@ -29,12 +31,29 @@ import java.util.List;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${app.cors.allowed-origins}")
+    @Value("${app.cors.allowed-origins:http://localhost:3000}")
     private List<String> allowedOrigins;
 
     @Value("${app.security.xss-excludes:}")
     private String xssExcludes;
 
+    @Value("${app.rate-limit.enabled:true}")
+    private boolean rateLimitEnabled;
+
+    @Value("${app.rate-limit.requests-per-window:120}")
+    private int requestsPerWindow;
+
+    @Value("${app.rate-limit.window-seconds:60}")
+    private long rateLimitWindowSeconds;
+
+    @Value("${app.rate-limit.exclude-paths:}")
+    private String rateLimitExcludePaths;
+
+    /**
+     * 注册 MVC 拦截器
+     *
+     * @param registry 拦截器注册表
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 日志拦截器
@@ -43,6 +62,11 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new WebInvokeTimeInterceptor());
     }
 
+    /**
+     * 注册日期时间转换器
+     *
+     * @param registry 格式化注册表
+     */
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new LocalDateConverter());
@@ -78,6 +102,31 @@ public class WebConfig implements WebMvcConfigurer {
         registration.setFilter(new RepeatableFilter());
         registration.addUrlPatterns("/*");
         registration.setOrder(1);
+        return registration;
+    }
+
+    /**
+     * 注册统一 traceId 过滤器
+     */
+    @Bean
+    public FilterRegistrationBean<TraceIdFilter> traceIdFilter() {
+        FilterRegistrationBean<TraceIdFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new TraceIdFilter());
+        registration.addUrlPatterns("/*");
+        registration.setOrder(-100);
+        return registration;
+    }
+
+    /**
+     * 注册请求限流过滤器
+     */
+    @Bean
+    public FilterRegistrationBean<RateLimitFilter> rateLimitFilter() {
+        FilterRegistrationBean<RateLimitFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new RateLimitFilter(rateLimitEnabled, requestsPerWindow,
+                rateLimitWindowSeconds, rateLimitExcludePaths));
+        registration.addUrlPatterns("/*");
+        registration.setOrder(-90);
         return registration;
     }
 

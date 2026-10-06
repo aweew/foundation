@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
 import java.util.concurrent.*;
 
 /**
@@ -35,7 +36,7 @@ public class ThreadUtils {
      * 另对在shutdown时线程本身被调用中断做了处理.
      */
     public static void shutdownAndAwaitTermination(ExecutorService pool) {
-        if (pool != null && !pool.isShutdown()) {
+        if (Objects.nonNull(pool) && !pool.isShutdown()) {
             pool.shutdown();
             try {
                 if (!pool.awaitTermination(120, TimeUnit.SECONDS)) {
@@ -55,7 +56,7 @@ public class ThreadUtils {
      * 打印线程异常信息
      */
     public static void printException(Runnable r, Throwable t) {
-        if (t == null && r instanceof Future<?>) {
+        if (Objects.isNull(t) && r instanceof Future<?>) {
             try {
                 Future<?> future = (Future<?>) r;
                 if (future.isDone()) {
@@ -69,7 +70,7 @@ public class ThreadUtils {
                 Thread.currentThread().interrupt();
             }
         }
-        if (t != null) {
+        if (Objects.nonNull(t)) {
             log.error(t.getMessage(), t);
         }
     }

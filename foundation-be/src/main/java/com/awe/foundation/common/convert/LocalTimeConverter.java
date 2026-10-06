@@ -17,6 +17,12 @@ import java.util.Objects;
 @ConfigurationPropertiesBinding
 public class LocalTimeConverter implements Converter<String, LocalTime> {
 
+    /**
+     * 将字符串转换为时间
+     *
+     * @param source 时间字符串
+     * @return 时间对象
+     */
     @Override
     public LocalTime convert(String source) {
         Objects.requireNonNull(source);

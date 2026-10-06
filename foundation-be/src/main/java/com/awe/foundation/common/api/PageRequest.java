@@ -73,7 +73,11 @@ public class PageRequest implements Serializable {
     }
 
     /**
-     * 创建mybatis-plus Page对象
+     * 创建 MyBatis-Plus 分页对象
+     *
+     * @param requireType 分页对象类型
+     * @param <T> 数据类型
+     * @return 分页对象
      */
     public <T> Page<T> createPage(Class<T> requireType) {
         Page<T> result = new Page<>(this.current, this.size, this.isSearchCount);
@@ -96,6 +100,12 @@ public class PageRequest implements Serializable {
         return result;
     }
 
+    /**
+     * 添加排序项
+     *
+     * @param name 排序字段
+     * @param asc 是否升序
+     */
     public void addOrderItem(String name, boolean asc) {
         if (null == _orderItems) {
             _orderItems = new ArrayList<>();
@@ -104,6 +114,13 @@ public class PageRequest implements Serializable {
         _orderItems.add(orderItem);
     }
 
+    /**
+     * 转换为分页响应对象
+     *
+     * @param clazz 响应类型
+     * @param <T> 响应类型
+     * @return 分页响应对象
+     */
     public <T extends PageResponse<?>> T toPageResp(Class<T> clazz) {
         this.setSearchCount(true);
         T t = ReflectUtil.newInstance(clazz);

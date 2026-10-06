@@ -1,5 +1,6 @@
 package com.awe.foundation.common.exception;
 
+import com.awe.foundation.common.constant.ErrorCodeEnum;
 import lombok.Getter;
 
 import java.io.Serial;
@@ -33,6 +34,11 @@ public class BusinessException extends RuntimeException {
 
     public BusinessException(String message) {
         super(message);
+    }
+
+    public BusinessException(ErrorCodeEnum errorCodeEnum) {
+        super(errorCodeEnum.getMsg());
+        this.code = errorCodeEnum.getCode();
     }
 
     public BusinessException(String message, Throwable cause) {

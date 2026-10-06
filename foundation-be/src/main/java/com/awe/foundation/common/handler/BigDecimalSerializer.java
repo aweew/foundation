@@ -30,7 +30,7 @@ public class BigDecimalSerializer extends JsonSerializer<BigDecimal> implements 
 
     @Override
     public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        if (value == null) {
+        if (Objects.isNull(value)) {
             gen.writeString("0");
         } else {
             // gen.writeString(value.stripTrailingZeros().toPlainString());
@@ -40,14 +40,14 @@ public class BigDecimalSerializer extends JsonSerializer<BigDecimal> implements 
 
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider serializerProvider, BeanProperty beanProperty) throws JsonMappingException {
-        if (beanProperty != null) {
+        if (Objects.nonNull(beanProperty)) {
             if (Objects.equals(beanProperty.getType().getRawClass(), BigDecimal.class)) {
                 BigDecimalFormat bigDecimalFormat = beanProperty.getAnnotation((BigDecimalFormat.class));
-                if (bigDecimalFormat == null) {
+                if (Objects.isNull(bigDecimalFormat)) {
                     bigDecimalFormat = beanProperty.getContextAnnotation(BigDecimalFormat.class);
                 }
                 BigDecimalSerializer bigDecimalSerializer = new BigDecimalSerializer();
-                if (bigDecimalFormat != null) {
+                if (Objects.nonNull(bigDecimalFormat)) {
                     bigDecimalSerializer.scale = bigDecimalFormat.scale();
                     bigDecimalSerializer.roundingMode = bigDecimalFormat.roundingMode();
                 }

@@ -2,6 +2,7 @@ package com.awe.foundation.common.util;
 
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.ArrayUtil;
+import com.awe.foundation.common.exception.SystemException;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +29,11 @@ public class JsonUtils {
 
     private static final ObjectMapper OBJECT_MAPPER = SpringUtils.getBean(ObjectMapper.class);
 
+    /**
+     * 获取共享 JSON 对象映射器
+     *
+     * @return JSON 对象映射器
+     */
     public static ObjectMapper getObjectMapper() {
         return OBJECT_MAPPER;
     }
@@ -61,7 +67,7 @@ public class JsonUtils {
         try {
             return OBJECT_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new SystemException(e);
         }
     }
 
@@ -84,7 +90,7 @@ public class JsonUtils {
             generator.close();
             return writer.toString();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new SystemException(e);
         }
     }
 
@@ -103,7 +109,7 @@ public class JsonUtils {
         try {
             return OBJECT_MAPPER.readValue(text, clazz);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SystemException(e);
         }
     }
 
@@ -122,7 +128,7 @@ public class JsonUtils {
         try {
             return OBJECT_MAPPER.readValue(bytes, clazz);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SystemException(e);
         }
     }
 
@@ -141,7 +147,7 @@ public class JsonUtils {
         try {
             return OBJECT_MAPPER.readValue(text, typeReference);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SystemException(e);
         }
     }
 
@@ -160,10 +166,16 @@ public class JsonUtils {
         try {
             return OBJECT_MAPPER.readValue(text, OBJECT_MAPPER.getTypeFactory().constructCollectionType(List.class, clazz));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SystemException(e);
         }
     }
 
+    /**
+     * 将 JSON 字符串解析为字典
+     *
+     * @param text JSON 字符串
+     * @return JSON 字典
+     */
     public static Dict parseMap(String text) {
         if (StringUtils.isBlank(text)) {
             return null;
@@ -174,10 +186,16 @@ public class JsonUtils {
             // 类型不匹配说明不是json
             return null;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SystemException(e);
         }
     }
 
+    /**
+     * 将 JSON 数组解析为字典列表
+     *
+     * @param text JSON 数组字符串
+     * @return 字典列表
+     */
     public static List<Dict> parseArrayMap(String text) {
         if (StringUtils.isBlank(text)) {
             return null;
@@ -185,7 +203,7 @@ public class JsonUtils {
         try {
             return OBJECT_MAPPER.readValue(text, OBJECT_MAPPER.getTypeFactory().constructCollectionType(List.class, Dict.class));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SystemException(e);
         }
     }
 

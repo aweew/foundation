@@ -16,6 +16,12 @@ public class LocalDateTimeConverter implements Converter<String, LocalDateTime> 
 
     public static final String MINUTE = "yyyy-MM-dd HH:mm";
 
+    /**
+     * 将字符串转换为日期时间
+     *
+     * @param s 日期时间字符串
+     * @return 日期时间对象
+     */
     @Override
     public LocalDateTime convert(String s) {
         return LocalDateTime.parse(s, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -25,7 +31,7 @@ public class LocalDateTimeConverter implements Converter<String, LocalDateTime> 
      * LocalDateTime 转为 String
      */
     public static String timeToString(LocalDateTime time, String pattern) {
-        if (null == time) {
+        if (java.util.Objects.isNull(time)) {
             return "";
         }
         return time.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern(pattern));

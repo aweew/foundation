@@ -11,7 +11,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.UUID;
 
 /**
  * 日志拦截器
@@ -22,16 +21,17 @@ import java.util.UUID;
 @Slf4j
 public class LogInterceptor implements HandlerInterceptor {
 
+    /**
+     * 设置当前请求的用户日志上下文
+     *
+     * @param request 请求对象
+     * @param response 响应对象
+     * @param handler 请求处理器
+     * @return 是否继续处理
+     * @throws Exception 拦截器处理异常
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
-
-        // 初始化traceId
-        String traceId = request.getHeader(Constants.TRACE_ID);
-        if (StringUtils.isBlank(traceId)) {
-            traceId = UUID.randomUUID().toString().trim().replaceAll("-", "").substring(0, 16);
-        }
-        MDC.put(Constants.TRACE_ID, traceId);
-        response.addHeader(Constants.TRACE_ID, traceId);
 
         // todo 添加客户端类型等信息
 
@@ -53,11 +53,29 @@ public class LogInterceptor implements HandlerInterceptor {
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 
+    /**
+     * 处理请求完成前的 MVC 回调
+     *
+     * @param request 请求对象
+     * @param response 响应对象
+     * @param handler 请求处理器
+     * @param modelAndView 模型和视图
+     * @throws Exception 拦截器处理异常
+     */
     @Override
     public void postHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, ModelAndView modelAndView) throws Exception {
         HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
     }
 
+    /**
+     * 清理当前请求的日志上下文
+     *
+     * @param request 请求对象
+     * @param response 响应对象
+     * @param handler 请求处理器
+     * @param ex 请求异常
+     * @throws Exception 拦截器处理异常
+     */
     @Override
     public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception ex) throws Exception {
         MDC.remove(Constants.TRACE_ID);
