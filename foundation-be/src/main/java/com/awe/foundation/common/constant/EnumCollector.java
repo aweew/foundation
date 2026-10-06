@@ -36,6 +36,7 @@ public class EnumCollector implements InitializingBean {
             Object[] constants = enumClass.getEnumConstants();
             for (Object constant : constants) {
                 Map<String, Object> item = new HashMap<>();
+                item.put("name", ((Enum<?>) constant).name());
                 item.put("value", ReflectUtil.getFieldValue(constant, "value"));
                 item.put("label", ReflectUtil.getFieldValue(constant, "label"));
                 list.add(item);

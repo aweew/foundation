@@ -21,9 +21,9 @@ public class EnumController {
     private EnumCollector enumCollector;
 
     /**
-     * 获取所有枚举列表
+     * 获取所有枚举列表，包含英文名称、业务值和中文标签
      *
-     * @return 枚举列表
+     * @return 枚举列表，选项字段为 name、value、label
      */
     @GetMapping("/list")
     public Result<?> listAllEnums() {
