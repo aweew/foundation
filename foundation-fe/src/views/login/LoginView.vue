@@ -32,35 +32,38 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
-import { useAuthStore } from '@/stores/auth'
-import { Lock, User } from '@element-plus/icons-vue'
+import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
+import { useAuthStore } from '@/stores/auth';
+import { Lock, User } from '@element-plus/icons-vue';
 
-const router = useRouter()
-const auth = useAuthStore()
-const formRef = ref<FormInstance>()
-const loading = ref(false)
-const form = reactive({ clientId: 'foundation-web', grantType: 'PASSWORD', phone: '', password: '' })
+const router = useRouter();
+const auth = useAuthStore();
+const formRef = ref<FormInstance>();
+const loading = ref(false);
+const form = reactive({ clientId: 'foundation-web', grantType: 'PASSWORD', phone: '', password: '' });
 const rules: FormRules = {
   phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-}
+};
 
-// 校验登录表单并提交登录请求
+/**
+ * 校验登录表单，完成登录后跳转到工作台
+ */
 const submit = async () => {
-  if (!formRef.value) return
+  if (!formRef.value) return;
+  // 校验通过后锁定按钮，避免重复提交登录请求
   await formRef.value.validate(async (valid) => {
-    if (!valid) return
-    loading.value = true
+    if (!valid) return;
+    loading.value = true;
     try {
-      await auth.signIn(form)
-      ElMessage.success('登录成功')
-      router.replace('/dashboard')
+      await auth.signIn(form);
+      ElMessage.success('登录成功');
+      router.replace('/dashboard');
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  })
-}
+  });
+};
 </script>

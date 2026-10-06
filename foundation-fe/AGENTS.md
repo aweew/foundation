@@ -53,8 +53,8 @@
 - 新增或调整 API 时同步更新相关类型及调用方引用
 
 ```ts
-import { login } from '@/api/auth'
-import type { LoginRequest } from '@/api/auth/types'
+import { login } from '@/api/auth';
+import type { LoginRequest } from '@/api/auth/types';
 ```
 
 ## API 请求方法写法
@@ -74,6 +74,10 @@ export const login = (payload: LoginRequest) => {
     url: '/auth/login',
     method: 'post',
     data: payload,
-  })
-}
+  });
+};
 ```
+
+## 注释排版
+
+- 多行注释（包括 JSDoc 和业务流程注释）上方通常空一行，与前面的代码保持视觉间距；连续且紧密相关的流程注释可以不空行，复杂流程必要时增加空行，优先保证阅读节奏

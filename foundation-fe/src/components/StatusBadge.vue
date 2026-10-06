@@ -7,42 +7,53 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue'
-import { useEnumDictionary } from '@/composables/useEnumDictionary'
-import type { EnumOption } from '@/api/system/types'
+import { computed, onMounted, watch } from 'vue';
+import { useEnumDictionary } from '@/composables/useEnumDictionary';
+import type { EnumOption } from '@/api/system/types';
 
-type BadgeType = 'primary' | 'success' | 'info' | 'warning' | 'danger'
+type BadgeType = 'primary' | 'success' | 'info' | 'warning' | 'danger';
 
-const props = withDefaults(defineProps<{
-  enumName?: string;
-  value: unknown;
-  type?: BadgeType;
-}>(), { enumName: 'StatusEnum', type: undefined })
+const props = withDefaults(
+  defineProps<{
+    enumName?: string;
+    value: unknown;
+    type?: BadgeType;
+  }>(),
+  { enumName: 'StatusEnum', type: undefined },
+);
 
-const { enumDictionary, loadEnums } = useEnumDictionary()
+const { enumDictionary, loadEnums } = useEnumDictionary();
 
 const enumOption = computed<EnumOption | undefined>(() => {
-  const options = enumDictionary[props.enumName] ?? []
-  return options.find(option => option.name === props.value || String(option.value) === String(props.value))
-})
+  const options = enumDictionary[props.enumName] ?? [];
+  return options.find((option) => option.name === props.value || String(option.value) === String(props.value));
+});
 
-const label = computed(() => enumOption.value?.label ?? (props.value === null || props.value === undefined ? '' : String(props.value)))
+const label = computed(
+  () => enumOption.value?.label ?? (props.value === null || props.value === undefined ? '' : String(props.value)),
+);
 
 const badgeType = computed<BadgeType>(() => {
-  if (props.type) return props.type
-  const name = enumOption.value?.name?.toUpperCase() ?? ''
-  if (/(ENABLE|ACTIVE|SUCCESS|NORMAL|PASS|OPEN)/.test(name)) return 'success'
-  if (/(DISABLE|INACTIVE|ERROR|FAIL|CLOSED|LOCK)/.test(name)) return 'danger'
-  if (/(WAIT|PENDING|PROCESS)/.test(name)) return 'warning'
-  return 'info'
-})
+  if (props.type) return props.type;
+  const name = enumOption.value?.name?.toUpperCase() ?? '';
+  if (/(ENABLE|ACTIVE|SUCCESS|NORMAL|PASS|OPEN)/.test(name)) return 'success';
+  if (/(DISABLE|INACTIVE|ERROR|FAIL|CLOSED|LOCK)/.test(name)) return 'danger';
+  if (/(WAIT|PENDING|PROCESS)/.test(name)) return 'warning';
+  return 'info';
+});
 
+/**
+ * 确保当前状态徽标所需的枚举字典已经加载
+ */
 const ensureEnumsLoaded = async () => {
-  if (!enumDictionary[props.enumName]) await loadEnums(props.enumName)
-}
+  if (!enumDictionary[props.enumName]) await loadEnums(props.enumName);
+};
 
-onMounted(() => ensureEnumsLoaded().catch(() => undefined))
-watch(() => props.enumName, () => ensureEnumsLoaded().catch(() => undefined))
+onMounted(() => ensureEnumsLoaded().catch(() => undefined));
+watch(
+  () => props.enumName,
+  () => ensureEnumsLoaded().catch(() => undefined),
+);
 </script>
 
 <style scoped>
@@ -65,7 +76,7 @@ watch(() => props.enumName, () => ensureEnumsLoaded().catch(() => undefined))
   height: 7px;
   border-radius: 50%;
   box-shadow: 0 0 0 3px currentColor;
-  opacity: .22;
+  opacity: 0.22;
 }
 
 .status-badge__label {

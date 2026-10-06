@@ -1,10 +1,12 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 
 const routes: RouteRecordRaw[] = [
   { path: '/login', component: () => import('@/views/login/LoginView.vue'), meta: { public: true } },
   {
-    path: '/', component: () => import('@/layouts/AdminLayout.vue'), children: [
+    path: '/',
+    component: () => import('@/layouts/AdminLayout.vue'),
+    children: [
       { path: '', redirect: '/dashboard' },
       {
         path: 'dashboard',
@@ -29,24 +31,27 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   { path: '/:pathMatch(.*)*', redirect: '/dashboard' },
-]
+];
 
-const router = createRouter({ history: createWebHistory(), routes })
+const router = createRouter({ history: createWebHistory(), routes });
+/**
+ * 根据公开路由和登录令牌控制页面访问，并在首次进入后台时加载用户信息
+ */
 router.beforeEach(async (to) => {
-  const auth = useAuthStore()
+  const auth = useAuthStore();
   if (to.meta.public) {
-    if (to.path === '/login' && auth.token) return '/dashboard'
-    return true
+    if (to.path === '/login' && auth.token) return '/dashboard';
+    return true;
   }
-  if (!auth.token) return '/login'
+  if (!auth.token) return '/login';
   if (!auth.userInfo) {
     try {
-      await auth.loadUserInfo()
+      await auth.loadUserInfo();
     } catch {
-      auth.signOut()
-      return '/login'
+      auth.signOut();
+      return '/login';
     }
   }
-  return true
-})
-export default router
+  return true;
+});
+export default router;

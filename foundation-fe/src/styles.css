@@ -1,5 +1,5 @@
 :root {
-    font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-family: Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif;
     color: #1f2937;
     background: #f5f7fa;
     font-synthesis: none;
@@ -36,7 +36,7 @@ button {
     font-size: 17px;
     font-weight: 700;
     color: #fff;
-    letter-spacing: .2px;
+    letter-spacing: 0.2px;
 }
 
 .brand-mark {
@@ -136,7 +136,8 @@ button {
     border: 0;
 }
 
-.stat-label, .stat-grid small {
+.stat-label,
+.stat-grid small {
     display: block;
     color: #64748b;
     font-size: 13px;
@@ -194,7 +195,8 @@ button {
     margin-bottom: 40px;
 }
 
-.login-brand strong, .login-brand small {
+.login-brand strong,
+.login-brand small {
     display: block;
 }
 

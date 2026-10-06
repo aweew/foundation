@@ -1,12 +1,12 @@
-import type { MenuItem } from '@/api/system/types'
+import type { MenuItem } from '@/api/system/types';
 
 export interface LoginRequest {
-  clientId: string
-  clientKey?: string
-  clientSecret?: string
-  grantType: string
-  phone: string
-  password: string
+  clientId: string;
+  clientKey?: string;
+  clientSecret?: string;
+  grantType: string;
+  phone: string;
+  password: string;
 }
 
 export interface LoginResponse {
@@ -15,7 +15,7 @@ export interface LoginResponse {
   expire_in?: number;
   refresh_expire_in?: number;
   client_id?: string;
-  scope?: string
+  scope?: string;
 }
 
 export interface UserInfo {
@@ -26,5 +26,5 @@ export interface UserInfo {
   avatar?: string;
   roles: unknown[];
   menus: MenuItem[];
-  permissions: string[]
+  permissions: string[];
 }

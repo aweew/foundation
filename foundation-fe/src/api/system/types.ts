@@ -2,11 +2,11 @@ export interface QueryPage {
   current: number;
   size: number;
 
-  [key: string]: unknown
+  [key: string]: unknown;
 }
 
-export type SystemResource = 'user' | 'role' | 'menu'
-export type SystemRecord = Record<string, string | number | boolean | null | undefined>
+export type SystemResource = 'user' | 'role' | 'menu';
+export type SystemRecord = Record<string, string | number | boolean | null | undefined>;
 
 export interface SystemFormField {
   prop: string;
@@ -15,16 +15,16 @@ export interface SystemFormField {
   required?: boolean;
   createOnly?: boolean;
   defaultValue?: string | number | boolean;
-  options?: { value: string | number; label: string }[]
+  options?: { value: string | number; label: string }[];
 }
 
 export interface EnumOption {
   name: string;
   value: string | number;
-  label: string
+  label: string;
 }
 
-export type EnumDictionary = Record<string, EnumOption[]>
+export type EnumDictionary = Record<string, EnumOption[]>;
 
 export interface MenuItem {
   id: number;
@@ -39,5 +39,5 @@ export interface MenuItem {
   isCache?: boolean;
   isVisible?: boolean;
   sort?: number;
-  childList?: MenuItem[]
+  childList?: MenuItem[];
 }
