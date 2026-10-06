@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import {computed, nextTick, onMounted, ref} from 'vue'
-import {ElMessage, ElMessageBox, type FormInstance, type FormRules} from 'element-plus'
-import {Delete, Edit, Plus} from '@element-plus/icons-vue'
-import {createSystemItem, deleteSystemItem, getSystemItem, updateSystemItem,
-  type QueryPage, type SystemFormField, type SystemRecord, type SystemResource} from '@/api/system'
+import { computed, nextTick, onMounted, ref } from 'vue'
+import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
+import { Delete, Edit, Plus } from '@element-plus/icons-vue'
+import {
+  createSystemItem,
+  deleteSystemItem,
+  getSystemItem,
+  type QueryPage,
+  type SystemFormField,
+  type SystemRecord,
+  type SystemResource,
+  updateSystemItem,
+} from '@/api/system'
 import StatusBadge from '@/components/StatusBadge.vue'
 
 interface TableColumn {
@@ -21,10 +29,10 @@ const props = defineProps<{
   preservedFields?: string[];
   columns: TableColumn[]
 }>()
-const loading = ref(false);
-const rows = ref<Record<string, unknown>[]>([]);
-const total = ref(0);
-const page = ref({current: 1, size: 10})
+const loading = ref(false)
+const rows = ref<Record<string, unknown>[]>([])
+const total = ref(0)
+const page = ref({ current: 1, size: 10 })
 const editorVisible = ref(false)
 const editorLoading = ref(false)
 const saving = ref(false)
@@ -39,8 +47,13 @@ const formRules = computed<FormRules>(() => {
   for (const field of visibleFields.value) {
     if (field.required) {
       const numeric = field.type === 'number' || (field.type === 'select' && typeof field.options?.[0]?.value === 'number')
-      rules[field.prop] = [{required: true, type: numeric ? 'number' : 'string', whitespace: !numeric,
-        message: `${field.type === 'select' ? '请选择' : '请输入'}${field.label}`, trigger: field.type === 'select' ? 'change' : 'blur'}]
+      rules[field.prop] = [{
+        required: true,
+        type: numeric ? 'number' : 'string',
+        whitespace: !numeric,
+        message: `${field.type === 'select' ? '请选择' : '请输入'}${field.label}`,
+        trigger: field.type === 'select' ? 'change' : 'blur',
+      }]
     }
   }
   return rules
@@ -107,7 +120,7 @@ const deleteItem = async (row: Record<string, unknown>) => {
   const name = row.nickName || row.name || row.title || id
   try {
     await ElMessageBox.confirm(`确定删除“${name}”吗？`, '删除确认', {
-      type: 'warning', confirmButtonText: '确定', cancelButtonText: '取消'
+      type: 'warning', confirmButtonText: '确定', cancelButtonText: '取消',
     })
   } catch {
     return
@@ -138,10 +151,10 @@ const formatCell = (row: Record<string, unknown>, column: TableColumn) => {
 }
 
 const load = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    const response = await props.loader(page.value);
-    rows.value = response.data.data.records || [];
+    const response = await props.loader(page.value)
+    rows.value = response.data.data.records || []
     total.value = response.data.data.total || 0
   } catch {
     ElMessage.error('数据加载失败')
@@ -164,7 +177,7 @@ onMounted(load)
                        min-width="150">
         <template #default="{ row }">
           <StatusBadge v-if="column.enumName || column.prop === 'status'"
-                       :enum-name="column.enumName || 'StatusEnum'" :value="row[column.prop]"/>
+                       :enum-name="column.enumName || 'StatusEnum'" :value="row[column.prop]" />
           <template v-else>{{ formatCell(row, column) }}</template>
         </template>
       </el-table-column>
@@ -172,33 +185,36 @@ onMounted(load)
         <template #default="{ row }">
           <el-button link type="primary" :icon="Edit" @click="openEditor(row)">编辑</el-button>
           <el-button link type="danger" :icon="Delete" :loading="deletingId === row.id"
-                     :disabled="deletingId !== undefined" @click="deleteItem(row)">删除</el-button>
+                     :disabled="deletingId !== undefined" @click="deleteItem(row)">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
     <div class="pagination">
       <el-pagination v-model:current-page="page.current" v-model:page-size="page.size"
-                     layout="total, sizes, prev, pager, next" :total="total" @change="load"/>
+                     layout="total, sizes, prev, pager, next" :total="total" @change="load" />
     </div>
   </el-card>
   <el-dialog v-model="editorVisible" :title="`${editingId === undefined ? '新增' : '编辑'}${title.replace('管理', '')}`"
-             width="min(640px, 94vw)" top="8vh" :close-on-click-modal="false" :before-close="closeEditor" destroy-on-close>
+             width="min(640px, 94vw)" top="8vh" :close-on-click-modal="false" :before-close="closeEditor"
+             destroy-on-close>
     <el-form ref="formRef" v-loading="editorLoading" class="editor-form" :model="formModel" :rules="formRules"
              label-width="110px" :disabled="saving || editorLoading" @submit.prevent="saveItem">
       <el-form-item v-for="field in visibleFields" :key="field.prop" :label="field.label" :prop="field.prop">
         <el-select v-if="field.type === 'select'" v-model="formModel[field.prop]" :placeholder="`请选择${field.label}`"
                    :clearable="!field.required" style="width: 100%">
-          <el-option v-for="option in field.options" :key="option.value" :label="option.label" :value="option.value"/>
+          <el-option v-for="option in field.options" :key="option.value" :label="option.label" :value="option.value" />
         </el-select>
         <el-switch v-else-if="field.type === 'switch'" :model-value="Boolean(formModel[field.prop])"
-                   @update:model-value="formModel[field.prop] = Boolean($event)"/>
+                   @update:model-value="formModel[field.prop] = Boolean($event)" />
         <el-input-number v-else-if="field.type === 'number'"
                          :model-value="typeof formModel[field.prop] === 'number' ? Number(formModel[field.prop]) : undefined"
-                         :min="0" :precision="0" @update:model-value="formModel[field.prop] = $event"/>
+                         :min="0" :precision="0" @update:model-value="formModel[field.prop] = $event" />
         <el-input v-else :model-value="String(formModel[field.prop] ?? '')"
                   :type="field.type === 'textarea' ? 'textarea' : field.type === 'password' ? 'password' : 'text'"
-                  :rows="3" :show-password="field.type === 'password'" :autocomplete="field.type === 'password' ? 'new-password' : 'off'"
-                  @update:model-value="formModel[field.prop] = $event"/>
+                  :rows="3" :show-password="field.type === 'password'"
+                  :autocomplete="field.type === 'password' ? 'new-password' : 'off'"
+                  @update:model-value="formModel[field.prop] = $event" />
       </el-form-item>
     </el-form>
     <template #footer>

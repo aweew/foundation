@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {computed, onMounted, watch} from 'vue'
-import {useEnumDictionary} from '@/composables/useEnumDictionary'
-import type {EnumOption} from '@/types/api'
+import { computed, onMounted, watch } from 'vue'
+import { useEnumDictionary } from '@/composables/useEnumDictionary'
+import type { EnumOption } from '@/types/api'
 
 type BadgeType = 'primary' | 'success' | 'info' | 'warning' | 'danger'
 
@@ -9,9 +9,9 @@ const props = withDefaults(defineProps<{
   enumName?: string;
   value: unknown;
   type?: BadgeType;
-}>(), {enumName: 'StatusEnum', type: undefined})
+}>(), { enumName: 'StatusEnum', type: undefined })
 
-const {enumDictionary, loadEnums} = useEnumDictionary()
+const { enumDictionary, loadEnums } = useEnumDictionary()
 
 const enumOption = computed<EnumOption | undefined>(() => {
   const options = enumDictionary[props.enumName] ?? []
@@ -39,7 +39,7 @@ watch(() => props.enumName, () => ensureEnumsLoaded().catch(() => undefined))
 
 <template>
   <span v-if="label" class="status-badge" :class="`status-badge--${badgeType}`">
-    <span class="status-badge__dot" aria-hidden="true"/>
+    <span class="status-badge__dot" aria-hidden="true" />
     <span class="status-badge__label">{{ label }}</span>
   </span>
   <span v-else>-</span>
