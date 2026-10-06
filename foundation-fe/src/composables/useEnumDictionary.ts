@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import { getEnumList } from '@/api/system'
-import type { EnumDictionary } from '@/types/api'
+import type { EnumDictionary } from '@/api/system/types'
 
 const enumDictionary = reactive<EnumDictionary>({})
 let loadingPromise: Promise<EnumDictionary> | undefined

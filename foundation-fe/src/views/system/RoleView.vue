@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SystemTable from './SystemTable.vue'
-import { getRolePage, type SystemFormField } from '@/api/system'
+import { getRolePage } from '@/api/system'
+import type { SystemFormField } from '@/api/system/types'
 
 const fields: SystemFormField[] = [
   { prop: 'name', label: '角色名称', required: true },

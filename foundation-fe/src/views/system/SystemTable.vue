@@ -6,12 +6,9 @@ import {
   createSystemItem,
   deleteSystemItem,
   getSystemItem,
-  type QueryPage,
-  type SystemFormField,
-  type SystemRecord,
-  type SystemResource,
   updateSystemItem,
 } from '@/api/system'
+import type { QueryPage, SystemFormField, SystemRecord, SystemResource } from '@/api/system/types'
 import StatusBadge from '@/components/StatusBadge.vue'
 
 interface TableColumn {

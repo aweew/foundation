@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SystemTable from './SystemTable.vue'
-import { getMenuPage, type SystemFormField } from '@/api/system'
+import { getMenuPage } from '@/api/system'
+import type { SystemFormField } from '@/api/system/types'
 
 const menuTypes = [{ value: 1, label: '菜单' }, { value: 2, label: '按钮' }, { value: 3, label: '页面' }]
 const fields: SystemFormField[] = [

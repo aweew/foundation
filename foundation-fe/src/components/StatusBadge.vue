@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
 import { useEnumDictionary } from '@/composables/useEnumDictionary'
-import type { EnumOption } from '@/types/api'
+import type { EnumOption } from '@/api/system/types'
 
 type BadgeType = 'primary' | 'success' | 'info' | 'warning' | 'danger'
 

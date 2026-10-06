@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { getUserInfo, login } from '@/api/auth'
-import type { LoginRequest, MenuItem, UserInfo } from '@/types/api'
+import type { LoginRequest, UserInfo } from '@/api/auth/types'
+import type { MenuItem } from '@/api/system/types'
 import { tokenStorage } from '@/utils/storage'
 
 export const useAuthStore = defineStore('auth', {

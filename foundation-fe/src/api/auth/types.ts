@@ -1,0 +1,30 @@
+import type { MenuItem } from '@/api/system/types'
+
+export interface LoginRequest {
+  clientId: string
+  clientKey?: string
+  clientSecret?: string
+  grantType: string
+  phone: string
+  password: string
+}
+
+export interface LoginResponse {
+  access_token: string;
+  refresh_token?: string;
+  expire_in?: number;
+  refresh_expire_in?: number;
+  client_id?: string;
+  scope?: string
+}
+
+export interface UserInfo {
+  id: number;
+  phone?: string;
+  nickName?: string;
+  realName?: string;
+  avatar?: string;
+  roles: unknown[];
+  menus: MenuItem[];
+  permissions: string[]
+}

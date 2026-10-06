@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SystemTable from './SystemTable.vue'
-import { getUserPage, type SystemFormField } from '@/api/system'
+import { getUserPage } from '@/api/system'
+import type { SystemFormField } from '@/api/system/types'
 
 const fields: SystemFormField[] = [
   { prop: 'phone', label: '电话', required: true },
