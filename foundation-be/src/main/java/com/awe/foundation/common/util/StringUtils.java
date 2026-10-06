@@ -1,6 +1,8 @@
 package com.awe.foundation.common.util;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import org.springframework.util.AntPathMatcher;
 
 import java.util.List;
 import java.util.Objects;
@@ -14,6 +16,8 @@ import java.util.Objects;
 public class StringUtils extends StrUtil {
 
     public static final String SEPARATOR = ",";
+
+    private static final AntPathMatcher URL_PATH_MATCHER = new AntPathMatcher();
 
     /**
      * 判断字符串是否忽略大小写前缀匹配
@@ -30,37 +34,23 @@ public class StringUtils extends StrUtil {
     }
 
     /**
-     * 判断 url 是否匹配排除列表
-     * 支持:
-     * 1. 完整匹配
-     * 2. 末尾 * 前缀匹配，如 /api/user/*
-     * 3. 正则匹配
+     * 判断 URL 是否匹配排除列表，支持 Ant 路径规则中的 *、** 和 ?
+     *
+     * @param url 请求路径
+     * @param patterns 排除路径规则
+     * @return 是否匹配排除路径
      */
     public static boolean matches(String url, List<String> patterns) {
-        if (Objects.isNull(patterns) || patterns.isEmpty()) {
+        if (isBlank(url) || CollUtil.isEmpty(patterns)) {
             return false;
         }
 
-        for (String pattern : patterns) {
-            if (Objects.isNull(pattern) || pattern.isEmpty()) {
+        for (String urlPattern : patterns) {
+            if (isBlank(urlPattern)) {
                 continue;
             }
 
-            // 1. 完整匹配
-            if (pattern.equals(url)) {
-                return true;
-            }
-
-            // 2. 前缀匹配 /api/user/*
-            if (pattern.endsWith("/*")) {
-                String prefix = pattern.substring(0, pattern.length() - 2);
-                if (url.startsWith(prefix)) {
-                    return true;
-                }
-            }
-
-            // 3. 正则匹配
-            if (url.matches(pattern)) {
+            if (URL_PATH_MATCHER.match(urlPattern, url)) {
                 return true;
             }
         }
