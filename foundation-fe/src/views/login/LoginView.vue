@@ -15,7 +15,8 @@ const rules: FormRules = {
   password: [{required: true, message: '请输入密码', trigger: 'blur'}]
 }
 
-async function submit() {
+// 校验登录表单并提交登录请求
+const submit = async () => {
   if (!formRef.value) return;
   await formRef.value.validate(async (valid) => {
     if (!valid) return;

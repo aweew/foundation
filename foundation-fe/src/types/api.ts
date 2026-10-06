@@ -4,6 +4,14 @@ export interface ApiResult<T> {
     msg: string
 }
 
+export interface EnumOption {
+    name: string;
+    value: string | number;
+    label: string
+}
+
+export type EnumDictionary = Record<string, EnumOption[]>
+
 export interface LoginRequest {
     clientId: string
     clientKey?: string

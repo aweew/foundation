@@ -14,7 +14,8 @@ const navItems = [
   {path: '/system/menu', title: '菜单管理', icon: 'Menu'},
 ]
 
-function logout() {
+// 清理当前会话并返回登录页
+const logout = () => {
   auth.signOut();
   router.replace('/login')
 }
