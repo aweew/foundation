@@ -1,3 +1,9 @@
+<template>
+  <SystemTable title="用户管理" resource="user" :loader="getUserPage" :fields="fields"
+               :preserved-fields="['password', 'registerTime', 'lastLoginIp', 'lastLoginTime']"
+               :columns="[{ prop: 'nickName', label: '昵称' }, { prop: 'phone', label: '电话' }, { prop: 'email', label: '邮箱' }, { prop: 'status', label: '状态', enumName: 'StatusEnum' }]" />
+</template>
+
 <script setup lang="ts">
 import SystemTable from './SystemTable.vue'
 import { getUserPage } from '@/api/system'
@@ -14,8 +20,3 @@ const fields: SystemFormField[] = [
   { prop: 'remark', label: '备注', type: 'textarea' },
 ]
 </script>
-<template>
-  <SystemTable title="用户管理" resource="user" :loader="getUserPage" :fields="fields"
-               :preserved-fields="['password', 'registerTime', 'lastLoginIp', 'lastLoginTime']"
-               :columns="[{ prop: 'nickName', label: '昵称' }, { prop: 'phone', label: '电话' }, { prop: 'email', label: '邮箱' }, { prop: 'status', label: '状态', enumName: 'StatusEnum' }]" />
-</template>

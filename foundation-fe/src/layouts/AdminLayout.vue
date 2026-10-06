@@ -1,25 +1,3 @@
-<script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-
-const route = useRoute()
-const router = useRouter()
-const auth = useAuthStore()
-const displayName = computed(() => auth.userInfo?.nickName || auth.userInfo?.realName || auth.userInfo?.phone || '管理员')
-const navItems = [
-  { path: '/dashboard', title: '工作台', icon: 'HomeFilled' },
-  { path: '/system/user', title: '用户管理', icon: 'User' },
-  { path: '/system/role', title: '角色管理', icon: 'UserFilled' },
-  { path: '/system/menu', title: '菜单管理', icon: 'Menu' },
-]
-
-// 清理当前会话并返回登录页
-const logout = () => {
-  auth.signOut()
-  router.replace('/login')
-}
-</script>
 <template>
   <el-container class="admin-shell">
     <el-aside width="232px" class="sidebar">
@@ -51,3 +29,26 @@ const logout = () => {
     </el-container>
   </el-container>
 </template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const route = useRoute()
+const router = useRouter()
+const auth = useAuthStore()
+const displayName = computed(() => auth.userInfo?.nickName || auth.userInfo?.realName || auth.userInfo?.phone || '管理员')
+const navItems = [
+  { path: '/dashboard', title: '工作台', icon: 'HomeFilled' },
+  { path: '/system/user', title: '用户管理', icon: 'User' },
+  { path: '/system/role', title: '角色管理', icon: 'UserFilled' },
+  { path: '/system/menu', title: '菜单管理', icon: 'Menu' },
+]
+
+// 清理当前会话并返回登录页
+const logout = () => {
+  auth.signOut()
+  router.replace('/login')
+}
+</script>

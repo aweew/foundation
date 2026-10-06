@@ -20,6 +20,29 @@
 </style>
 ```
 
+## Vue 模板排版
+
+- 使用 2 个空格缩进，嵌套层级清晰对齐
+- 包含多个子元素的容器，开始标签、各子元素、结束标签分别独占一行，避免将多个标签挤在同一行
+- 同一层级连续出现多个相同的独立区块标签时，例如 `el-form-item`、`el-card`，各区块之间空一行，方便区分表单项或卡片
+- 简短文本或简单插值与其所属标签保持同一行，例如 `<strong>{{ auth.menus.length }}</strong>`；超过行宽时再换行
+- `<script>`、`<style>` 的开始和结束标签独占一行
+- 使用项目 Prettier 配置格式化代码
+
+```vue
+<el-card>
+  <span class="stat-label">可访问菜单</span>
+  <strong>{{ auth.menus.length }}</strong>
+  <small>当前账号权限范围</small>
+</el-card>
+
+<el-card>
+  <span class="stat-label">权限数量</span>
+  <strong>{{ auth.permissions.length }}</strong>
+  <small>按钮与接口权限</small>
+</el-card>
+```
+
 ## API 调用与接口类型分离
 
 - 按业务模块组织 API 目录

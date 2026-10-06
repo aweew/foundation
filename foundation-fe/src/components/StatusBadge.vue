@@ -1,3 +1,11 @@
+<template>
+  <span v-if="label" class="status-badge" :class="`status-badge--${badgeType}`">
+    <span class="status-badge__dot" aria-hidden="true" />
+    <span class="status-badge__label">{{ label }}</span>
+  </span>
+  <span v-else>-</span>
+</template>
+
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
 import { useEnumDictionary } from '@/composables/useEnumDictionary'
@@ -36,14 +44,6 @@ const ensureEnumsLoaded = async () => {
 onMounted(() => ensureEnumsLoaded().catch(() => undefined))
 watch(() => props.enumName, () => ensureEnumsLoaded().catch(() => undefined))
 </script>
-
-<template>
-  <span v-if="label" class="status-badge" :class="`status-badge--${badgeType}`">
-    <span class="status-badge__dot" aria-hidden="true" />
-    <span class="status-badge__label">{{ label }}</span>
-  </span>
-  <span v-else>-</span>
-</template>
 
 <style scoped>
 .status-badge {
