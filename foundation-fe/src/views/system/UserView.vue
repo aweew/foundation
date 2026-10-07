@@ -4,7 +4,7 @@
     resource="user"
     :loader="getUserPage"
     :fields="fields"
-    :preserved-fields="['password', 'registerTime', 'lastLoginIp', 'lastLoginTime']"
+    :preserved-fields="['registerTime', 'lastLoginIp', 'lastLoginTime']"
     :columns="[
       { prop: 'nickName', label: '昵称' },
       { prop: 'phone', label: '电话' },

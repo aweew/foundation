@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { hashPassword } from '@/utils/password'
 import type { ApiResult, PageResponse } from '@/types/api'
 import type { EnumDictionary, MenuItem, QueryPage, SystemRecord, SystemResource } from './types'
 
@@ -29,11 +30,12 @@ export const getSystemItem = (resource: SystemResource, id: string | number) => 
  * @param resource 资源类型
  * @param payload 资源表单
  */
-export const createSystemItem = (resource: SystemResource, payload: SystemRecord) => {
+export const createSystemItem = async (resource: SystemResource, payload: SystemRecord) => {
+  const requestPayload = await prepareUserPassword(resource, payload)
   return request<ApiResult<void>>({
     url: `/sys/${resource}`,
     method: 'post',
-    data: payload,
+    data: requestPayload,
   });
 };
 
@@ -42,12 +44,28 @@ export const createSystemItem = (resource: SystemResource, payload: SystemRecord
  * @param resource 资源类型
  * @param payload 资源表单
  */
-export const updateSystemItem = (resource: SystemResource, payload: SystemRecord) => {
+export const updateSystemItem = async (resource: SystemResource, payload: SystemRecord) => {
+  const requestPayload = await prepareUserPassword(resource, payload)
   return request<ApiResult<void>>({
     url: `/sys/${resource}`,
     method: 'put',
-    data: payload,
+    data: requestPayload,
   });
+};
+
+/**
+ * 为用户新增或修改请求生成密码摘要
+ * @param resource 系统资源类型
+ * @param payload 请求数据
+ */
+const prepareUserPassword = async (resource: SystemResource, payload: SystemRecord) => {
+  if (resource !== 'user' || typeof payload.password !== 'string') {
+    return payload;
+  }
+  return {
+    ...payload,
+    password: await hashPassword(payload.password),
+  };
 };
 
 /**

@@ -114,6 +114,10 @@ for (const config of resources) {
     await expect(page.getByRole('cell', { name: '新增记录', exact: true })).toBeVisible();
     expect(mutations[0].method).toBe('POST');
     expect(mutations[0].path).toBe(`/foundation/sys/${config.resource}`);
+    if (config.resource === 'user') {
+      expect(mutations[0].body.password).not.toBe('new-password');
+      expect(mutations[0].body.password).toMatch(/^[0-9a-f]{64}$/);
+    }
 
     const row = page.getByRole('row').filter({ hasText: config.record[config.nameField] });
     await row.getByRole('button', { name: '编辑', exact: true }).click();
@@ -130,7 +134,7 @@ for (const config of resources) {
     expect(mutations[1].method).toBe('PUT');
     expect(mutations[1].body.id).toBe(config.record.id);
     if (config.resource === 'user') {
-      expect(mutations[1].body.password).toBe(config.record.password);
+      expect(mutations[1].body).not.toHaveProperty('password');
       expect(mutations[1].body.registerTime).toBe(config.record.registerTime);
     }
     expect(mutations[1].body).not.toHaveProperty('status');
