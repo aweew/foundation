@@ -37,6 +37,8 @@ public enum ErrorCodeEnum {
     DATA_NOT_FOUND(400001, "数据不存在"),
     SYSTEM_DATA_PROTECTED(400002, "系统内置数据不可修改"),
     DATA_DISABLED(400003, "关联数据已禁用"),
+    UNIQUE_CONSTRAINT_VIOLATION(400004, "数据已存在，请勿重复提交"),
+    OPTIMISTIC_LOCK_CONFLICT(400005, "数据已被其他操作修改，请刷新后重试"),
 
     // 请求限流（429xxx）
     TOO_MANY_REQUESTS(429001, "请求过于频繁，请稍后再试"),

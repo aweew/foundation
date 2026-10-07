@@ -6,10 +6,13 @@ import com.awe.foundation.common.api.Result;
 import com.awe.foundation.common.constant.ErrorCodeEnum;
 import com.awe.foundation.manager.domain.operationLog.entity.OperationLog;
 import com.awe.foundation.manager.service.IOperationLogService;
+import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
@@ -116,6 +119,34 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Result<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         return Result.failure(ErrorCodeEnum.PARAMETER_ERROR);
+    }
+
+    /**
+     * 处理唯一约束冲突
+     *
+     * @param e 数据库异常
+     * @return 业务错误
+     */
+    @ExceptionHandler({DuplicateKeyException.class, DataIntegrityViolationException.class})
+    public Result<?> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        auditException(e, HttpStatus.OK.value());
+        return Result.failure(ErrorCodeEnum.UNIQUE_CONSTRAINT_VIOLATION);
+    }
+
+    /**
+     * 处理乐观锁更新失败
+     *
+     * @param e MyBatis异常
+     * @return 业务错误
+     */
+    @ExceptionHandler(MybatisPlusException.class)
+    public Result<?> handleMybatisException(MybatisPlusException e) {
+        if (e.getMessage() != null && e.getMessage().contains("OptimisticLocker")) {
+            auditException(e, HttpStatus.OK.value());
+            return Result.failure(ErrorCodeEnum.OPTIMISTIC_LOCK_CONFLICT);
+        }
+        auditException(e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return Result.failure(ErrorCodeEnum.SYSTEM_ERROR);
     }
 
     // 兜底异常
