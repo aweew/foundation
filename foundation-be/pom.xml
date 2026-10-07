@@ -28,6 +28,8 @@
         <lombok.version>1.18.30</lombok.version>
         <saToken.version>1.44.0</saToken.version>
         <mysql-binlog.version>0.30.3</mysql-binlog.version>
+        <upyun-sdk.version>4.2.2</upyun-sdk.version>
+        <aws-sdk.version>2.55.12</aws-sdk.version>
     </properties>
 
     <dependencies>
@@ -170,6 +172,19 @@
             <groupId>com.zendesk</groupId>
             <artifactId>mysql-binlog-connector-java</artifactId>
             <version>${mysql-binlog.version}</version>
+        </dependency>
+
+        <!-- 又拍云对象存储 -->
+        <dependency>
+            <groupId>com.upyun</groupId>
+            <artifactId>java-sdk</artifactId>
+            <version>${upyun-sdk.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>${aws-sdk.version}</version>
         </dependency>
 
     </dependencies>

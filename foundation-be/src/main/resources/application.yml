@@ -5,10 +5,26 @@ server:
   servlet:
     context-path: /foundation
 
+foundation:
+  storage:
+    enabled: true
+    secret-key: ${FOUNDATION_STORAGE_SECRET_KEY:change-me-foundation-storage-key}
+    config-cache-seconds: 300
+    upload:
+      max-file-size: 5242880
+      allowed-content-types:
+        - image/jpeg
+        - image/png
+        - application/pdf
+
 # spring 配置
 spring:
   application:
     name: foundation
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

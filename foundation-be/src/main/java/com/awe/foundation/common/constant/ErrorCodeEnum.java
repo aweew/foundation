@@ -40,6 +40,17 @@ public enum ErrorCodeEnum {
     UNIQUE_CONSTRAINT_VIOLATION(400004, "数据已存在，请勿重复提交"),
     OPTIMISTIC_LOCK_CONFLICT(400005, "数据已被其他操作修改，请刷新后重试"),
 
+    // 云存储（410xxx）
+    STORAGE_PROVIDER_NOT_FOUND(410001, "云存储厂商不存在"),
+    STORAGE_PROVIDER_DISABLED(410002, "云存储厂商未启用"),
+    STORAGE_PROVIDER_INVALID(410003, "云存储厂商配置无效"),
+    STORAGE_PROVIDER_TEST_FAILED(410004, "云存储厂商连接测试失败"),
+    STORAGE_UPLOAD_FAILED(410005, "文件上传失败"),
+    STORAGE_DELETE_FAILED(410006, "文件删除失败"),
+    STORAGE_FILE_NOT_FOUND(410007, "文件不存在"),
+    STORAGE_FILE_TYPE_NOT_ALLOWED(410008, "文件类型不允许"),
+    STORAGE_FILE_TOO_LARGE(410009, "文件大小超过限制"),
+
     // 请求限流（429xxx）
     TOO_MANY_REQUESTS(429001, "请求过于频繁，请稍后再试"),
 

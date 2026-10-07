@@ -14,7 +14,10 @@ import org.springframework.context.annotation.Configuration;
  * @date 2023/4/7 15:50
  */
 @Configuration
-@MapperScan(basePackages = "com.awe.foundation.manager.**.mapper")
+@MapperScan(basePackages = {
+        "com.awe.foundation.manager.**.mapper",
+        "com.awe.foundation.module.storage.mapper"
+})
 public class MybatisConfig {
 
     @Bean
