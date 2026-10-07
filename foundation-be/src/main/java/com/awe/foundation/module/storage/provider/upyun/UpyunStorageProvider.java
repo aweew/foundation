@@ -1,5 +1,6 @@
 package com.awe.foundation.module.storage.provider.upyun;
 
+import com.UpYun;
 import com.awe.foundation.common.constant.ErrorCodeEnum;
 import com.awe.foundation.common.exception.BusinessException;
 import com.awe.foundation.common.util.JsonUtils;
@@ -8,7 +9,6 @@ import com.awe.foundation.module.storage.domain.entity.StorageProviderConfig;
 import com.awe.foundation.module.storage.provider.StorageProvider;
 import com.awe.foundation.module.storage.service.StorageCredentialCipher;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.UpYun;
 import jakarta.annotation.Resource;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 /**
@@ -42,8 +41,8 @@ public class UpyunStorageProvider implements StorageProvider {
     /**
      * 上传文件到又拍云
      *
-     * @param config 配置
-     * @param file 文件
+     * @param config    配置
+     * @param file      文件
      * @param objectKey 对象路径
      * @throws IOException 文件读取失败
      */
@@ -60,7 +59,7 @@ public class UpyunStorageProvider implements StorageProvider {
     /**
      * 删除又拍云对象
      *
-     * @param config 配置
+     * @param config    配置
      * @param objectKey 对象路径
      */
     @Override
@@ -75,7 +74,7 @@ public class UpyunStorageProvider implements StorageProvider {
     /**
      * 获取又拍云访问地址
      *
-     * @param config 配置
+     * @param config    配置
      * @param objectKey 对象路径
      * @return 访问地址
      */
@@ -129,4 +128,5 @@ public class UpyunStorageProvider implements StorageProvider {
         private String password;
 
     }
+
 }

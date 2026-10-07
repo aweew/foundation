@@ -1,7 +1,7 @@
 package com.awe.foundation.module.storage.service;
 
-import com.awe.foundation.common.exception.BusinessException;
 import com.awe.foundation.common.constant.ErrorCodeEnum;
+import com.awe.foundation.common.exception.BusinessException;
 import com.awe.foundation.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -82,4 +82,5 @@ public class StorageCredentialCipher {
             throw new BusinessException(ErrorCodeEnum.STORAGE_PROVIDER_INVALID);
         }
     }
+
 }

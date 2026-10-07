@@ -25,11 +25,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.net.URI;
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * 云存储配置服务实现
@@ -272,9 +271,9 @@ public class StorageProviderConfigServiceImpl extends ServiceImpl<StorageProvide
      * 校验 S3 空间和签名配置
      *
      * @param providerCode 厂商编码
-     * @param endpoint 服务端点
-     * @param serviceName 空间名
-     * @param region 签名区域
+     * @param endpoint     服务端点
+     * @param serviceName  空间名
+     * @param region       签名区域
      */
     private void validateS3Config(String providerCode, String endpoint, String serviceName, String region) {
         if (!StorageProviderEnum.S3.getCode().equals(providerCode)) {
@@ -307,4 +306,5 @@ public class StorageProviderConfigServiceImpl extends ServiceImpl<StorageProvide
         private String password;
 
     }
+
 }

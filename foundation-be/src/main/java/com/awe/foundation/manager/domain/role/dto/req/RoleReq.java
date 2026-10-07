@@ -25,28 +25,28 @@ public class RoleReq implements Serializable {
     private static final long serialVersionUID = -25179656479422992L;
 
     /**
-    * 角色编码
-    */
+     * 角色编码
+     */
     private String code;
 
     /**
-    * 角色名称
-    */
+     * 角色名称
+     */
     private String name;
 
     /**
-    * 是否系统内置角色
-    */
+     * 是否系统内置角色
+     */
     private Boolean isSystem;
 
     /**
-    * 状态（1启用，2禁用）
-    */
+     * 状态（1启用，2禁用）
+     */
     private StatusEnum status;
 
     /**
-    * 角色描述
-    */
+     * 角色描述
+     */
     private String remark;
 
 }

@@ -45,10 +45,10 @@ public class XssFilter implements Filter {
     /**
      * 过滤请求参数和请求体
      *
-     * @param request 请求对象
+     * @param request  请求对象
      * @param response 响应对象
-     * @param chain 过滤器链
-     * @throws IOException IO 异常
+     * @param chain    过滤器链
+     * @throws IOException      IO 异常
      * @throws ServletException Servlet 处理异常
      */
     @Override
@@ -67,7 +67,7 @@ public class XssFilter implements Filter {
     /**
      * 判断请求是否跳过 XSS 处理
      *
-     * @param request 请求对象
+     * @param request  请求对象
      * @param response 响应对象
      * @return 是否跳过
      */

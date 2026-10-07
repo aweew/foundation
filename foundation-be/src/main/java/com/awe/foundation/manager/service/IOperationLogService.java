@@ -2,8 +2,8 @@ package com.awe.foundation.manager.service;
 
 import com.awe.foundation.manager.domain.operationLog.dto.req.OperationLogReq;
 import com.awe.foundation.manager.domain.operationLog.entity.OperationLog;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.time.LocalDateTime;
 
@@ -31,9 +31,9 @@ public interface IOperationLogService extends IService<OperationLog> {
      * 分页查询操作审计日志
      *
      * @param page 分页参数
-     * @param req 查询条件
+     * @param req  查询条件
      * @return 分页日志
-    */
+     */
     Page<OperationLog> page(Page<OperationLog> page, OperationLogReq req);
 
 }

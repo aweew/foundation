@@ -35,4 +35,5 @@ public interface BaseConvert<E, AddReq, UpdateReq, Req, Resp> {
         respPage.setRecords(toRespList(page.getRecords()));
         return respPage;
     }
+
 }

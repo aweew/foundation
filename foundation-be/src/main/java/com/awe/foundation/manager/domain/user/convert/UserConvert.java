@@ -1,11 +1,11 @@
 package com.awe.foundation.manager.domain.user.convert;
 
-import com.awe.foundation.manager.domain.user.entity.User;
-import com.awe.foundation.manager.domain.user.dto.req.UserAddReq;
-import com.awe.foundation.manager.domain.user.dto.req.UserUpdateReq;
-import com.awe.foundation.manager.domain.user.dto.req.UserReq;
-import com.awe.foundation.manager.domain.user.dto.resp.UserResp;
 import com.awe.foundation.common.convert.BaseConvert;
+import com.awe.foundation.manager.domain.user.dto.req.UserAddReq;
+import com.awe.foundation.manager.domain.user.dto.req.UserReq;
+import com.awe.foundation.manager.domain.user.dto.req.UserUpdateReq;
+import com.awe.foundation.manager.domain.user.dto.resp.UserResp;
+import com.awe.foundation.manager.domain.user.entity.User;
 import org.mapstruct.Mapper;
 
 /**

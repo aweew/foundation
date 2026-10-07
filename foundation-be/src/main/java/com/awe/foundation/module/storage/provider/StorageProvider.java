@@ -20,8 +20,8 @@ public interface StorageProvider {
     /**
      * 上传文件
      *
-     * @param config 配置
-     * @param file 文件
+     * @param config    配置
+     * @param file      文件
      * @param objectKey 对象路径
      */
     void upload(StorageProviderConfig config, MultipartFile file, String objectKey) throws IOException;
@@ -29,7 +29,7 @@ public interface StorageProvider {
     /**
      * 删除对象
      *
-     * @param config 配置
+     * @param config    配置
      * @param objectKey 对象路径
      */
     void delete(StorageProviderConfig config, String objectKey);
@@ -37,7 +37,7 @@ public interface StorageProvider {
     /**
      * 获取访问地址
      *
-     * @param config 配置
+     * @param config    配置
      * @param objectKey 对象路径
      * @return 访问地址
      */
@@ -49,4 +49,5 @@ public interface StorageProvider {
      * @param config 配置
      */
     void test(StorageProviderConfig config);
+
 }

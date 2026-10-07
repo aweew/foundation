@@ -14,9 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.checksums.RequestChecksumCalculation;
 import software.amazon.awssdk.core.checksums.ResponseChecksumValidation;
+import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -56,8 +56,8 @@ public class S3StorageProvider implements StorageProvider {
     /**
      * 上传文件到 S3 空间
      *
-     * @param config 配置
-     * @param file 文件
+     * @param config    配置
+     * @param file      文件
      * @param objectKey 对象路径
      * @throws IOException 文件读取失败
      */
@@ -78,7 +78,7 @@ public class S3StorageProvider implements StorageProvider {
     /**
      * 删除 S3 对象
      *
-     * @param config 配置
+     * @param config    配置
      * @param objectKey 对象路径
      */
     @Override
@@ -94,7 +94,7 @@ public class S3StorageProvider implements StorageProvider {
     /**
      * 获取公开地址或有效期 15 分钟的私有对象地址
      *
-     * @param config 配置
+     * @param config    配置
      * @param objectKey 对象路径
      * @return 对象访问地址
      */

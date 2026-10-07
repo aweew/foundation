@@ -21,9 +21,9 @@ public class StorageFileController {
     /**
      * 上传文件
      *
-     * @param file 文件
+     * @param file         文件
      * @param businessType 业务类型
-     * @param businessId 业务 ID
+     * @param businessId   业务 ID
      * @return 文件信息
      */
     @PostMapping
@@ -58,4 +58,5 @@ public class StorageFileController {
         storageFileService.delete(id);
         return Result.success();
     }
+
 }

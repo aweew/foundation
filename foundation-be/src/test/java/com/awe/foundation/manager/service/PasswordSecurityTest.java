@@ -8,9 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 class PasswordSecurityTest {
@@ -54,4 +52,5 @@ class PasswordSecurityTest {
             throw new IllegalStateException("SHA-256 不可用", exception);
         }
     }
+
 }

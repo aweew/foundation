@@ -24,68 +24,111 @@ public class StorageProviderConfig implements Serializable {
     @Serial
     private static final long serialVersionUID = 6616354289002778318L;
 
-    /** 主键 */
+    /**
+     * 主键
+     */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    /** 厂商编码 */
+    /**
+     * 厂商编码
+     */
     private String providerCode;
 
-    /** 厂商名称 */
+    /**
+     * 厂商名称
+     */
     private String providerName;
 
-    /** 是否启用 */
+    /**
+     * 是否启用
+     */
     private Boolean enabled;
 
-    /** 是否默认厂商 */
+    /**
+     * 是否默认厂商
+     */
     private Boolean isDefault;
 
-    /** 服务端点 */
+    /**
+     * 服务端点
+     */
     private String endpoint;
 
-    /** S3 签名区域 */
+    /**
+     * S3 签名区域
+     */
     private String region;
 
-    /** 服务名或空间名 */
+    /**
+     * 服务名或空间名
+     */
     private String serviceName;
 
-    /** 访问域名 */
+    /**
+     * 访问域名
+     */
     private String accessDomain;
 
-    /** 对象根路径 */
+    /**
+     * 对象根路径
+     */
     private String basePath;
 
-    /** 是否私有空间 */
+    /**
+     * 是否私有空间
+     */
     private Boolean privateBucket;
 
-    /** 加密认证配置 */
+    /**
+     * 加密认证配置
+     */
     private String credentialConfig;
 
-    /** 加密扩展配置 */
+    /**
+     * 加密扩展配置
+     */
     private String extraConfig;
 
-    /** 配置版本 */
+    /**
+     * 配置版本
+     */
     private Integer configVersion;
 
-    /** 备注 */
+    /**
+     * 备注
+     */
     private String remark;
 
-    /** 创建人 */
+    /**
+     * 创建人
+     */
     private Long createUserId;
 
-    /** 更新人 */
+    /**
+     * 更新人
+     */
     private Long updateUserId;
 
-    /** 创建时间 */
+    /**
+     * 创建时间
+     */
     private LocalDateTime createTime;
 
-    /** 更新时间 */
+    /**
+     * 更新时间
+     */
     private LocalDateTime updateTime;
 
-    /** 逻辑删除 */
+    /**
+     * 逻辑删除
+     */
     private Boolean isDelete;
 
-    /** 乐观锁版本 */
+    /**
+     * 乐观锁版本
+     */
     @Version
     private Integer version;
+
 }

@@ -19,52 +19,85 @@ public class StorageFile implements Serializable {
     @Serial
     private static final long serialVersionUID = -7184117308552807315L;
 
-    /** 主键 */
+    /**
+     * 主键
+     */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    /** 厂商编码 */
+    /**
+     * 厂商编码
+     */
     private String providerCode;
 
-    /** 厂商配置 ID */
+    /**
+     * 厂商配置 ID
+     */
     private Long providerConfigId;
 
-    /** 原始文件名 */
+    /**
+     * 原始文件名
+     */
     private String originalName;
 
-    /** 对象路径 */
+    /**
+     * 对象路径
+     */
     private String objectKey;
 
-    /** 文件类型 */
+    /**
+     * 文件类型
+     */
     private String contentType;
 
-    /** 文件大小 */
+    /**
+     * 文件大小
+     */
     private Long fileSize;
 
-    /** 文件扩展名 */
+    /**
+     * 文件扩展名
+     */
     private String extension;
 
-    /** 业务类型 */
+    /**
+     * 业务类型
+     */
     private String businessType;
 
-    /** 业务 ID */
+    /**
+     * 业务 ID
+     */
     private String businessId;
 
-    /** 文件状态 */
+    /**
+     * 文件状态
+     */
     private String status;
 
-    /** 创建人 */
+    /**
+     * 创建人
+     */
     private Long createUserId;
 
-    /** 更新人 */
+    /**
+     * 更新人
+     */
     private Long updateUserId;
 
-    /** 创建时间 */
+    /**
+     * 创建时间
+     */
     private LocalDateTime createTime;
 
-    /** 更新时间 */
+    /**
+     * 更新时间
+     */
     private LocalDateTime updateTime;
 
-    /** 逻辑删除 */
+    /**
+     * 逻辑删除
+     */
     private Boolean isDelete;
+
 }

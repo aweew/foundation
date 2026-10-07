@@ -21,24 +21,39 @@ public class StorageFileReq implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /** 原始文件名 */
+    /**
+     * 原始文件名
+     */
     private String originalName;
 
-    /** 业务类型 */
+    /**
+     * 业务类型
+     */
     private String businessType;
 
-    /** 业务 ID */
+    /**
+     * 业务 ID
+     */
     private String businessId;
 
-    /** 存储厂商编码 */
+    /**
+     * 存储厂商编码
+     */
     private String providerCode;
 
-    /** 文件状态 */
+    /**
+     * 文件状态
+     */
     private String status;
 
-    /** 创建时间起点 */
+    /**
+     * 创建时间起点
+     */
     private LocalDateTime startTime;
 
-    /** 创建时间终点 */
+    /**
+     * 创建时间终点
+     */
     private LocalDateTime endTime;
+
 }

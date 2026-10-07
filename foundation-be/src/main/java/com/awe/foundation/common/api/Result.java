@@ -55,7 +55,7 @@ public class Result<T> implements Serializable {
      * 返回成功响应
      *
      * @param data 响应数据
-     * @param <T> 数据类型
+     * @param <T>  数据类型
      * @return 成功响应
      */
     public static <T> Result<T> success(T data) {
@@ -65,10 +65,10 @@ public class Result<T> implements Serializable {
     /**
      * 返回转换后的成功响应
      *
-     * @param data 原始数据
+     * @param data     原始数据
      * @param function 数据转换器
-     * @param <T> 原始类型
-     * @param <R> 响应类型
+     * @param <T>      原始类型
+     * @param <R>      响应类型
      * @return 成功响应
      */
     public static <T, R> Result<R> success(T data, Function<T, R> function) {
@@ -78,10 +78,10 @@ public class Result<T> implements Serializable {
     /**
      * 返回分页成功响应
      *
-     * @param page 分页数据
+     * @param page      分页数据
      * @param converter 记录转换器
-     * @param <T> 原始类型
-     * @param <R> 响应类型
+     * @param <T>       原始类型
+     * @param <R>       响应类型
      * @return 分页成功响应
      */
     public static <T, R> Result<PageResponse<R>> success(IPage<T> page, Function<T, R> converter) {
@@ -114,8 +114,8 @@ public class Result<T> implements Serializable {
      * 返回带错误码的失败响应
      *
      * @param code 错误码
-     * @param msg 错误消息
-     * @param <T> 数据类型
+     * @param msg  错误消息
+     * @param <T>  数据类型
      * @return 失败响应
      */
     public static <T> Result<T> failure(int code, String msg) {
@@ -126,7 +126,7 @@ public class Result<T> implements Serializable {
      * 根据错误枚举返回失败响应
      *
      * @param codeEnum 错误枚举
-     * @param <T> 数据类型
+     * @param <T>      数据类型
      * @return 失败响应
      */
     public static <T> Result<T> failure(ErrorCodeEnum codeEnum) {
@@ -137,8 +137,8 @@ public class Result<T> implements Serializable {
      * 根据错误枚举和消息返回失败响应
      *
      * @param codeEnum 错误枚举
-     * @param msg 错误消息
-     * @param <T> 数据类型
+     * @param msg      错误消息
+     * @param <T>      数据类型
      * @return 失败响应
      */
     public static <T> Result<T> failure(ErrorCodeEnum codeEnum, String msg) {
@@ -161,9 +161,9 @@ public class Result<T> implements Serializable {
     /**
      * 返回带详情的失败响应
      *
-     * @param msg 错误消息
+     * @param msg  错误消息
      * @param data 错误详情
-     * @param <T> 详情类型
+     * @param <T>  详情类型
      * @return 失败响应
      */
     public static <T> Result<T> failure(String msg, T data) {
@@ -174,9 +174,9 @@ public class Result<T> implements Serializable {
      * 返回带错误码和详情的失败响应
      *
      * @param code 错误码
-     * @param msg 错误消息
+     * @param msg  错误消息
      * @param data 错误详情
-     * @param <T> 详情类型
+     * @param <T>  详情类型
      * @return 失败响应
      */
     public static <T> Result<T> failure(int code, String msg, T data) {

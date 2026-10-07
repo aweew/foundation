@@ -1,11 +1,11 @@
 package com.awe.foundation.manager.domain.userRole.convert;
 
-import com.awe.foundation.manager.domain.userRole.entity.UserRole;
-import com.awe.foundation.manager.domain.userRole.dto.req.UserRoleAddReq;
-import com.awe.foundation.manager.domain.userRole.dto.req.UserRoleUpdateReq;
-import com.awe.foundation.manager.domain.userRole.dto.req.UserRoleReq;
-import com.awe.foundation.manager.domain.userRole.dto.resp.UserRoleResp;
 import com.awe.foundation.common.convert.BaseConvert;
+import com.awe.foundation.manager.domain.userRole.dto.req.UserRoleAddReq;
+import com.awe.foundation.manager.domain.userRole.dto.req.UserRoleReq;
+import com.awe.foundation.manager.domain.userRole.dto.req.UserRoleUpdateReq;
+import com.awe.foundation.manager.domain.userRole.dto.resp.UserRoleResp;
+import com.awe.foundation.manager.domain.userRole.entity.UserRole;
 import org.mapstruct.Mapper;
 
 /**

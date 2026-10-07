@@ -9,11 +9,7 @@ import com.awe.foundation.module.storage.domain.entity.StorageFile;
 import com.awe.foundation.module.storage.service.IStorageFileService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
@@ -30,10 +26,10 @@ public class StorageFileManageController {
     /**
      * 分页查询文件
      *
-     * @param page 分页参数
+     * @param page    分页参数
      * @param request 查询条件
      * @return 文件分页结果
-    */
+     */
     @GetMapping("/page")
     @SaCheckPermission("sys:storage:file:list")
     public Result<PageResponse<StorageFileResp>> page(Page<StorageFile> page, StorageFileReq request) {
@@ -68,4 +64,5 @@ public class StorageFileManageController {
         storageFileService.delete(id);
         return Result.success();
     }
+
 }

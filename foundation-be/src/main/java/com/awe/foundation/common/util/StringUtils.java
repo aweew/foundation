@@ -22,7 +22,7 @@ public class StringUtils extends StrUtil {
     /**
      * 判断字符串是否忽略大小写前缀匹配
      *
-     * @param value 目标字符串
+     * @param value  目标字符串
      * @param prefix 前缀字符串
      * @return 是否匹配
      */
@@ -36,7 +36,7 @@ public class StringUtils extends StrUtil {
     /**
      * 判断 URL 是否匹配排除列表，支持 Ant 路径规则中的 *、** 和 ?
      *
-     * @param url 请求路径
+     * @param url      请求路径
      * @param patterns 排除路径规则
      * @return 是否匹配排除路径
      */

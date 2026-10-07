@@ -124,7 +124,7 @@
         <!-- 添加附加的appender,最多只能添加一个 -->
         <appender-ref ref="file_info"/>
     </appender>
-‘
+
     <!-- error异步输出 -->
     <appender name="async_error" class="ch.qos.logback.classic.AsyncAppender">
         <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
@@ -165,7 +165,7 @@
         <!--        <appender-ref ref="sky_log"/>-->
     </root>
 
-    <logger name="io.netty.util.concurrent.GlobalEventExecutor" level="WARN" />
-    <logger name="org.apache.rocketmq" level="INFO" />
+    <logger name="io.netty.util.concurrent.GlobalEventExecutor" level="WARN"/>
+    <logger name="org.apache.rocketmq" level="INFO"/>
 
 </configuration>

@@ -40,5 +40,7 @@ public class StorageProperties {
          * 允许的文件类型
          */
         private List<String> allowedContentTypes = new ArrayList<>();
+
     }
+
 }

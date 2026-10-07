@@ -61,4 +61,5 @@ public interface IStorageProviderConfigService extends IService<StorageProviderC
      * @return 默认配置
      */
     StorageProviderConfig getActiveConfig();
+
 }

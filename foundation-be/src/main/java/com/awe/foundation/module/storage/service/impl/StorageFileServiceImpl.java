@@ -5,16 +5,16 @@ import com.awe.foundation.common.constant.ErrorCodeEnum;
 import com.awe.foundation.common.exception.BusinessException;
 import com.awe.foundation.common.util.StringUtils;
 import com.awe.foundation.module.storage.config.properties.StorageProperties;
-import com.awe.foundation.module.storage.domain.dto.resp.StorageFileResp;
 import com.awe.foundation.module.storage.domain.dto.req.StorageFileReq;
+import com.awe.foundation.module.storage.domain.dto.resp.StorageFileResp;
 import com.awe.foundation.module.storage.domain.entity.StorageFile;
 import com.awe.foundation.module.storage.mapper.StorageFileMapper;
 import com.awe.foundation.module.storage.provider.StorageProviderRouter;
 import com.awe.foundation.module.storage.service.IStorageFileService;
 import com.awe.foundation.module.storage.service.IStorageProviderConfigService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +35,7 @@ public class StorageFileServiceImpl extends ServiceImpl<StorageFileMapper, Stora
     /**
      * 分页查询文件
      *
-     * @param page 分页参数
+     * @param page    分页参数
      * @param request 查询条件
      * @return 文件分页结果
      */
@@ -64,9 +64,9 @@ public class StorageFileServiceImpl extends ServiceImpl<StorageFileMapper, Stora
     /**
      * 上传文件
      *
-     * @param file 文件
+     * @param file         文件
      * @param businessType 业务类型
-     * @param businessId 业务 ID
+     * @param businessId   业务 ID
      * @return 文件信息
      */
     @Override
@@ -166,4 +166,5 @@ public class StorageFileServiceImpl extends ServiceImpl<StorageFileMapper, Stora
     private String trimPath(String path) {
         return StringUtils.isBlank(path) ? "foundation" : path.replaceAll("^/+|/+$", "");
     }
+
 }

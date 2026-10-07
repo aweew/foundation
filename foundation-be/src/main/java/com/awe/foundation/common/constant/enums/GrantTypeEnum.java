@@ -1,6 +1,5 @@
 package com.awe.foundation.common.constant.enums;
 
-import com.awe.foundation.common.constant.EnumDict;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,8 +35,7 @@ public enum GrantTypeEnum {
     QR_CODE(50, "平台二维码扫码登录"),
 
     // ===== 90 段：兜底扩展 =====
-    THIRD_PARTY(90, "第三方平台登录");
-    ;
+    THIRD_PARTY(90, "第三方平台登录");;
 
     @EnumValue
     private final int value;

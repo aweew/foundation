@@ -12,10 +12,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class S3CredentialDTO {
 
-    /** 访问密钥标识 */
+    /**
+     * 访问密钥标识
+     */
     private String accessKey;
 
-    /** 访问密钥 */
+    /**
+     * 访问密钥
+     */
     private String secretAccessKey;
 
 }

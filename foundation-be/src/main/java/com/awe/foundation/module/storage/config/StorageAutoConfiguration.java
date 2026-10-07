@@ -10,4 +10,5 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(StorageProperties.class)
 public class StorageAutoConfiguration {
+
 }

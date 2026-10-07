@@ -26,7 +26,7 @@ public class StorageProviderRouter {
     /**
      * 上传到当前默认厂商
      *
-     * @param file 文件
+     * @param file      文件
      * @param objectKey 对象路径
      */
     public void upload(MultipartFile file, String objectKey) throws IOException {
@@ -37,7 +37,7 @@ public class StorageProviderRouter {
     /**
      * 删除指定厂商对象
      *
-     * @param config 配置
+     * @param config    配置
      * @param objectKey 对象路径
      */
     public void delete(StorageProviderConfig config, String objectKey) {
@@ -47,7 +47,7 @@ public class StorageProviderRouter {
     /**
      * 生成对象访问地址
      *
-     * @param config 配置
+     * @param config    配置
      * @param objectKey 对象路径
      * @return 访问地址
      */
@@ -70,4 +70,5 @@ public class StorageProviderRouter {
                 .findFirst()
                 .orElseThrow(() -> new BusinessException(ErrorCodeEnum.STORAGE_PROVIDER_NOT_FOUND));
     }
+
 }

@@ -10,8 +10,8 @@ import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.UUID;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * 统一请求链路标识过滤器
@@ -23,11 +23,11 @@ public class TraceIdFilter extends OncePerRequestFilter {
     /**
      * 为请求生成或复用 traceId 并绑定到日志上下文
      *
-     * @param request 请求对象
-     * @param response 响应对象
+     * @param request     请求对象
+     * @param response    响应对象
      * @param filterChain 过滤器链
      * @throws ServletException Servlet 处理异常
-     * @throws IOException IO 异常
+     * @throws IOException      IO 异常
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

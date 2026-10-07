@@ -9,18 +9,34 @@ import java.time.LocalDateTime;
  */
 @Data
 public class OperationLogReq {
-    /** 用户ID */
+
+    /**
+     * 用户ID
+     */
     private Long userId;
-    /** 日志类型 */
+    /**
+     * 日志类型
+     */
     private String logType;
-    /** 请求路径 */
+    /**
+     * 请求路径
+     */
     private String requestPath;
-    /** 请求IP */
+    /**
+     * 请求IP
+     */
     private String requestIp;
-    /** 开始时间 */
+    /**
+     * 开始时间
+     */
     private LocalDateTime startTime;
-    /** 结束时间 */
+    /**
+     * 结束时间
+     */
     private LocalDateTime endTime;
-    /** 是否包含已归档日志 */
+    /**
+     * 是否包含已归档日志
+     */
     private Boolean includeArchived;
+
 }

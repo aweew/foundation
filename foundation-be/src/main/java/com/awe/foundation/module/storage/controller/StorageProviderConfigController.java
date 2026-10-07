@@ -121,4 +121,5 @@ public class StorageProviderConfigController {
         configService.delete(id);
         return Result.success();
     }
+
 }

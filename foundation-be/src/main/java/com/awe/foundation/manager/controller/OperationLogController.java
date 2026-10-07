@@ -28,7 +28,7 @@ public class OperationLogController {
      * 分页查询操作审计日志
      *
      * @param page 分页参数
-     * @param req 查询条件
+     * @param req  查询条件
      * @return 分页日志
      */
     @GetMapping("/page")
@@ -42,4 +42,5 @@ public class OperationLogController {
         });
         return Result.success(pageResponse);
     }
+
 }

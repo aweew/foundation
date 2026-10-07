@@ -3,9 +3,6 @@ package com.awe.foundation.common.constant;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -49,4 +46,5 @@ public class EnumCollector implements InitializingBean {
     public Map<String, List<Map<String, Object>>> getAllEnums() {
         return enumMap;
     }
+
 }

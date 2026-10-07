@@ -1,7 +1,7 @@
 package com.awe.foundation.manager.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.awe.foundation.manager.domain.user.entity.User;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * 系统用户数据库访问层

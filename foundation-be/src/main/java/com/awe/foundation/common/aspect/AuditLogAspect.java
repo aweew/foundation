@@ -20,14 +20,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 审计注解切面
@@ -49,7 +42,9 @@ public class AuditLogAspect {
     @Resource
     private HttpServletResponse response;
 
-    /** 执行标注审计注解的方法并异步写入审计日志 */
+    /**
+     * 执行标注审计注解的方法并异步写入审计日志
+     */
     @Around("@annotation(auditLog)")
     public Object around(ProceedingJoinPoint joinPoint, AuditLog auditLog) throws Throwable {
         long startTime = System.currentTimeMillis();
@@ -92,7 +87,9 @@ public class AuditLogAspect {
         }
     }
 
-    /** 解析操作名称 */
+    /**
+     * 解析操作名称
+     */
     private String resolveOperationName(ProceedingJoinPoint joinPoint, AuditLog auditLog) {
         if (StringUtils.isNotBlank(auditLog.operationName())) {
             return auditLog.operationName();
@@ -100,7 +97,9 @@ public class AuditLogAspect {
         return ((MethodSignature) joinPoint.getSignature()).getMethod().getName();
     }
 
-    /** 记录脱敏后的方法参数 */
+    /**
+     * 记录脱敏后的方法参数
+     */
     private String maskArguments(Object[] arguments) {
         Map<String, Object> values = new HashMap<>();
         for (int index = 0; index < arguments.length; index++) {
@@ -112,7 +111,9 @@ public class AuditLogAspect {
         return values.isEmpty() ? null : JsonUtils.toJsonString(values);
     }
 
-    /** 递归脱敏参数对象 */
+    /**
+     * 递归脱敏参数对象
+     */
     private Object maskValue(Object value) {
         if (value == null || value.getClass().isPrimitive() || value instanceof String || value instanceof Number || value instanceof Boolean) {
             return value;
@@ -135,18 +136,24 @@ public class AuditLogAspect {
         }
     }
 
-    /** 判断敏感字段 */
+    /**
+     * 判断敏感字段
+     */
     private boolean isSensitive(String fieldName) {
         return SENSITIVE_PROPERTIES.contains(fieldName.toLowerCase(Locale.ROOT));
     }
 
-    /** 识别客户端类型 */
+    /**
+     * 识别客户端类型
+     */
     private String resolveClientType() {
         String clientType = request.getHeader("X-Client-Type");
         return StringUtils.isBlank(clientType) ? "WEB" : StrUtil.sub(clientType, 0, 64);
     }
 
-    /** 获取当前登录用户ID */
+    /**
+     * 获取当前登录用户ID
+     */
     private Long resolveUserId() {
         try {
             return StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null;
@@ -154,4 +161,5 @@ public class AuditLogAspect {
             return null;
         }
     }
+
 }

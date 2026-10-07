@@ -49,8 +49,8 @@ public class PageResponse<T> {
      * 创建空分页响应
      *
      * @param pageRequest 分页请求
-     * @param <R> 响应类型
-     * @param <T> 分页请求类型
+     * @param <R>         响应类型
+     * @param <T>         分页请求类型
      * @return 空分页响应
      */
     public static <R, T> PageResponse<R> empty(PageRequest pageRequest) {
@@ -65,8 +65,8 @@ public class PageResponse<T> {
      * 根据分页结果创建空数据响应
      *
      * @param page 分页结果
-     * @param <R> 响应类型
-     * @param <T> 数据类型
+     * @param <R>  响应类型
+     * @param <T>  数据类型
      * @return 空分页响应
      */
     public static <R, T> PageResponse<R> empty(IPage<T> page) {
@@ -81,8 +81,8 @@ public class PageResponse<T> {
      * 根据已有分页响应创建空记录响应
      *
      * @param clazz 响应类型
-     * @param r 原分页响应
-     * @param <R> 响应类型
+     * @param r     原分页响应
+     * @param <R>   响应类型
      * @return 空记录响应
      */
     public static <R> PageResponse<R> createEmpty(Class<R> clazz, PageResponse r) {
@@ -98,10 +98,10 @@ public class PageResponse<T> {
     /**
      * 转换分页记录
      *
-     * @param page 分页结果
+     * @param page          分页结果
      * @param dateProcessor 记录转换器
-     * @param <R> 响应类型
-     * @param <T> 数据类型
+     * @param <R>           响应类型
+     * @param <T>           数据类型
      * @return 转换后的分页响应
      */
     public static <R, T> PageResponse<R> create(IPage<T> page, DataProcessor<R, T> dateProcessor) {
@@ -122,7 +122,9 @@ public class PageResponse<T> {
 
     @FunctionalInterface
     public interface DataProcessor<R, T> {
+
         R process(T data);
+
     }
 
 }

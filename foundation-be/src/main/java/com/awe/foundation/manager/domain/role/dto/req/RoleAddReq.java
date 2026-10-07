@@ -7,7 +7,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 系统角色新增请求对象
@@ -25,23 +24,23 @@ public class RoleAddReq implements Serializable {
     private static final long serialVersionUID = 933382324496594580L;
 
     /**
-    * 角色编码
-    */
+     * 角色编码
+     */
     private String code;
 
     /**
-    * 角色名称
-    */
+     * 角色名称
+     */
     private String name;
 
     /**
-    * 是否系统内置角色
-    */
+     * 是否系统内置角色
+     */
     private Boolean isSystem;
 
     /**
-    * 角色描述
-    */
+     * 角色描述
+     */
     private String remark;
 
 }

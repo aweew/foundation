@@ -5,8 +5,8 @@ import cn.hutool.core.map.MapUtil;
 import com.alibaba.ttl.TransmittableThreadLocal;
 import com.awe.foundation.common.constant.ErrorCodeEnum;
 import com.awe.foundation.common.filter.RepeatedlyRequestWrapper;
-import com.awe.foundation.common.util.StringUtils;
 import com.awe.foundation.common.util.JsonUtils;
+import com.awe.foundation.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +17,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.BufferedReader;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * web调用时间耗时统计拦截器
@@ -49,9 +43,9 @@ public class WebInvokeTimeInterceptor implements HandlerInterceptor {
     /**
      * 记录请求参数并启动耗时统计
      *
-     * @param request 请求对象
+     * @param request  请求对象
      * @param response 响应对象
-     * @param handler 请求处理器
+     * @param handler  请求处理器
      * @return 是否继续处理
      * @throws Exception 拦截器处理异常
      */
@@ -97,9 +91,9 @@ public class WebInvokeTimeInterceptor implements HandlerInterceptor {
     /**
      * 处理请求完成后的 MVC 回调
      *
-     * @param request 请求对象
-     * @param response 响应对象
-     * @param handler 请求处理器
+     * @param request      请求对象
+     * @param response     响应对象
+     * @param handler      请求处理器
      * @param modelAndView 模型和视图
      * @throws Exception 拦截器处理异常
      */
@@ -111,10 +105,10 @@ public class WebInvokeTimeInterceptor implements HandlerInterceptor {
     /**
      * 记录请求耗时并清理线程上下文
      *
-     * @param request 请求对象
+     * @param request  请求对象
      * @param response 响应对象
-     * @param handler 请求处理器
-     * @param ex 请求异常
+     * @param handler  请求处理器
+     * @param ex       请求异常
      * @throws Exception 拦截器处理异常
      */
     @Override
