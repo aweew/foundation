@@ -10,11 +10,13 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
@@ -37,18 +39,18 @@ public class GlobalExceptionHandler {
     @Resource
     private HttpServletRequest request;
 
-    private void auditException(Exception exception) {
+    private void auditException(Exception exception, int responseStatus) {
         operationLogService.saveAsync(OperationLog.builder().logType("EXCEPTION")
                 .operationName("请求异常").requestMethod(request.getMethod()).requestPath(request.getRequestURI())
                 .requestIp(request.getRemoteAddr()).errorType(exception.getClass().getName())
-                .errorMessage(exception.getMessage()).responseStatus(500)
+                .errorMessage(exception.getMessage()).responseStatus(responseStatus)
                 .resultCode(ErrorCodeEnum.ERROR.getCode()).resultMessage(ErrorCodeEnum.ERROR.getMsg()).build());
     }
 
     // 业务异常
     @ExceptionHandler(BusinessException.class)
     public Result<?> handleBusinessException(BusinessException e) {
-        auditException(e);
+        auditException(e, HttpStatus.OK.value());
         Integer code = e.getCode();
         if (Objects.isNull(code)) {
             return Result.failure(ErrorCodeEnum.FAILURE);
@@ -58,8 +60,9 @@ public class GlobalExceptionHandler {
 
     // 系统异常
     @ExceptionHandler(SystemException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<?> handleSystemException(SystemException e) {
-        auditException(e);
+        auditException(e, HttpStatus.INTERNAL_SERVER_ERROR.value());
         return Result.failure(ErrorCodeEnum.SYSTEM_ERROR);
     }
 
@@ -70,8 +73,9 @@ public class GlobalExceptionHandler {
      * @return 未登录响应
      */
     @ExceptionHandler(NotLoginException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Result<?> handleNotLoginException(NotLoginException e) {
-        auditException(e);
+        auditException(e, HttpStatus.UNAUTHORIZED.value());
         return Result.failure(ErrorCodeEnum.NOT_LOGIN);
     }
 
@@ -82,8 +86,9 @@ public class GlobalExceptionHandler {
      * @return 无权限响应
      */
     @ExceptionHandler(NotPermissionException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public Result<?> handleNotPermissionException(NotPermissionException e) {
-        auditException(e);
+        auditException(e, HttpStatus.FORBIDDEN.value());
         return Result.failure(ErrorCodeEnum.NO_PERMISSION);
     }
 
@@ -115,8 +120,9 @@ public class GlobalExceptionHandler {
 
     // 兜底异常
     @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<?> handleException(Exception e) {
-        auditException(e);
+        auditException(e, HttpStatus.INTERNAL_SERVER_ERROR.value());
         log.error("系统异常：", e);
         return Result.failure(ErrorCodeEnum.ERROR);
     }

@@ -15,56 +15,36 @@ import java.util.Arrays;
 @AllArgsConstructor
 public enum ErrorCodeEnum {
 
-    // 成功
     SUCCESS(0, "成功"),
 
-    // 失败
-    FAILURE(9000, "失败"),
+    // 通用错误（100xxx）
+    FAILURE(100000, "失败"),
+    PARAMETER_ERROR(100001, "参数校验失败"),
+    REQUEST_BODY_NOT_LOGGED(100002, "请求体未记录"),
 
-    // 异常
-    ERROR(9999, "未知异常，请联系管理员"),
+    // 认证授权（200xxx）
+    NOT_LOGIN(200001, "请先登录"),
+    NO_PERMISSION(200002, "无权限访问"),
+    AUTH_TYPE_UNSUPPORTED(200003, "不支持的认证类型"),
 
-    // 系统异常
-    SYSTEM_ERROR(500, "系统异常，请联系管理员"),
+    // 用户（300xxx）
+    USER_NOT_FOUND(300001, "用户不存在"),
+    PASSWORD_ERROR(300002, "用户名或密码错误"),
+    USER_DISABLED(300003, "用户已禁用"),
+    OLD_PASSWORD_ERROR(300004, "原密码错误"),
 
-    // 参数校验失败
-    PARAMETER_ERROR(9001, "参数校验失败"),
+    // 数据（400xxx）
+    DATA_NOT_FOUND(400001, "数据不存在"),
+    SYSTEM_DATA_PROTECTED(400002, "系统内置数据不可修改"),
+    DATA_DISABLED(400003, "关联数据已禁用"),
 
-    // 请求过于频繁
-    TOO_MANY_REQUESTS(429, "请求过于频繁，请稍后再试"),
+    // 请求限流（429xxx）
+    TOO_MANY_REQUESTS(429001, "请求过于频繁，请稍后再试"),
 
-    // 请求体无法记录
-    REQUEST_BODY_NOT_LOGGED(10001, "请求体未记录"),
+    // 系统异常（500xxx）
+    SYSTEM_ERROR(500001, "系统异常，请联系管理员"),
+    ERROR(500999, "未知异常，请联系管理员"),
 
-    // 用户不存在
-    USER_NOT_FOUND(10002, "用户不存在"),
-
-    // 用户密码错误
-    PASSWORD_ERROR(10004, "用户名或密码错误"),
-
-    // 用户已禁用
-    USER_DISABLED(10005, "用户已禁用"),
-
-    // 原密码错误
-    OLD_PASSWORD_ERROR(10006, "原密码错误"),
-
-    // 数据不存在
-    DATA_NOT_FOUND(10007, "数据不存在"),
-
-    // 系统内置数据不可修改
-    SYSTEM_DATA_PROTECTED(10008, "系统内置数据不可修改"),
-
-    // 关联数据已禁用
-    DATA_DISABLED(10009, "关联数据已禁用"),
-
-    // 未登录
-    NOT_LOGIN(401, "请先登录"),
-
-    // 无权限
-    NO_PERMISSION(403, "无权限访问"),
-
-    // 不支持的认证类型
-    AUTH_TYPE_UNSUPPORTED(10003, "不支持的认证类型"),
     ;
 
     /**
@@ -81,7 +61,13 @@ public enum ErrorCodeEnum {
     static {
         long distinctCount = Arrays.stream(values()).map(ErrorCodeEnum::getCode).distinct().count();
         if (distinctCount != (long) values().length) {
-            throw new IllegalArgumentException("duplicate code in BizCodeEnum");
+            throw new IllegalArgumentException("duplicate code in ErrorCodeEnum");
+        }
+        boolean invalidCode = Arrays.stream(values())
+                .filter(errorCode -> !SUCCESS.equals(errorCode))
+                .anyMatch(errorCode -> errorCode.getCode() < 100000 || errorCode.getCode() > 999999);
+        if (invalidCode) {
+            throw new IllegalArgumentException("business code must be a six-digit number except SUCCESS");
         }
     }
 

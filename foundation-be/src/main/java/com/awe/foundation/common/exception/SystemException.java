@@ -1,5 +1,6 @@
 package com.awe.foundation.common.exception;
 
+import com.awe.foundation.common.constant.ErrorCodeEnum;
 import lombok.Getter;
 
 import java.io.Serial;
@@ -16,7 +17,7 @@ public class SystemException extends RuntimeException {
     /**
      * 错误码
      */
-    private final int code = 500;
+    private final int code = ErrorCodeEnum.SYSTEM_ERROR.getCode();
 
     @Serial
     private static final long serialVersionUID = 4265620907777268105L;
