@@ -41,3 +41,36 @@ export interface MenuItem {
   sort?: number;
   childList?: MenuItem[];
 }
+
+export interface OperationLogQuery extends QueryPage {
+  userId?: number;
+  logType?: string;
+  requestPath?: string;
+  requestIp?: string;
+  startTime?: string;
+  endTime?: string;
+  includeArchived?: boolean;
+}
+
+export interface OperationLog {
+  id: number;
+  userId?: number;
+  username?: string;
+  logType: string;
+  operationName?: string;
+  requestMethod?: string;
+  requestPath?: string;
+  requestIp?: string;
+  clientType?: string;
+  requestParams?: string;
+  responseStatus?: number;
+  resultCode?: number;
+  resultMessage?: string;
+  durationMs?: number;
+  traceId?: string;
+  errorType?: string;
+  errorMessage?: string;
+  archived?: boolean;
+  createTime?: string;
+  archivedTime?: string;
+}

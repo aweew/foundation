@@ -1,7 +1,15 @@
-import request from '@/utils/request'
-import { hashPassword } from '@/utils/password'
-import type { ApiResult, PageResponse } from '@/types/api'
-import type { EnumDictionary, MenuItem, QueryPage, SystemRecord, SystemResource } from './types'
+import request from '@/utils/request';
+import { hashPassword } from '@/utils/password';
+import type { ApiResult, PageResponse } from '@/types/api';
+import type {
+  EnumDictionary,
+  MenuItem,
+  OperationLog,
+  OperationLogQuery,
+  QueryPage,
+  SystemRecord,
+  SystemResource,
+} from './types';
 
 /**
  * 查询枚举字典
@@ -31,7 +39,7 @@ export const getSystemItem = (resource: SystemResource, id: string | number) => 
  * @param payload 资源表单
  */
 export const createSystemItem = async (resource: SystemResource, payload: SystemRecord) => {
-  const requestPayload = await prepareUserPassword(resource, payload)
+  const requestPayload = await prepareUserPassword(resource, payload);
   return request<ApiResult<void>>({
     url: `/sys/${resource}`,
     method: 'post',
@@ -45,7 +53,7 @@ export const createSystemItem = async (resource: SystemResource, payload: System
  * @param payload 资源表单
  */
 export const updateSystemItem = async (resource: SystemResource, payload: SystemRecord) => {
-  const requestPayload = await prepareUserPassword(resource, payload)
+  const requestPayload = await prepareUserPassword(resource, payload);
   return request<ApiResult<void>>({
     url: `/sys/${resource}`,
     method: 'put',
@@ -111,6 +119,18 @@ export const getRolePage = (params: QueryPage) => {
 export const getMenuPage = (params: QueryPage) => {
   return request<ApiResult<PageResponse<MenuItem>>>({
     url: '/sys/menu/page',
+    method: 'get',
+    params,
+  });
+};
+
+/**
+ * 分页查询操作审计日志
+ * @param params 审计日志筛选和分页参数
+ */
+export const getOperationLogPage = (params: OperationLogQuery) => {
+  return request<ApiResult<PageResponse<OperationLog>>>({
+    url: '/sys/operation-log/page',
     method: 'get',
     params,
   });

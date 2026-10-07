@@ -28,6 +28,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/system/MenuView.vue'),
         meta: { title: '菜单管理', icon: 'Menu' },
       },
+      {
+        path: 'system/operation-log',
+        component: () => import('@/views/system/OperationLogView.vue'),
+        meta: { title: '操作审计', icon: 'Document' },
+      },
     ],
   },
   { path: '/:pathMatch(.*)*', redirect: '/dashboard' },
