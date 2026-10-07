@@ -139,13 +139,18 @@ INSERT IGNORE INTO sys_user (
     is_delete
 ) VALUES (
     '18949538661',
-    '',
+    '$2a$10$dUjVmWGCuGe0UMNjla4zqOjMZGkdctxXMPYF3hXaPF9Eh.lDZ7wPa',
     '超管',
     1,
     CURRENT_TIMESTAMP,
     CURRENT_TIMESTAMP,
     0
 );
+
+UPDATE sys_user
+SET password = '$2a$10$dUjVmWGCuGe0UMNjla4zqOjMZGkdctxXMPYF3hXaPF9Eh.lDZ7wPa'
+WHERE phone = '18949538661'
+  AND (password IS NULL OR password = '');
 
 INSERT IGNORE INTO sys_user_role (
     user_id,

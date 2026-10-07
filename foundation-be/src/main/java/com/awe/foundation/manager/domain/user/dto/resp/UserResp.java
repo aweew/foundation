@@ -36,11 +36,6 @@ public class UserResp implements Serializable {
     private String phone;
 
     /**
-     * 用户密码
-     */
-    private String password;
-
-    /**
      * 昵称
      */
     private String nickName;

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -32,6 +33,7 @@ public class UserAddReq implements Serializable {
     /**
      * 用户密码
      */
+    @NotBlank(message = "用户密码不能为空")
     private String password;
 
     /**

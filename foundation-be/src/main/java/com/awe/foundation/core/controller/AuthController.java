@@ -40,7 +40,7 @@ public class AuthController {
      */
     @GetMapping("/userInfo")
     public Result<UserInfoResp> getUserInfo() {
-        long userId = StpUtil.getLoginIdAsLong();
+        Long userId = StpUtil.getLoginIdAsLong();
         return Result.success(this.userService.getUserInfo(userId));
     }
 

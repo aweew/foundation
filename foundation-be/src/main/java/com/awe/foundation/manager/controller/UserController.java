@@ -1,7 +1,9 @@
 package com.awe.foundation.manager.controller;
 
+import cn.dev33.satoken.secure.BCrypt;
 import com.awe.foundation.common.api.PageResponse;
 import com.awe.foundation.common.api.Result;
+import com.awe.foundation.common.util.StringUtils;
 import com.awe.foundation.manager.domain.user.convert.UserConvert;
 import com.awe.foundation.manager.domain.user.dto.req.UserAddReq;
 import com.awe.foundation.manager.domain.user.dto.req.UserReq;
@@ -84,6 +86,7 @@ public class UserController {
      */
     @PostMapping
     public Result<Void> save(@Valid @RequestBody UserAddReq req) {
+        req.setPassword(BCrypt.hashpw(req.getPassword()));
         this.userService.save(userConvert.addToEntity(req));
         return Result.success();
     }
@@ -98,7 +101,13 @@ public class UserController {
     public Result<Void> update(@Valid @RequestBody UserUpdateReq req) {
         User user = this.userService.getById(req.getId());
         if (Objects.nonNull(user)) {
+            String existingPassword = user.getPassword();
             userConvert.updateToEntity(req, user);
+            if (StringUtils.isNotBlank(req.getPassword())) {
+                user.setPassword(BCrypt.hashpw(req.getPassword()));
+            } else {
+                user.setPassword(existingPassword);
+            }
             this.userService.updateById(user);
         }
         return Result.success();

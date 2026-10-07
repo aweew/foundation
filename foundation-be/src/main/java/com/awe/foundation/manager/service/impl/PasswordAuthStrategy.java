@@ -3,9 +3,9 @@ package com.awe.foundation.manager.service.impl;
 import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
-import com.awe.foundation.common.util.JsonUtils;
 import com.awe.foundation.common.constant.ErrorCodeEnum;
 import com.awe.foundation.common.exception.BusinessException;
+import com.awe.foundation.common.util.StringUtils;
 import com.awe.foundation.manager.domain.auth.dto.req.LoginReq;
 import com.awe.foundation.manager.domain.auth.dto.resp.LoginResp;
 import com.awe.foundation.manager.domain.user.entity.User;
@@ -40,7 +40,22 @@ public class PasswordAuthStrategy implements IAuthStrategy {
         if (Objects.isNull(user)) {
             throw new BusinessException(ErrorCodeEnum.USER_NOT_FOUND);
         }
-        // 密码校验失败时统一抛出 ErrorCodeEnum 中的业务错误码
+
+        String storedPassword = user.getPassword();
+        if (StringUtils.isBlank(password) || StringUtils.isBlank(storedPassword)) {
+            throw new BusinessException(ErrorCodeEnum.PASSWORD_ERROR);
+        }
+
+        boolean passwordMatched;
+        try {
+            passwordMatched = BCrypt.checkpw(password, storedPassword);
+        } catch (IllegalArgumentException exception) {
+            passwordMatched = false;
+        }
+        if (!passwordMatched) {
+            throw new BusinessException(ErrorCodeEnum.PASSWORD_ERROR);
+        }
+
         StpUtil.login(user.getId());
 
         return LoginResp.builder().accessToken(StpUtil.getTokenValue()).expireIn(StpUtil.getTokenTimeout()).build();

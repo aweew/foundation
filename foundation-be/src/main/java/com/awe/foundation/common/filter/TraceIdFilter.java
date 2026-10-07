@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 public class TraceIdFilter extends OncePerRequestFilter {
 
-    private static final int MAX_TRACE_ID_LENGTH = 64;
+    private static final int MAX_TRACE_ID_LENGTH = 16;
 
     /**
      * 为请求生成或复用 traceId 并绑定到日志上下文
@@ -35,7 +35,7 @@ public class TraceIdFilter extends OncePerRequestFilter {
         String traceId = request.getHeader(Constants.TRACE_ID);
         if (Objects.isNull(traceId) || StringUtils.isBlank(traceId) || traceId.length() > MAX_TRACE_ID_LENGTH
                 || !traceId.matches("[A-Za-z0-9._-]+")) {
-            traceId = UUID.randomUUID().toString().replace("-", "");
+            traceId = UUID.randomUUID().toString().replace("-", "").substring(0, MAX_TRACE_ID_LENGTH);
         }
 
         MDC.put(Constants.TRACE_ID, traceId);

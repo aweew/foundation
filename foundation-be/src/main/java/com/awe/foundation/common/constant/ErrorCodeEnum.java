@@ -39,6 +39,9 @@ public enum ErrorCodeEnum {
     // 用户不存在
     USER_NOT_FOUND(10002, "用户不存在"),
 
+    // 用户密码错误
+    PASSWORD_ERROR(10004, "用户名或密码错误"),
+
     // 不支持的认证类型
     AUTH_TYPE_UNSUPPORTED(10003, "不支持的认证类型"),
     ;
