@@ -111,7 +111,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new BusinessException(ErrorCodeEnum.PARAMETER_ERROR);
         }
         user.setPassword(BCrypt.hashpw(req.getNewPassword()));
-        this.updateById(user);
+        if (!this.updateById(user)) {
+            throw new BusinessException(ErrorCodeEnum.OPTIMISTIC_LOCK_CONFLICT);
+        }
     }
 
 }

@@ -112,7 +112,9 @@ public class RoleController {
             throw new BusinessException(ErrorCodeEnum.SYSTEM_DATA_PROTECTED);
         }
         roleConvert.updateToEntity(req, role);
-        this.roleService.updateById(role);
+        if (!this.roleService.updateById(role)) {
+            throw new BusinessException(ErrorCodeEnum.OPTIMISTIC_LOCK_CONFLICT);
+        }
         return Result.success();
     }
 

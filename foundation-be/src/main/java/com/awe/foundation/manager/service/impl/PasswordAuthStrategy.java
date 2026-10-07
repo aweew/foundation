@@ -72,7 +72,9 @@ public class PasswordAuthStrategy implements IAuthStrategy {
         StpUtil.login(user.getId());
         user.setLastLoginIp(request.getRemoteAddr());
         user.setLastLoginTime(LocalDateTime.now());
-        userService.updateById(user);
+        if (!userService.updateById(user)) {
+            throw new BusinessException(ErrorCodeEnum.OPTIMISTIC_LOCK_CONFLICT);
+        }
 
         return LoginResp.builder().accessToken(StpUtil.getTokenValue()).expireIn(StpUtil.getTokenTimeout()).build();
     }

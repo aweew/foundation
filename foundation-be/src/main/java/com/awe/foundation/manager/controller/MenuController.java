@@ -144,7 +144,9 @@ public class MenuController {
             throw new BusinessException(ErrorCodeEnum.DATA_NOT_FOUND);
         }
         menuConvert.updateToEntity(req, menu);
-        this.menuService.updateById(menu);
+        if (!this.menuService.updateById(menu)) {
+            throw new BusinessException(ErrorCodeEnum.OPTIMISTIC_LOCK_CONFLICT);
+        }
         return Result.success();
     }
 

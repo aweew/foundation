@@ -43,8 +43,8 @@ public class MybatisMetaObjectHandler implements MetaObjectHandler {
      * 仅填充实体中存在的字段
      *
      * @param metaObject 元对象
-     * @param fieldName 字段名
-     * @param value 字段值
+     * @param fieldName  字段名
+     * @param value      字段值
      */
     private void fillIfPresent(MetaObject metaObject, String fieldName, Object value) {
         if (metaObject.hasSetter(fieldName) && metaObject.getValue(fieldName) == null) {
@@ -56,8 +56,8 @@ public class MybatisMetaObjectHandler implements MetaObjectHandler {
      * 覆盖填充实体中的审计字段
      *
      * @param metaObject 元对象
-     * @param fieldName 字段名
-     * @param value 字段值
+     * @param fieldName  字段名
+     * @param value      字段值
      */
     private void setIfPresent(MetaObject metaObject, String fieldName, Object value) {
         if (metaObject.hasSetter(fieldName)) {
@@ -73,4 +73,5 @@ public class MybatisMetaObjectHandler implements MetaObjectHandler {
     private Long currentUserId() {
         return StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null;
     }
+
 }

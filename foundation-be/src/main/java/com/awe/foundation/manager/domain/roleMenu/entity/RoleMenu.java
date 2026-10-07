@@ -3,6 +3,7 @@ package com.awe.foundation.manager.domain.roleMenu.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -68,5 +69,11 @@ public class RoleMenu implements Serializable {
      * 逻辑删除（0未删除，1已删除）
      */
     private Boolean isDelete;
+
+    /**
+     * 乐观锁版本号
+     */
+    @Version
+    private Integer version;
 
 }

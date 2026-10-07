@@ -2,9 +2,9 @@ package com.awe.foundation.manager.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.secure.BCrypt;
+import com.awe.foundation.common.annotation.AuditLog;
 import com.awe.foundation.common.api.PageResponse;
 import com.awe.foundation.common.api.Result;
-import com.awe.foundation.common.annotation.AuditLog;
 import com.awe.foundation.common.constant.ErrorCodeEnum;
 import com.awe.foundation.common.exception.BusinessException;
 import com.awe.foundation.common.util.StringUtils;
@@ -124,7 +124,9 @@ public class UserController {
         } else {
             user.setPassword(existingPassword);
         }
-        this.userService.updateById(user);
+        if (!this.userService.updateById(user)) {
+            throw new BusinessException(ErrorCodeEnum.OPTIMISTIC_LOCK_CONFLICT);
+        }
         return Result.success();
     }
 
