@@ -2,6 +2,7 @@ package com.awe.foundation.manager.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.awe.foundation.common.api.PageResponse;
+import com.awe.foundation.common.api.PageRequest;
 import com.awe.foundation.common.api.Result;
 import com.awe.foundation.common.constant.ErrorCodeEnum;
 import com.awe.foundation.common.exception.BusinessException;
@@ -46,9 +47,9 @@ public class RoleController {
      */
     @GetMapping("/page")
     @SaCheckPermission("sys:role:list")
-    public Result<PageResponse<RoleResp>> page(Page<Role> pageReq, RoleReq req) {
+    public Result<PageResponse<RoleResp>> page(@Valid PageRequest pageReq, RoleReq req) {
         Role role = roleConvert.toEntity(req);
-        Page<Role> page = this.roleService.page(pageReq, Wrappers.lambdaQuery(role));
+        Page<Role> page = this.roleService.page(pageReq.createPage(Role.class), Wrappers.lambdaQuery(role));
         return Result.success(page, roleConvert::toResp);
     }
 

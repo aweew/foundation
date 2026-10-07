@@ -2,6 +2,7 @@ package com.awe.foundation.module.storage.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.awe.foundation.common.api.PageResponse;
+import com.awe.foundation.common.api.PageRequest;
 import com.awe.foundation.common.api.Result;
 import com.awe.foundation.module.storage.domain.dto.req.StorageFileReq;
 import com.awe.foundation.module.storage.domain.dto.resp.StorageFileResp;
@@ -9,6 +10,7 @@ import com.awe.foundation.module.storage.domain.entity.StorageFile;
 import com.awe.foundation.module.storage.service.IStorageFileService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
@@ -26,14 +28,14 @@ public class StorageFileManageController {
     /**
      * 分页查询文件
      *
-     * @param page    分页参数
+     * @param pageReq 分页参数
      * @param request 查询条件
      * @return 文件分页结果
      */
     @GetMapping("/page")
     @SaCheckPermission("sys:storage:file:list")
-    public Result<PageResponse<StorageFileResp>> page(Page<StorageFile> page, StorageFileReq request) {
-        Page<StorageFile> result = storageFileService.page(page, request);
+    public Result<PageResponse<StorageFileResp>> page(@Valid PageRequest pageReq, StorageFileReq request) {
+        Page<StorageFile> result = storageFileService.page(pageReq.createPage(StorageFile.class), request);
         PageResponse<StorageFileResp> response = PageResponse.create(result,
                 storageFile -> storageFileService.accessUrl(storageFile.getId()));
         return Result.success(response);

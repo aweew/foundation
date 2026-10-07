@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.secure.BCrypt;
 import com.awe.foundation.common.annotation.AuditLog;
 import com.awe.foundation.common.api.PageResponse;
+import com.awe.foundation.common.api.PageRequest;
 import com.awe.foundation.common.api.Result;
 import com.awe.foundation.common.constant.ErrorCodeEnum;
 import com.awe.foundation.common.exception.BusinessException;
@@ -50,9 +51,9 @@ public class UserController {
     @GetMapping("/page")
     @SaCheckPermission("sys:user:list")
     @AuditLog(operationName = "分页查询用户")
-    public Result<PageResponse<UserResp>> page(Page<User> pageReq, UserReq req) {
+    public Result<PageResponse<UserResp>> page(@Valid PageRequest pageReq, UserReq req) {
         User user = userConvert.toEntity(req);
-        Page<User> page = this.userService.page(pageReq, Wrappers.lambdaQuery(user));
+        Page<User> page = this.userService.page(pageReq.createPage(User.class), Wrappers.lambdaQuery(user));
         return Result.success(page, userConvert::toResp);
     }
 

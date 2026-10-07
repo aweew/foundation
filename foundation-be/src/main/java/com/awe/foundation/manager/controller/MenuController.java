@@ -2,6 +2,7 @@ package com.awe.foundation.manager.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.awe.foundation.common.api.PageResponse;
+import com.awe.foundation.common.api.PageRequest;
 import com.awe.foundation.common.api.Result;
 import com.awe.foundation.common.constant.ErrorCodeEnum;
 import com.awe.foundation.common.exception.BusinessException;
@@ -46,9 +47,9 @@ public class MenuController {
      */
     @GetMapping("/page")
     @SaCheckPermission("sys:menu:list")
-    public Result<PageResponse<MenuResp>> page(Page<Menu> pageReq, MenuReq req) {
+    public Result<PageResponse<MenuResp>> page(@Valid PageRequest pageReq, MenuReq req) {
         Menu menu = menuConvert.toEntity(req);
-        Page<Menu> page = this.menuService.page(pageReq, Wrappers.lambdaQuery(menu));
+        Page<Menu> page = this.menuService.page(pageReq.createPage(Menu.class), Wrappers.lambdaQuery(menu));
         return Result.success(page, menuConvert::toResp);
     }
 
