@@ -1,14 +1,13 @@
 # 服务配置
 server:
-  port:
-    6001
+  port: ${SERVER_PORT:6001}
   servlet:
     context-path: /foundation
 
 foundation:
   storage:
     enabled: true
-    secret-key: ${FOUNDATION_STORAGE_SECRET_KEY:change-me-foundation-storage-key}
+    secret-key: ${FOUNDATION_STORAGE_SECRET_KEY:}
     config-cache-seconds: 300
     upload:
       max-file-size: 5242880
@@ -19,6 +18,10 @@ foundation:
 
 # spring 配置
 spring:
+  config:
+    import: "optional:file:./.env[.properties]"
+  profiles:
+    default: local
   application:
     name: foundation
   servlet:
@@ -32,15 +35,15 @@ spring:
     hikari:
       maximum-pool-size: 20
       idle-timeout: 10000
-    url: jdbc:p6spy:mysql://192.168.1.5:3306/foundation?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true
-    username: root
-    password: "qazWSX123"
-    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    url: ${DB_URL:}
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
-      host: ${REDIS_HOST:100.71.129.75}
+      host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD:02cb49489c3b41b100b4e1fcac45bf0e6fba56983d7820ee1133e853d1610ec9}
+      password: ${REDIS_PASSWORD:}
       database: ${REDIS_DATABASE:1}
       timeout: 3s
       connect-timeout: 3s
@@ -52,7 +55,7 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
-    baseline-on-migrate: true
+    baseline-on-migrate: false
     baseline-version: 0
     validate-on-migrate: true
 
@@ -63,11 +66,10 @@ audit-log:
 # Web 安全配置
 app:
   redis:
-    key-prefix:
-      foundation:
+    key-prefix: ${REDIS_KEY_PREFIX:foundation:}
   cors:
     allowed-origins:
-      - http://localhost:3000
+      - ${CORS_ALLOWED_ORIGIN:http://localhost:3000}
   security:
     xss-excludes: /swagger-ui.html,/swagger-ui/**,/v3/**,/auth/login
   rate-limit:
@@ -118,9 +120,10 @@ mybatis-plus:
 # Swagger3 配置
 springdoc:
   api-docs:
-    enabled: true
+    enabled: false
     path: /v3/api-docs
   swagger-ui:
+    enabled: false
     path: /swagger-ui.html
     tagsSorter: alpha
     use-root-path: true
@@ -131,7 +134,7 @@ springdoc:
 logging:
   level:
     org.springframework: warn
-    com.awe: debug
+    com.awe: info
   config: classpath:logback-spring.xml
 
 # 全局线程池相关配置
@@ -158,6 +161,6 @@ sa-token:
   # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
   token-style: uuid
   # jwt 签名密钥
-  jwt-secret-key: rtFDdiyVAjM8EYqwNgbS
+  jwt-secret-key: ${JWT_SECRET_KEY:}
   # 是否输出操作日志
-  is-log: true
+  is-log: false

@@ -1,0 +1,20 @@
+server:
+  shutdown: graceful
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+logging:
+  level:
+    com.awe: info
+    com.awe.foundation.common.log: off
+    p6spy: off

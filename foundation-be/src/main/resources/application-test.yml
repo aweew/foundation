@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/foundation_test?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai}
+    username: ${DB_USERNAME:foundation}
+    password: ${DB_PASSWORD:foundation-local-password}
+  data:
+    redis:
+      database: ${REDIS_DATABASE:2}
+
+app:
+  redis:
+    key-prefix: ${REDIS_KEY_PREFIX:foundation:test:}
+
+foundation:
+  storage:
+    secret-key: ${FOUNDATION_STORAGE_SECRET_KEY:test-foundation-storage-key-000001}
+
+sa-token:
+  jwt-secret-key: ${JWT_SECRET_KEY:test-foundation-jwt-key-0000000001}

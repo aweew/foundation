@@ -27,7 +27,15 @@ public class StorageCredentialCipher {
 
     private final SecretKeySpec secretKey;
 
-    public StorageCredentialCipher(@Value("${foundation.storage.secret-key:change-me-foundation-storage-key}") String key) {
+    /**
+     * 使用环境配置的密钥初始化凭据加密器
+     *
+     * @param key 存储凭据加密密钥
+     */
+    public StorageCredentialCipher(@Value("${foundation.storage.secret-key}") String key) {
+        if (StringUtils.isBlank(key)) {
+            throw new IllegalArgumentException("必须配置 foundation.storage.secret-key");
+        }
         byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
         byte[] normalized = new byte[32];
         System.arraycopy(keyBytes, 0, normalized, 0, Math.min(keyBytes.length, normalized.length));

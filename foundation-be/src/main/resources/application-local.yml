@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:p6spy:mysql://localhost:3306/foundation?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true}
+    username: ${DB_USERNAME:foundation}
+    password: ${DB_PASSWORD:foundation-local-password}
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+
+foundation:
+  storage:
+    secret-key: ${FOUNDATION_STORAGE_SECRET_KEY:local-foundation-storage-key-000001}
+
+sa-token:
+  jwt-secret-key: ${JWT_SECRET_KEY:local-foundation-jwt-key-0000000001}
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+logging:
+  level:
+    com.awe: debug
