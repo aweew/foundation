@@ -31,6 +31,12 @@ public class AuthController {
     @Resource
     private IAuthStrategy authStrategy;
 
+    /**
+     * 校验账号凭据并创建登录会话
+     *
+     * @param loginReq 登录请求
+     * @return 登录令牌
+     */
     @PostMapping("/login")
     @SaIgnore
     @AuditLog(logType = "LOGIN", operationName = "用户登录")

@@ -1,6 +1,8 @@
 package com.awe.foundation.common.config;
 
 import cn.dev33.satoken.interceptor.SaInterceptor;
+import cn.dev33.satoken.stp.StpUtil;
+import com.awe.foundation.common.constant.Constants;
 import com.awe.foundation.common.config.properties.AppProperties;
 import com.awe.foundation.common.convert.LocalDateConverter;
 import com.awe.foundation.common.convert.LocalDateTimeConverter;
@@ -52,11 +54,24 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SaInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(authenticationInterceptor()).addPathPatterns("/**")
+                .excludePathPatterns("/error", "/actuator/health", "/actuator/health/**",
+                        "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**");
         // 日志拦截器
         registry.addInterceptor(new LogInterceptor()).addPathPatterns("/**");
         // 全局访问性能拦截
         registry.addInterceptor(webInvokeTimeInterceptor);
+    }
+
+    /**
+     * 默认校验登录，匿名接口通过 SaIgnore 显式放行
+     *
+     * @return 登录与权限校验拦截器
+     */
+    @Bean
+    public SaInterceptor authenticationInterceptor() {
+        return new SaInterceptor(handler -> StpUtil.checkLogin());
+
     }
 
     /**
@@ -79,7 +94,8 @@ public class WebConfig implements WebMvcConfigurer {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.setAllowedOriginPatterns(appProperties.getCors().getAllowedOrigins());
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Trace-Id"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "satoken", "X-Trace-Id", Constants.TRACE_ID));
+        config.setExposedHeaders(List.of(Constants.TRACE_ID));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         // 有效期 1800秒
         config.setMaxAge(1800L);
