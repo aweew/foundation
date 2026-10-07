@@ -2,6 +2,7 @@ package com.awe.foundation.manager.domain.menu.entity;
 
 import com.awe.foundation.common.constant.enums.StatusEnum;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.Version;
@@ -161,6 +162,7 @@ public class Menu implements Serializable {
     /**
      * 子菜单列表
      */
+    @TableField(exist = false)
     private List<Menu> childList;
 
 }
