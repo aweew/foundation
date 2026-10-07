@@ -1,5 +1,7 @@
 package com.awe.foundation.common.exception;
 
+import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.NotPermissionException;
 import com.awe.foundation.common.api.Result;
 import com.awe.foundation.common.constant.ErrorCodeEnum;
 import jakarta.validation.ConstraintViolationException;
@@ -39,6 +41,28 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SystemException.class)
     public Result<?> handleSystemException(SystemException e) {
         return Result.failure(ErrorCodeEnum.SYSTEM_ERROR);
+    }
+
+    /**
+     * 处理未登录异常
+     *
+     * @param e 未登录异常
+     * @return 未登录响应
+     */
+    @ExceptionHandler(NotLoginException.class)
+    public Result<?> handleNotLoginException(NotLoginException e) {
+        return Result.failure(ErrorCodeEnum.NOT_LOGIN);
+    }
+
+    /**
+     * 处理无权限异常
+     *
+     * @param e 无权限异常
+     * @return 无权限响应
+     */
+    @ExceptionHandler(NotPermissionException.class)
+    public Result<?> handleNotPermissionException(NotPermissionException e) {
+        return Result.failure(ErrorCodeEnum.NO_PERMISSION);
     }
 
     // 参数校验异常（如 @Valid 抛出的）

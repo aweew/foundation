@@ -6,6 +6,7 @@ import com.awe.foundation.common.validate.auth.PasswordGroup;
 import com.awe.foundation.common.validate.auth.SmsGroup;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -48,7 +49,7 @@ public class LoginReq implements Serializable {
     /**
      * 授权类型
      */
-    @NotBlank(message = "授权类型不能为空")
+    @NotNull(message = "授权类型不能为空")
     private GrantTypeEnum grantType;
 
     /**

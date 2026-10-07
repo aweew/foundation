@@ -2,4 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.awe.foundation.manager.mapper.UserRoleMapper">
 
+    <select id="selectAny" resultType="com.awe.foundation.manager.domain.userRole.entity.UserRole">
+        SELECT
+            t1.id,
+            t1.user_id,
+            t1.role_id,
+            t1.create_user_id,
+            t1.update_user_id,
+            t1.create_time,
+            t1.update_time,
+            t1.is_delete
+        FROM sys_user_role t1
+        WHERE t1.user_id = #{userId}
+          AND t1.role_id = #{roleId}
+    </select>
+
+    <update id="restore">
+        UPDATE sys_user_role
+        SET is_delete   = 0,
+            update_time = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
 </mapper>

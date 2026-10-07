@@ -1,8 +1,8 @@
 package com.awe.foundation.manager.service;
 
 import com.awe.foundation.manager.domain.role.dto.resp.RoleResp;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.awe.foundation.manager.domain.role.entity.Role;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
@@ -15,5 +15,13 @@ import java.util.List;
 public interface IRoleService extends IService<Role> {
 
     List<RoleResp> listByUserId(Long userId);
+
+    /**
+     * 查询用户角色编码
+     *
+     * @param userId 用户 ID
+     * @return 角色编码列表
+     */
+    List<String> listCodesByUserId(Long userId);
 
 }

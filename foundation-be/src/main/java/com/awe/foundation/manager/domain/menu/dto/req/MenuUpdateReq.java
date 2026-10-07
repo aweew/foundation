@@ -1,5 +1,6 @@
 package com.awe.foundation.manager.domain.menu.dto.req;
 
+import com.awe.foundation.common.constant.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 系统权限更新请求对象
@@ -113,5 +113,10 @@ public class MenuUpdateReq implements Serializable {
      * 备注
      */
     private String remark;
+
+    /**
+     * 状态（1正常，2禁用）
+     */
+    private StatusEnum status;
 
 }

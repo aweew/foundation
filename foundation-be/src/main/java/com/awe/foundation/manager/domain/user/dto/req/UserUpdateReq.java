@@ -1,5 +1,6 @@
 package com.awe.foundation.manager.domain.user.dto.req;
 
+import com.awe.foundation.common.constant.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -83,5 +84,10 @@ public class UserUpdateReq implements Serializable {
      * 备注
      */
     private String remark;
+
+    /**
+     * 状态（1启用，2禁用）
+     */
+    private StatusEnum status;
 
 }

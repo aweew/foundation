@@ -1,7 +1,10 @@
 package com.awe.foundation.manager.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.awe.foundation.common.api.PageResponse;
 import com.awe.foundation.common.api.Result;
+import com.awe.foundation.common.constant.ErrorCodeEnum;
+import com.awe.foundation.common.exception.BusinessException;
 import com.awe.foundation.manager.domain.menu.convert.MenuConvert;
 import com.awe.foundation.manager.domain.menu.dto.req.MenuAddReq;
 import com.awe.foundation.manager.domain.menu.dto.req.MenuReq;
@@ -42,6 +45,7 @@ public class MenuController {
      * @return 查询结果
      */
     @GetMapping("/page")
+    @SaCheckPermission("sys:menu:list")
     public Result<PageResponse<MenuResp>> page(Page<Menu> pageReq, MenuReq req) {
         Menu menu = menuConvert.toEntity(req);
         Page<Menu> page = this.menuService.page(pageReq, Wrappers.lambdaQuery(menu));
@@ -55,10 +59,46 @@ public class MenuController {
      * @return 查询结果
      */
     @GetMapping("/list")
+    @SaCheckPermission("sys:menu:list")
     public Result<List<MenuResp>> list(MenuReq req) {
         Menu menu = menuConvert.toEntity(req);
         List<Menu> list = menuService.list(Wrappers.lambdaQuery(menu));
         return Result.success(list, menuConvert::toRespList);
+    }
+
+    /**
+     * 查询全部菜单树
+     *
+     * @return 菜单树
+     */
+    @GetMapping("/tree")
+    @SaCheckPermission("sys:menu:list")
+    public Result<List<MenuResp>> tree() {
+        return Result.success(menuService.treeAllMenus());
+    }
+
+    /**
+     * 查询用户菜单树
+     *
+     * @param userId 用户 ID
+     * @return 菜单树
+     */
+    @GetMapping("/tree/user/{userId}")
+    @SaCheckPermission("sys:menu:list")
+    public Result<List<MenuResp>> treeByUserId(@PathVariable("userId") Long userId) {
+        return Result.success(menuService.treeAllMenusByUserId(userId));
+    }
+
+    /**
+     * 查询角色菜单树
+     *
+     * @param roleId 角色 ID
+     * @return 菜单树
+     */
+    @GetMapping("/tree/role/{roleId}")
+    @SaCheckPermission("sys:role-menu:list")
+    public Result<List<MenuResp>> treeByRoleId(@PathVariable("roleId") Long roleId) {
+        return Result.success(menuService.treeAllMenusByRoleId(roleId));
     }
 
     /**
@@ -68,6 +108,7 @@ public class MenuController {
      * @return 单条数据
      */
     @GetMapping("/{id}")
+    @SaCheckPermission("sys:menu:view")
     public Result<MenuResp> getById(@PathVariable("id") Long id) {
         Menu menu = this.menuService.getById(id);
         if (Objects.nonNull(menu)) {
@@ -83,6 +124,7 @@ public class MenuController {
      * @return 新增结果
      */
     @PostMapping
+    @SaCheckPermission("sys:menu:save")
     public Result<Void> save(@Valid @RequestBody MenuAddReq req) {
         this.menuService.save(menuConvert.addToEntity(req));
         return Result.success();
@@ -95,12 +137,14 @@ public class MenuController {
      * @return 更新结果
      */
     @PutMapping
+    @SaCheckPermission("sys:menu:update")
     public Result<Void> update(@Valid @RequestBody MenuUpdateReq req) {
         Menu menu = this.menuService.getById(req.getId());
-        if (Objects.nonNull(menu)) {
-            menuConvert.updateToEntity(req, menu);
-            this.menuService.updateById(menu);
+        if (Objects.isNull(menu)) {
+            throw new BusinessException(ErrorCodeEnum.DATA_NOT_FOUND);
         }
+        menuConvert.updateToEntity(req, menu);
+        this.menuService.updateById(menu);
         return Result.success();
     }
 
@@ -111,7 +155,11 @@ public class MenuController {
      * @return 删除结果
      */
     @DeleteMapping("/{id}")
+    @SaCheckPermission("sys:menu:delete")
     public Result<Void> deleteById(@PathVariable("id") Long id) {
+        if (Objects.isNull(this.menuService.getById(id))) {
+            throw new BusinessException(ErrorCodeEnum.DATA_NOT_FOUND);
+        }
         this.menuService.removeById(id);
         return Result.success();
     }

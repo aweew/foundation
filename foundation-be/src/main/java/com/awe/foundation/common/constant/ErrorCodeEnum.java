@@ -42,6 +42,27 @@ public enum ErrorCodeEnum {
     // 用户密码错误
     PASSWORD_ERROR(10004, "用户名或密码错误"),
 
+    // 用户已禁用
+    USER_DISABLED(10005, "用户已禁用"),
+
+    // 原密码错误
+    OLD_PASSWORD_ERROR(10006, "原密码错误"),
+
+    // 数据不存在
+    DATA_NOT_FOUND(10007, "数据不存在"),
+
+    // 系统内置数据不可修改
+    SYSTEM_DATA_PROTECTED(10008, "系统内置数据不可修改"),
+
+    // 关联数据已禁用
+    DATA_DISABLED(10009, "关联数据已禁用"),
+
+    // 未登录
+    NOT_LOGIN(401, "请先登录"),
+
+    // 无权限
+    NO_PERMISSION(403, "无权限访问"),
+
     // 不支持的认证类型
     AUTH_TYPE_UNSUPPORTED(10003, "不支持的认证类型"),
     ;

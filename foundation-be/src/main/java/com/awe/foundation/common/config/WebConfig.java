@@ -1,18 +1,19 @@
 package com.awe.foundation.common.config;
 
+import cn.dev33.satoken.interceptor.SaInterceptor;
+import com.awe.foundation.common.config.properties.AppProperties;
 import com.awe.foundation.common.convert.LocalDateConverter;
 import com.awe.foundation.common.convert.LocalDateTimeConverter;
 import com.awe.foundation.common.convert.LocalTimeConverter;
-import com.awe.foundation.common.filter.RepeatableFilter;
 import com.awe.foundation.common.filter.RateLimitFilter;
+import com.awe.foundation.common.filter.RepeatableFilter;
 import com.awe.foundation.common.filter.TraceIdFilter;
 import com.awe.foundation.common.filter.XssFilter;
 import com.awe.foundation.common.interceptor.LogInterceptor;
 import com.awe.foundation.common.interceptor.WebInvokeTimeInterceptor;
-import com.awe.foundation.common.config.properties.AppProperties;
 import jakarta.annotation.Resource;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -44,6 +45,7 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new SaInterceptor()).addPathPatterns("/**");
         // 日志拦截器
         registry.addInterceptor(new LogInterceptor()).addPathPatterns("/**");
         // 全局访问性能拦截

@@ -1,5 +1,6 @@
 package com.awe.foundation.manager.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.awe.foundation.common.api.Result;
 import com.awe.foundation.common.constant.EnumCollector;
 import jakarta.annotation.Resource;
@@ -26,6 +27,7 @@ public class EnumController {
      * @return 枚举列表，选项字段为 name、value、label
      */
     @GetMapping("/list")
+    @SaCheckLogin
     public Result<?> listAllEnums() {
         return Result.success(enumCollector.getAllEnums());
     }
