@@ -16,6 +16,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -40,6 +41,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Resource
     private WebInvokeTimeInterceptor webInvokeTimeInterceptor;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 注册 MVC 拦截器
@@ -118,7 +122,7 @@ public class WebConfig implements WebMvcConfigurer {
         FilterRegistrationBean<RateLimitFilter> registration = new FilterRegistrationBean<>();
         AppProperties.RateLimit rateLimit = appProperties.getRateLimit();
         registration.setFilter(new RateLimitFilter(rateLimit.isEnabled(), rateLimit.getRequestsPerWindow(),
-                rateLimit.getWindowSeconds(), rateLimit.getExcludePaths()));
+                rateLimit.getWindowSeconds(), rateLimit.getExcludePaths(), stringRedisTemplate));
         registration.addUrlPatterns("/*");
         registration.setOrder(-90);
         return registration;

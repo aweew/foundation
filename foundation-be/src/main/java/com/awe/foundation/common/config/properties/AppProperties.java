@@ -28,6 +28,21 @@ public class AppProperties {
      */
     private RateLimit rateLimit = new RateLimit();
 
+    /**
+     * Redis基础配置
+     */
+    private Redis redis = new Redis();
+
+    @Data
+    public static class Redis {
+
+        /**
+         * 业务键前缀
+         */
+        private String keyPrefix = "foundation:";
+
+    }
+
     @Data
     public static class Cors {
 
