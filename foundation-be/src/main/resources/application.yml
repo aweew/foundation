@@ -27,7 +27,7 @@ app:
     allowed-origins:
       - http://localhost:3000
   security:
-    xss-excludes: /swagger-ui.html,/swagger-ui/**,/v3/**,/test/**,/auth/login
+    xss-excludes: /swagger-ui.html,/swagger-ui/**,/v3/**,/auth/login
   rate-limit:
     enabled: true
     requests-per-window: 120
@@ -65,9 +65,9 @@ mybatis-plus:
       # 主键类型
       # AUTO 自增 NONE 空 INPUT 用户输入 ASSIGN_ID 雪花 ASSIGN_UUID 唯一 UUID
       # 如需改为自增 需要将数据库表全部设置为自增
-      idType: ASSIGN_ID
+      idType: AUTO
       # 逻辑删除
-      logic-delete-field: deleted
+      logic-delete-field: isDelete
       logic-delete-value: 1
       logic-not-delete-value: 0
   configuration:

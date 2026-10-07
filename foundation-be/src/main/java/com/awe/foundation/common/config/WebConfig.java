@@ -9,8 +9,10 @@ import com.awe.foundation.common.filter.TraceIdFilter;
 import com.awe.foundation.common.filter.XssFilter;
 import com.awe.foundation.common.interceptor.LogInterceptor;
 import com.awe.foundation.common.interceptor.WebInvokeTimeInterceptor;
-import org.springframework.beans.factory.annotation.Value;
+import com.awe.foundation.common.config.properties.AppProperties;
+import jakarta.annotation.Resource;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -29,25 +31,11 @@ import java.util.List;
  * @date 2023/4/4 14:03
  */
 @Configuration
+@EnableConfigurationProperties(AppProperties.class)
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${app.cors.allowed-origins:http://localhost:3000}")
-    private List<String> allowedOrigins;
-
-    @Value("${app.security.xss-excludes:}")
-    private String xssExcludes;
-
-    @Value("${app.rate-limit.enabled:true}")
-    private boolean rateLimitEnabled;
-
-    @Value("${app.rate-limit.requests-per-window:120}")
-    private int requestsPerWindow;
-
-    @Value("${app.rate-limit.window-seconds:60}")
-    private long rateLimitWindowSeconds;
-
-    @Value("${app.rate-limit.exclude-paths:}")
-    private String rateLimitExcludePaths;
+    @Resource
+    private AppProperties appProperties;
 
     /**
      * 注册 MVC 拦截器
@@ -81,7 +69,7 @@ public class WebConfig implements WebMvcConfigurer {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(allowedOrigins);
+        config.setAllowedOriginPatterns(appProperties.getCors().getAllowedOrigins());
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Trace-Id"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         // 有效期 1800秒
@@ -123,8 +111,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public FilterRegistrationBean<RateLimitFilter> rateLimitFilter() {
         FilterRegistrationBean<RateLimitFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new RateLimitFilter(rateLimitEnabled, requestsPerWindow,
-                rateLimitWindowSeconds, rateLimitExcludePaths));
+        AppProperties.RateLimit rateLimit = appProperties.getRateLimit();
+        registration.setFilter(new RateLimitFilter(rateLimit.isEnabled(), rateLimit.getRequestsPerWindow(),
+                rateLimit.getWindowSeconds(), rateLimit.getExcludePaths()));
         registration.addUrlPatterns("/*");
         registration.setOrder(-90);
         return registration;
@@ -137,7 +126,7 @@ public class WebConfig implements WebMvcConfigurer {
     public FilterRegistrationBean<XssFilter> xssFilter() {
         FilterRegistrationBean<XssFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new XssFilter());
-        registration.addInitParameter("excludes", xssExcludes);
+        registration.addInitParameter("excludes", appProperties.getSecurity().getXssExcludes());
         registration.addUrlPatterns("/*");
         registration.setOrder(2);
         return registration;
