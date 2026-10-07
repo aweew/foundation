@@ -12,9 +12,14 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AuditLog {
 
-    /** 日志类型 */
+    /**
+     * 日志类型
+     */
     String logType() default "OPERATION";
 
-    /** 操作名称 */
+    /**
+     * 操作名称
+     */
     String operationName() default "";
+
 }

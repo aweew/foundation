@@ -18,6 +18,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 分页请求对象
@@ -30,6 +31,9 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 public class PageRequest implements Serializable {
+
+    private static final Set<String> SAFE_ORDER_COLUMNS = Set.of("id", "create_time", "update_time", "name",
+            "code", "sort", "status", "phone", "title");
 
     @Serial
     private static final long serialVersionUID = -4093768915141693974L;
@@ -76,7 +80,7 @@ public class PageRequest implements Serializable {
      * 创建 MyBatis-Plus 分页对象
      *
      * @param requireType 分页对象类型
-     * @param <T> 数据类型
+     * @param <T>         数据类型
      * @return 分页对象
      */
     public <T> Page<T> createPage(Class<T> requireType) {
@@ -85,9 +89,12 @@ public class PageRequest implements Serializable {
             String[] orderByArr = this.orderBy.split(",");
             String[] orderTypeArr = this.orderType.split(",");
 
-            for (int i = 0; i < orderByArr.length; ++i) {
-                String sortBy = orderByArr[i];
-                String sortType = orderTypeArr[i];
+            for (int i = 0; i < orderByArr.length && i < orderTypeArr.length; ++i) {
+                String sortBy = orderByArr[i].trim().toLowerCase();
+                String sortType = orderTypeArr[i].trim();
+                if (!SAFE_ORDER_COLUMNS.contains(sortBy)) {
+                    continue;
+                }
                 OrderItem orderItem = new OrderItem();
                 orderItem.setAsc("asc".equalsIgnoreCase(sortType));
                 orderItem.setColumn(sortBy);
@@ -104,7 +111,7 @@ public class PageRequest implements Serializable {
      * 添加排序项
      *
      * @param name 排序字段
-     * @param asc 是否升序
+     * @param asc  是否升序
      */
     public void addOrderItem(String name, boolean asc) {
         if (null == _orderItems) {
@@ -118,7 +125,7 @@ public class PageRequest implements Serializable {
      * 转换为分页响应对象
      *
      * @param clazz 响应类型
-     * @param <T> 响应类型
+     * @param <T>   响应类型
      * @return 分页响应对象
      */
     public <T extends PageResponse<?>> T toPageResp(Class<T> clazz) {
