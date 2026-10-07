@@ -7,6 +7,7 @@ import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.Arrays;
 import java.util.concurrent.Executor;
@@ -18,6 +19,7 @@ import java.util.concurrent.Executor;
  * @since 2025/9/9 14:34
  */
 @EnableAsync(proxyTargetClass = true)
+@EnableScheduling
 @AutoConfiguration
 public class AsyncConfig implements AsyncConfigurer {
 

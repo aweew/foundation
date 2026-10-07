@@ -4,6 +4,10 @@ import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
 import com.awe.foundation.common.api.Result;
 import com.awe.foundation.common.constant.ErrorCodeEnum;
+import com.awe.foundation.manager.domain.operationLog.entity.OperationLog;
+import com.awe.foundation.manager.service.IOperationLogService;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -27,9 +31,24 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @Resource
+    private IOperationLogService operationLogService;
+
+    @Resource
+    private HttpServletRequest request;
+
+    private void auditException(Exception exception) {
+        operationLogService.saveAsync(OperationLog.builder().logType("EXCEPTION")
+                .operationName("请求异常").requestMethod(request.getMethod()).requestPath(request.getRequestURI())
+                .requestIp(request.getRemoteAddr()).errorType(exception.getClass().getName())
+                .errorMessage(exception.getMessage()).responseStatus(500)
+                .resultCode(ErrorCodeEnum.ERROR.getCode()).resultMessage(ErrorCodeEnum.ERROR.getMsg()).build());
+    }
+
     // 业务异常
     @ExceptionHandler(BusinessException.class)
     public Result<?> handleBusinessException(BusinessException e) {
+        auditException(e);
         Integer code = e.getCode();
         if (Objects.isNull(code)) {
             return Result.failure(ErrorCodeEnum.FAILURE);
@@ -40,6 +59,7 @@ public class GlobalExceptionHandler {
     // 系统异常
     @ExceptionHandler(SystemException.class)
     public Result<?> handleSystemException(SystemException e) {
+        auditException(e);
         return Result.failure(ErrorCodeEnum.SYSTEM_ERROR);
     }
 
@@ -51,6 +71,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NotLoginException.class)
     public Result<?> handleNotLoginException(NotLoginException e) {
+        auditException(e);
         return Result.failure(ErrorCodeEnum.NOT_LOGIN);
     }
 
@@ -62,6 +83,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NotPermissionException.class)
     public Result<?> handleNotPermissionException(NotPermissionException e) {
+        auditException(e);
         return Result.failure(ErrorCodeEnum.NO_PERMISSION);
     }
 
@@ -94,6 +116,7 @@ public class GlobalExceptionHandler {
     // 兜底异常
     @ExceptionHandler(Exception.class)
     public Result<?> handleException(Exception e) {
+        auditException(e);
         log.error("系统异常：", e);
         return Result.failure(ErrorCodeEnum.ERROR);
     }

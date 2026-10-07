@@ -108,6 +108,35 @@ CREATE TABLE IF NOT EXISTS sys_role_menu (
     CONSTRAINT fk_sys_role_menu_menu FOREIGN KEY (menu_id) REFERENCES sys_menu (id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色权限关联表';
 
+CREATE TABLE IF NOT EXISTS sys_operation_log (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    user_id BIGINT DEFAULT NULL COMMENT '用户ID',
+    username VARCHAR(128) DEFAULT NULL COMMENT '用户标识',
+    log_type VARCHAR(32) NOT NULL COMMENT '日志类型（OPERATION、LOGIN、LOGOUT、EXCEPTION）',
+    operation_name VARCHAR(128) DEFAULT NULL COMMENT '操作名称',
+    request_method VARCHAR(16) DEFAULT NULL COMMENT '请求方法',
+    request_path VARCHAR(512) DEFAULT NULL COMMENT '请求路径',
+    request_ip VARCHAR(64) DEFAULT NULL COMMENT '请求IP',
+    client_type VARCHAR(64) DEFAULT NULL COMMENT '客户端类型',
+    user_agent VARCHAR(512) DEFAULT NULL COMMENT '客户端信息',
+    request_params VARCHAR(4000) DEFAULT NULL COMMENT '脱敏后的请求参数摘要',
+    response_status INT DEFAULT NULL COMMENT 'HTTP响应状态',
+    result_code INT DEFAULT NULL COMMENT '业务结果码',
+    result_message VARCHAR(512) DEFAULT NULL COMMENT '结果信息',
+    duration_ms BIGINT DEFAULT NULL COMMENT '耗时毫秒',
+    trace_id VARCHAR(128) DEFAULT NULL COMMENT '链路追踪ID',
+    error_type VARCHAR(256) DEFAULT NULL COMMENT '异常类型',
+    error_message VARCHAR(1000) DEFAULT NULL COMMENT '异常摘要',
+    archived TINYINT NOT NULL DEFAULT 0 COMMENT '是否已归档（0否，1是）',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    archived_time DATETIME DEFAULT NULL COMMENT '归档时间',
+    PRIMARY KEY (id),
+    KEY idx_sys_operation_log_user_time (user_id, create_time),
+    KEY idx_sys_operation_log_type_time (log_type, create_time),
+    KEY idx_sys_operation_log_archived_time (archived, create_time),
+    KEY idx_sys_operation_log_path (request_path(128))
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统操作审计日志表';
+
 INSERT IGNORE INTO sys_role (
     code,
     name,

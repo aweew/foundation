@@ -21,6 +21,10 @@ spring:
     password: "qazWSX123"
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
 
+# 操作审计日志
+audit-log:
+  retention-days: 180
+
 # Web 安全配置
 app:
   cors:

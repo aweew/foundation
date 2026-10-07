@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import com.awe.foundation.common.api.Result;
+import com.awe.foundation.common.annotation.AuditLog;
 import com.awe.foundation.manager.domain.auth.dto.req.ChangePasswordReq;
 import com.awe.foundation.manager.domain.auth.dto.req.LoginReq;
 import com.awe.foundation.manager.domain.auth.dto.resp.LoginResp;
@@ -32,6 +33,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @SaIgnore
+    @AuditLog(logType = "LOGIN", operationName = "用户登录")
     public Result<LoginResp> login(@Valid @RequestBody LoginReq loginReq) {
         authStrategy.validate(loginReq);
         return Result.success(authStrategy.login(loginReq));
@@ -56,6 +58,7 @@ public class AuthController {
      */
     @PostMapping("/logout")
     @SaCheckLogin
+    @AuditLog(logType = "LOGOUT", operationName = "用户退出")
     public Result<Void> logout() {
         StpUtil.logout();
         return Result.success();

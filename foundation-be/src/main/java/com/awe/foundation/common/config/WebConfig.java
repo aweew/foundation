@@ -38,6 +38,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Resource
     private AppProperties appProperties;
 
+    @Resource
+    private WebInvokeTimeInterceptor webInvokeTimeInterceptor;
+
     /**
      * 注册 MVC 拦截器
      *
@@ -49,7 +52,7 @@ public class WebConfig implements WebMvcConfigurer {
         // 日志拦截器
         registry.addInterceptor(new LogInterceptor()).addPathPatterns("/**");
         // 全局访问性能拦截
-        registry.addInterceptor(new WebInvokeTimeInterceptor());
+        registry.addInterceptor(webInvokeTimeInterceptor);
     }
 
     /**

@@ -9,7 +9,6 @@ import com.awe.foundation.common.util.StringUtils;
 import com.awe.foundation.common.util.JsonUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.http.MediaType;
@@ -32,7 +31,6 @@ import java.util.Objects;
  * @author Awe
  * @since 2025/12/8 15:56
  */
-@RequiredArgsConstructor
 @Slf4j
 @Service
 public class WebInvokeTimeInterceptor implements HandlerInterceptor {
@@ -44,7 +42,7 @@ public class WebInvokeTimeInterceptor implements HandlerInterceptor {
             "password", "oldpassword", "newpassword", "confirmpassword", "token", "accesstoken",
             "refreshtoken", "authorization", "secret", "phone", "mobile", "idcard", "cookie",
             "webhookurl", "jwtsecretkey"));
-    public static final String[] EXCLUDE_URL = {""};
+    public static final String[] EXCLUDE_URL = {"/actuator", "/swagger-ui", "/v3/api-docs", "/favicon.ico"};
 
     private final TransmittableThreadLocal<StopWatch> invokeTimeTL = new TransmittableThreadLocal<>();
 
@@ -62,7 +60,7 @@ public class WebInvokeTimeInterceptor implements HandlerInterceptor {
         String url = request.getMethod() + " " + request.getRequestURI();
 
         boolean excluded = Arrays.stream(EXCLUDE_URL).anyMatch(url::contains);
-        if (!excluded) {
+        if (excluded) {
             return true;
         }
 

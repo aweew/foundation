@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.secure.BCrypt;
 import com.awe.foundation.common.api.PageResponse;
 import com.awe.foundation.common.api.Result;
+import com.awe.foundation.common.annotation.AuditLog;
 import com.awe.foundation.common.constant.ErrorCodeEnum;
 import com.awe.foundation.common.exception.BusinessException;
 import com.awe.foundation.common.util.StringUtils;
@@ -48,6 +49,7 @@ public class UserController {
      */
     @GetMapping("/page")
     @SaCheckPermission("sys:user:list")
+    @AuditLog(operationName = "分页查询用户")
     public Result<PageResponse<UserResp>> page(Page<User> pageReq, UserReq req) {
         User user = userConvert.toEntity(req);
         Page<User> page = this.userService.page(pageReq, Wrappers.lambdaQuery(user));
@@ -62,6 +64,7 @@ public class UserController {
      */
     @GetMapping("/list")
     @SaCheckPermission("sys:user:list")
+    @AuditLog(operationName = "查询用户列表")
     public Result<List<UserResp>> list(UserReq req) {
         User user = userConvert.toEntity(req);
         List<User> list = userService.list(Wrappers.lambdaQuery(user));
@@ -76,6 +79,7 @@ public class UserController {
      */
     @GetMapping("/{id}")
     @SaCheckPermission("sys:user:view")
+    @AuditLog(operationName = "查询用户详情")
     public Result<UserResp> getById(@PathVariable("id") Long id) {
         User user = this.userService.getById(id);
         if (Objects.nonNull(user)) {
@@ -92,6 +96,7 @@ public class UserController {
      */
     @PostMapping
     @SaCheckPermission("sys:user:save")
+    @AuditLog(operationName = "新增用户")
     public Result<Void> save(@Valid @RequestBody UserAddReq req) {
         req.setPassword(BCrypt.hashpw(req.getPassword()));
         this.userService.save(userConvert.addToEntity(req));
@@ -106,6 +111,7 @@ public class UserController {
      */
     @PutMapping
     @SaCheckPermission("sys:user:update")
+    @AuditLog(operationName = "修改用户")
     public Result<Void> update(@Valid @RequestBody UserUpdateReq req) {
         User user = this.userService.getById(req.getId());
         if (Objects.isNull(user)) {
@@ -130,6 +136,7 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     @SaCheckPermission("sys:user:delete")
+    @AuditLog(operationName = "删除用户")
     public Result<Void> deleteById(@PathVariable("id") Long id) {
         if (Objects.isNull(this.userService.getById(id))) {
             throw new BusinessException(ErrorCodeEnum.DATA_NOT_FOUND);
