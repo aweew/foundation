@@ -33,6 +33,16 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/system/OperationLogView.vue'),
         meta: { title: '操作审计', icon: 'Document' },
       },
+      {
+        path: 'system/storage-provider',
+        component: () => import('@/views/system/StorageProviderView.vue'),
+        meta: { title: '云存储配置', icon: 'Files' },
+      },
+      {
+        path: 'system/storage-file',
+        component: () => import('@/views/system/StorageFileView.vue'),
+        meta: { title: '文件管理', icon: 'FolderOpened' },
+      },
     ],
   },
   { path: '/:pathMatch(.*)*', redirect: '/dashboard' },

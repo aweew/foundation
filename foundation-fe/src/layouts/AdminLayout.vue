@@ -58,6 +58,8 @@ const navItems = [
   { path: '/system/role', title: '角色管理', icon: 'UserFilled' },
   { path: '/system/menu', title: '菜单管理', icon: 'Menu' },
   { path: '/system/operation-log', title: '操作审计', icon: 'Document' },
+  { path: '/system/storage-provider', title: '云存储配置', icon: 'Files' },
+  { path: '/system/storage-file', title: '文件管理', icon: 'FolderOpened' },
 ];
 
 /**
