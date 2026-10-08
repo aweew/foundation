@@ -6,8 +6,14 @@
     </div>
     <el-button v-permission="`sys:${resource}:save`" type="primary" :icon="Plus" @click="openEditor()">新增</el-button>
   </div>
-  <el-card>
-    <el-table v-loading="loading" :data="rows" stripe>
+  <el-card :class="{ 'plain-surface': plain }">
+    <el-table
+      v-loading="loading"
+      :data="rows"
+      :row-key="tree ? 'id' : undefined"
+      :tree-props="tree ? { children: 'childList' } : undefined"
+      stripe
+    >
       <el-table-column
         v-for="column in columns"
         :key="column.prop"
@@ -25,35 +31,60 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="160">
+      <el-table-column label="操作" :width="tree ? 156 : relation ? 128 : 96" fixed="right">
         <template #default="{ row }">
-          <el-button v-permission="`sys:${resource}:update`" link type="primary" :icon="Edit" @click="openEditor(row)">
-            编辑
-          </el-button>
-          <el-button
-            v-if="relation"
-            v-permission="relation.permission"
-            link
-            type="primary"
-            @click="emit('manage-relation', row)"
-          >
-            {{ relation.label }}
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            :icon="Delete"
-            :loading="deletingId === row.id"
-            :disabled="deletingId !== undefined"
-            v-permission="`sys:${resource}:delete`"
-            @click="deleteItem(row)"
-          >
-            删除
-          </el-button>
+          <div class="row-actions">
+            <el-tooltip content="编辑" placement="top">
+              <el-button
+                v-permission="`sys:${resource}:update`"
+                circle
+                text
+                type="primary"
+                :icon="Edit"
+                aria-label="编辑"
+                @click="openEditor(row)"
+              />
+            </el-tooltip>
+            <el-tooltip v-if="relation" :content="relation.label" placement="top">
+              <el-button
+                v-permission="relation.permission"
+                circle
+                text
+                type="primary"
+                :icon="Setting"
+                :aria-label="relation.label"
+                @click="emit('manage-relation', row)"
+              />
+            </el-tooltip>
+            <el-tooltip v-if="tree && showChildAction" content="新增子项" placement="top">
+              <el-button
+                v-permission="`sys:${resource}:save`"
+                circle
+                text
+                type="primary"
+                :icon="Plus"
+                aria-label="新增子项"
+                @click="openChildEditor(row)"
+              />
+            </el-tooltip>
+            <el-tooltip content="删除" placement="top">
+              <el-button
+                v-permission="`sys:${resource}:delete`"
+                circle
+                text
+                type="danger"
+                :icon="Delete"
+                :loading="deletingId === row.id"
+                :disabled="deletingId !== undefined"
+                aria-label="删除"
+                @click="deleteItem(row)"
+              />
+            </el-tooltip>
+          </div>
         </template>
       </el-table-column>
     </el-table>
-    <div class="pagination">
+    <div v-if="!tree" class="pagination">
       <el-pagination
         v-model:current-page="page.current"
         v-model:page-size="page.size"
@@ -125,7 +156,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue';
 import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus';
-import { Delete, Edit, Plus } from '@element-plus/icons-vue';
+import { Delete, Edit, Plus, Setting } from '@element-plus/icons-vue';
 import { createSystemItem, deleteSystemItem, getSystemItem, updateSystemItem } from '@/api/system';
 import type { ApiResult, PageResponse } from '@/types/api';
 import type { QueryPage, SystemFormField, SystemPageRecord, SystemRecord, SystemResource } from '@/api/system/types';
@@ -138,14 +169,19 @@ interface TableColumn {
   options?: { value: string | number; label: string }[];
 }
 
+type TableData = PageResponse<SystemPageRecord> | SystemPageRecord[];
+
 const props = defineProps<{
   title: string;
   resource: SystemResource;
-  loader: (params: QueryPage) => Promise<{ data: ApiResult<PageResponse<SystemPageRecord>> }>;
+  loader: (params: QueryPage) => Promise<{ data: ApiResult<TableData> }>;
   fields: SystemFormField[];
   preservedFields?: string[];
   columns: TableColumn[];
   relation?: { label: string; permission: string };
+  tree?: boolean;
+  showChildAction?: boolean;
+  plain?: boolean;
 }>();
 const emit = defineEmits<{ 'manage-relation': [row: SystemPageRecord] }>();
 const loading = ref(false);
@@ -218,6 +254,15 @@ const openEditor = async (row?: SystemPageRecord) => {
   } finally {
     editorLoading.value = false;
   }
+};
+
+/**
+ * 打开新增子项表单并自动填充父级节点
+ * @param row 当前父级节点
+ */
+const openChildEditor = async (row: SystemPageRecord) => {
+  await openEditor();
+  formModel.value.parentId = row.id;
 };
 
 /**
@@ -313,8 +358,9 @@ const load = async () => {
   loading.value = true;
   try {
     const response = await props.loader(page.value);
-    rows.value = response.data.data.records || [];
-    total.value = response.data.data.total || 0;
+    const pageData = response.data.data;
+    rows.value = Array.isArray(pageData) ? pageData : pageData.records || [];
+    total.value = Array.isArray(pageData) ? rows.value.length : pageData.total || 0;
   } catch {
     ElMessage.error('数据加载失败');
   } finally {
@@ -326,6 +372,43 @@ onMounted(load);
 </script>
 
 <style scoped>
+.row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.row-actions :deep(.el-button) {
+  width: 36px;
+  height: 36px;
+  margin: 0;
+}
+
+.plain-surface {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.plain-surface :deep(.el-card__body) {
+  padding: 0;
+}
+
+.plain-surface :deep(.el-table),
+.plain-surface :deep(.el-table__expanded-cell) {
+  background: transparent;
+}
+
+.plain-surface :deep(.el-table tr) {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.plain-surface :deep(.el-table th.el-table__cell) {
+  background: rgba(255, 255, 255, 0.6);
+  color: #6e6e73;
+  font-weight: 500;
+}
+
 .editor-form {
   max-height: 60vh;
   overflow-y: auto;

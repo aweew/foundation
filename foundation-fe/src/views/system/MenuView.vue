@@ -2,7 +2,10 @@
   <SystemTable
     title="菜单管理"
     resource="menu"
-    :loader="getMenuPage"
+    :loader="loadMenuTree"
+    tree
+    show-child-action
+    plain
     :fields="fields"
     :columns="[
       { prop: 'title', label: '菜单标题' },
@@ -15,8 +18,20 @@
 
 <script setup lang="ts">
 import SystemTable from './SystemTable.vue';
-import { getMenuPage } from '@/api/system';
-import type { SystemFormField } from '@/api/system/types';
+import { getMenuTree } from '@/api/system';
+import type { SystemFormField, SystemPageRecord } from '@/api/system/types';
+import type { ApiResult } from '@/types/api';
+
+const loadMenuTree = async () => {
+  const response = await getMenuTree();
+  return {
+    ...response,
+    data: {
+      ...response.data,
+      data: response.data.data || [],
+    } as ApiResult<SystemPageRecord[]>,
+  };
+};
 
 const menuTypes = [
   { value: 1, label: '菜单' },

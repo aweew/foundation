@@ -64,6 +64,7 @@ async function mockApi(page, config, failSave = false) {
         ],
       };
     else if (path.includes('/auth/userInfo')) result = { nickName: '管理员', roles: [], menus: [], permissions: ['*'] };
+    else if (request.method() === 'GET' && path.endsWith('/tree')) result = records;
     else if (request.method() === 'GET' && path.endsWith('/page'))
       result = {
         records,
