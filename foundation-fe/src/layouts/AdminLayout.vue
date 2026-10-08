@@ -1,9 +1,21 @@
 <template>
   <el-container class="admin-shell">
-    <el-aside width="232px" class="sidebar">
+    <el-aside
+      :width="sidebarWidth"
+      class="sidebar"
+      :class="{ 'is-collapsed': sidebarCollapsed, 'is-animating': sidebarAnimating }"
+    >
       <div class="brand">
         <span class="brand-mark">F</span>
-        <span>Foundation</span>
+        <span v-show="!sidebarCollapsed" class="brand-name">Foundation</span>
+        <el-button
+          class="sidebar-toggle"
+          text
+          circle
+          :icon="sidebarCollapsed ? Expand : Fold"
+          :aria-label="sidebarCollapsed ? '展开侧边栏' : '收起侧边栏'"
+          @click="toggleSidebar"
+        />
       </div>
       <el-menu :default-active="route.path" router class="sidebar-menu">
         <el-menu-item v-for="item in visibleNavItems" :key="item.path" :index="item.path">
@@ -42,13 +54,31 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { Expand, Fold } from '@element-plus/icons-vue';
 import { useAuthStore } from '@/stores/auth';
 
 const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
+const sidebarCollapsed = ref(window.matchMedia('(max-width: 768px)').matches);
+const sidebarAnimating = ref(false);
+const sidebarWidth = computed(() => (sidebarCollapsed.value ? '64px' : '208px'));
+let sidebarAnimationTimer: number | undefined;
+
+/**
+ * 切换侧边栏状态并锁定动画期间的重复交互
+ */
+const toggleSidebar = () => {
+  sidebarCollapsed.value = !sidebarCollapsed.value;
+  sidebarAnimating.value = true;
+  if (sidebarAnimationTimer) window.clearTimeout(sidebarAnimationTimer);
+  sidebarAnimationTimer = window.setTimeout(() => {
+    sidebarAnimating.value = false;
+    sidebarAnimationTimer = undefined;
+  }, 280);
+};
 const displayName = computed(
   () => auth.userInfo?.nickName || auth.userInfo?.realName || auth.userInfo?.phone || '管理员',
 );
