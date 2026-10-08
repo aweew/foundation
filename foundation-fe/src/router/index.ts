@@ -14,6 +14,11 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '工作台', icon: 'HomeFilled' },
       },
       {
+        path: 'pro-table',
+        component: () => import('@/views/demo/ProTableDemoView.vue'),
+        meta: { title: '表格示例', icon: 'Grid' },
+      },
+      {
         path: 'system/user',
         component: () => import('@/views/system/UserView.vue'),
         meta: { title: '用户管理', icon: 'User', permission: 'sys:user:list' },

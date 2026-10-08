@@ -84,6 +84,7 @@ const displayName = computed(
 );
 const navItems = [
   { path: '/dashboard', title: '工作台', icon: 'HomeFilled', permission: '' },
+  { path: '/pro-table', title: '表格示例', icon: 'Grid', permission: '' },
   { path: '/system/user', title: '用户管理', icon: 'User', permission: 'sys:user:list' },
   { path: '/system/role', title: '角色管理', icon: 'UserFilled', permission: 'sys:role:list' },
   { path: '/system/menu', title: '菜单管理', icon: 'Menu', permission: 'sys:menu:list' },
