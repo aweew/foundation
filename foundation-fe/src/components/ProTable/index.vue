@@ -104,7 +104,7 @@
                   v-if="column.copyable && scope.row[column.prop as string]"
                   content="复制"
                   placement="top"
-                  :show-after="3000"
+                  :show-after="300"
                 >
                   <el-button
                     text
@@ -144,7 +144,7 @@
         layout="sizes, prev, pager, next"
         :total="total || 0"
         :page-sizes="[10, 20, 50]"
-        @change="emit('pagination-change', pagination)"
+        @change="handlePaginationChange"
       />
     </div>
   </section>
@@ -184,6 +184,7 @@ const props = withDefaults(defineProps<ProTableProps<T>>(), {
 const emit = defineEmits<{
   refresh: [];
   retry: [];
+  'update:pagination': [pagination: ProTablePagination];
   'selection-change': [rows: T[]];
   'pagination-change': [pagination: ProTablePagination];
   'sort-change': [sort: SortChange];
@@ -218,7 +219,12 @@ const loadColumns = () => {
       return;
     }
     const byKey = new Map(defaults.map((column) => [column.key, column]));
-    columnState.value = saved.map((item) => ({ ...byKey.get(item.key)!, visible: item.visible })).filter(Boolean);
+    const restoredColumns: ColumnState<T>[] = [];
+    saved.forEach((item) => {
+      const column = byKey.get(item.key);
+      if (column) restoredColumns.push({ ...column, visible: item.visible !== false });
+    });
+    columnState.value = restoredColumns;
     defaults.forEach((column) => {
       if (!columnState.value.some((item) => item.key === column.key)) columnState.value = [...columnState.value, column];
     });
@@ -284,8 +290,13 @@ const statusClass = (column: ProTableColumn<T>, row: T) => {
   return PRO_TABLE_STATUS_CLASS[type];
 };
 
+const getRowIdentifier = (row: T) => {
+  const identifier = typeof props.rowKey === 'function' ? props.rowKey(row) : row[props.rowKey];
+  return identifier === undefined || identifier === null ? undefined : String(identifier);
+};
+
 const getCopyKey = (row: T, column: ProTableColumn<T>) => {
-  const rowIdentifier = typeof props.rowKey === 'function' ? props.rowKey(row) : row[props.rowKey];
+  const rowIdentifier = getRowIdentifier(row) || String(row);
   return `${String(rowIdentifier)}-${column.prop || column.type || 'column'}`;
 };
 
@@ -298,7 +309,14 @@ const copyValue = async (value: unknown, key: string) => {
   }
 };
 
-const isRowSelected = (row: T) => selectedRows.value.some((selectedRow) => selectedRow === row);
+const isRowSelected = (row: T) => {
+  const rowIdentifier = getRowIdentifier(row);
+  return selectedRows.value.some((selectedRow) => {
+    if (selectedRow === row) return true;
+    const selectedIdentifier = getRowIdentifier(selectedRow as T);
+    return rowIdentifier !== undefined && rowIdentifier === selectedIdentifier;
+  });
+};
 
 const toggleRowSelection = (row: T, selected: boolean) => {
   tableRef.value?.toggleRowSelection(row, selected);
@@ -309,12 +327,22 @@ const handleSelectionChange = (rows: T[]) => {
   emit('selection-change', rows);
 };
 
+const handlePaginationChange = () => {
+  if (!props.pagination) return;
+  const nextPagination = { ...props.pagination };
+  emit('update:pagination', nextPagination);
+  emit('pagination-change', nextPagination);
+};
+
 watch(() => props.columns, loadColumns, { deep: true });
 onMounted(loadColumns);
 
 defineExpose({
   tableRef,
-  clearSelection: () => tableRef.value?.clearSelection(),
+  clearSelection: () => {
+    tableRef.value?.clearSelection();
+    selectedRows.value = [];
+  },
   toggleRowSelection: (row: T, selected?: boolean) => tableRef.value?.toggleRowSelection(row, selected),
 });
 </script>
