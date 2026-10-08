@@ -7,6 +7,7 @@ import type {
   OperationLog,
   OperationLogQuery,
   QueryPage,
+  SystemPageRecord,
   SystemRecord,
   SystemResource,
 } from './types';
@@ -93,7 +94,7 @@ export const deleteSystemItem = (resource: SystemResource, id: string | number) 
  * @param params 分页查询参数
  */
 export const getUserPage = (params: QueryPage) => {
-  return request<ApiResult<PageResponse<Record<string, unknown>>>>({
+  return request<ApiResult<PageResponse<SystemPageRecord>>>({
     url: '/sys/user/page',
     method: 'get',
     params,
@@ -105,7 +106,7 @@ export const getUserPage = (params: QueryPage) => {
  * @param params 分页查询参数
  */
 export const getRolePage = (params: QueryPage) => {
-  return request<ApiResult<PageResponse<Record<string, unknown>>>>({
+  return request<ApiResult<PageResponse<SystemPageRecord>>>({
     url: '/sys/role/page',
     method: 'get',
     params,

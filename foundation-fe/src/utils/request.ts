@@ -1,7 +1,11 @@
-import type { AxiosError, AxiosResponse } from 'axios';
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import { tokenStorage } from './storage';
+
+let refreshPromise: Promise<string> | undefined;
+
+type RetryRequestConfig = AxiosRequestConfig & { _retry?: boolean };
 
 const request = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -21,16 +25,35 @@ request.interceptors.response.use(
   (response: AxiosResponse) => {
     const result = response.data;
     if (typeof result?.code === 'number' && result.code !== 0) {
-      ElMessage.error(result.msg || '请求失败');
-      return Promise.reject(new Error(result.msg || '请求失败'));
+      const error = new Error(result.msg || '请求失败');
+      Object.assign(error, { businessError: true, code: result.code });
+      return Promise.reject(error);
     }
     return response;
   },
   // 统一展示接口错误，并将认证失效导回登录页
-  (error: AxiosError<{ msg?: string }>) => {
-    if (error.response?.status === 401) {
-      tokenStorage.clear();
-      if (location.pathname !== '/login') location.href = '/login';
+  async (error: AxiosError<{ msg?: string }>) => {
+    const config = error.config as RetryRequestConfig | undefined;
+    if (error.response?.status === 401 && config && !config._retry && !config.url?.endsWith('/auth/refresh')) {
+      config._retry = true;
+      refreshPromise ??= axios
+        .post(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh`, undefined, {
+          headers: { satoken: tokenStorage.get() },
+        })
+        .then((response) => response.data.data.access_token as string)
+        .finally(() => {
+          refreshPromise = undefined;
+        });
+      try {
+        const token = await refreshPromise;
+        tokenStorage.set(token);
+        config.headers = { ...config.headers, satoken: token } as typeof config.headers;
+        return request(config);
+      } catch {
+        tokenStorage.clear();
+        tokenStorage.clearRefresh();
+        if (location.pathname !== '/login') location.href = '/login';
+      }
     }
     ElMessage.error(error.response?.data?.msg || error.message || '网络异常');
     return Promise.reject(error);

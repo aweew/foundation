@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "typecheck": "vue-tsc --noEmit",
     "test:e2e": "playwright test"
   },
   "dependencies": {
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@playwright/test": "1.54.1",
     "@types/node": "^24.3.0",
+    "@typescript-eslint/parser": "^8.71.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "eslint": "^9.34.0",
     "eslint-plugin-vue": "^10.4.0",

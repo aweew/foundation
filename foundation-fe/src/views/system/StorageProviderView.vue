@@ -4,7 +4,7 @@
       <h1>云存储配置</h1>
       <p>管理文件存储厂商与当前默认配置</p>
     </div>
-    <el-button type="primary" :icon="Plus" @click="openEditor()">新增配置</el-button>
+    <el-button v-permission="'sys:storage:save'" type="primary" :icon="Plus" @click="openEditor()">新增配置</el-button>
   </div>
 
   <el-card v-loading="loading">
@@ -28,11 +28,21 @@
       <el-table-column prop="updateTime" label="更新时间" min-width="170" />
       <el-table-column label="操作" width="330" fixed="right">
         <template #default="{ row }">
-          <el-button link type="primary" :icon="Edit" @click="openEditor(row)">编辑</el-button>
-          <el-button link type="warning" :icon="Connection" :loading="testingId === row.id" @click="testConfig(row)">
+          <el-button v-permission="'sys:storage:update'" link type="primary" :icon="Edit" @click="openEditor(row)">
+            编辑
+          </el-button>
+          <el-button
+            v-permission="'sys:storage:test'"
+            link
+            type="warning"
+            :icon="Connection"
+            :loading="testingId === row.id"
+            @click="testConfig(row)"
+          >
             测试
           </el-button>
           <el-button
+            v-permission="'sys:storage:activate'"
             link
             type="success"
             :icon="CircleCheck"
@@ -42,7 +52,14 @@
           >
             启用
           </el-button>
-          <el-button link type="danger" :icon="Delete" :disabled="row.isDefault" @click="deleteConfig(row)">
+          <el-button
+            v-permission="'sys:storage:delete'"
+            link
+            type="danger"
+            :icon="Delete"
+            :disabled="row.isDefault"
+            @click="deleteConfig(row)"
+          >
             删除
           </el-button>
         </template>

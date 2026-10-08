@@ -5,6 +5,12 @@ export interface QueryPage {
   [key: string]: unknown;
 }
 
+export interface SystemPageRecord {
+  id: string | number;
+
+  [key: string]: unknown;
+}
+
 export type SystemResource = 'user' | 'role' | 'menu';
 export type SystemRecord = Record<string, string | number | boolean | null | undefined>;
 
@@ -26,7 +32,7 @@ export interface EnumOption {
 
 export type EnumDictionary = Record<string, EnumOption[]>;
 
-export interface MenuItem {
+export interface MenuItem extends SystemPageRecord {
   id: number;
   name: string;
   title: string;

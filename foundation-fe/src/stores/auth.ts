@@ -1,11 +1,15 @@
 import { defineStore } from 'pinia';
-import { getUserInfo, login } from '@/api/auth';
+import { getUserInfo, login, logout, refreshToken } from '@/api/auth';
 import type { LoginRequest, UserInfo } from '@/api/auth/types';
 import type { MenuItem } from '@/api/system/types';
 import { tokenStorage } from '@/utils/storage';
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({ token: tokenStorage.get(), userInfo: null as UserInfo | null }),
+  state: () => ({
+    token: tokenStorage.get(),
+    refreshToken: tokenStorage.getRefresh(),
+    userInfo: null as UserInfo | null,
+  }),
   getters: {
     menus: (state): MenuItem[] => state.userInfo?.menus || [],
     permissions: (state) => state.userInfo?.permissions || [],
@@ -19,7 +23,19 @@ export const useAuthStore = defineStore('auth', {
       const { data } = await login(payload);
       this.token = data.data.access_token;
       tokenStorage.set(this.token);
+      if (data.data.refresh_token) {
+        this.refreshToken = data.data.refresh_token;
+        tokenStorage.setRefresh(this.refreshToken);
+      }
       await this.loadUserInfo();
+    },
+    /**
+     * 续期当前登录令牌并更新本地会话
+     */
+    async renew() {
+      const { data } = await refreshToken();
+      this.token = data.data.access_token;
+      tokenStorage.set(this.token);
     },
     /**
      * 查询并缓存当前登录用户信息
@@ -31,10 +47,17 @@ export const useAuthStore = defineStore('auth', {
     /**
      * 清理令牌和用户信息，结束当前会话
      */
-    signOut() {
+    async signOut() {
+      try {
+        if (this.token) await logout();
+      } catch {
+        // 本地会话仍需清理，避免退出接口异常阻塞用户退出
+      }
       this.token = '';
+      this.refreshToken = '';
       this.userInfo = null;
       tokenStorage.clear();
+      tokenStorage.clearRefresh();
     },
     /**
      * 判断当前用户是否拥有指定权限

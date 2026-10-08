@@ -4,7 +4,7 @@
       <h1>文件管理</h1>
       <p>统一查看、上传和维护云存储文件</p>
     </div>
-    <FileUpload @success="load" />
+    <FileUpload v-permission="'sys:storage:file:save'" @success="() => load(false)" />
   </div>
 
   <el-card class="filter-panel">
@@ -49,14 +49,20 @@
           >
             <el-image :src="row.accessUrl" :alt="row.originalName" fit="cover" loading="lazy">
               <template #placeholder>
-                <el-icon><Picture /></el-icon>
+                <el-icon>
+                  <Picture />
+                </el-icon>
               </template>
               <template #error>
-                <el-icon><Picture /></el-icon>
+                <el-icon>
+                  <Picture />
+                </el-icon>
               </template>
             </el-image>
           </button>
-          <el-icon v-else class="file-icon"><Document /></el-icon>
+          <el-icon v-else class="file-icon">
+            <Document />
+          </el-icon>
         </template>
       </el-table-column>
       <el-table-column prop="originalName" label="文件名" min-width="220" show-overflow-tooltip />
@@ -68,7 +74,7 @@
       <el-table-column prop="businessId" label="业务ID" width="130" />
       <el-table-column prop="providerCode" label="存储厂商" width="120" />
       <el-table-column prop="createTime" label="上传时间" width="180" />
-      <el-table-column label="操作" width="220" fixed="right">
+      <el-table-column label="操作" width="220">
         <template #default="{ row }">
           <el-button
             v-if="!isImage(row)"
@@ -83,7 +89,9 @@
           <el-button link type="info" :icon="CopyDocument" :disabled="!row.accessUrl" @click="copyUrl(row)">
             复制链接
           </el-button>
-          <el-button link type="danger" :icon="Delete" @click="remove(row)">删除</el-button>
+          <el-button v-permission="'sys:storage:file:delete'" link type="danger" :icon="Delete" @click="remove(row)">
+            删除
+          </el-button>
         </template>
       </el-table-column>
       <template #empty>
@@ -107,7 +115,7 @@
 import { onMounted, reactive, ref } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { CopyDocument, Delete, Document, Picture, Refresh, Search, View } from '@element-plus/icons-vue';
-import { deleteStorageFile, getStorageFilePage, getStorageFileAccessUrl } from '@/api/storage';
+import { deleteStorageFile, getStorageFileAccessUrl, getStorageFilePage } from '@/api/storage';
 import FileUpload from '@/components/file/FileUpload.vue';
 import FilePreview from '@/components/file/FilePreview.vue';
 import type { PreviewFile } from '@/components/file/types';
@@ -130,8 +138,8 @@ const isImage = (file: StorageFile) => {
   );
 };
 
-const load = async () => {
-  loading.value = true;
+const load = async (showLoading = true) => {
+  if (showLoading) loading.value = true;
   try {
     filters.current = page.current;
     filters.size = page.size;

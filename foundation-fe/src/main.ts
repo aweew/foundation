@@ -7,7 +7,10 @@ import 'element-plus/dist/index.css';
 import './styles.css';
 import App from './App.vue';
 import router from './router';
+import { registerPermissionDirective } from './directives/permission';
 
 const app = createApp(App);
 Object.entries(ElementPlusIconsVue).forEach(([name, component]) => app.component(name, component));
-app.use(createPinia()).use(router).use(ElementPlus, { locale: zhCn }).mount('#app');
+app.use(createPinia());
+registerPermissionDirective(app);
+app.use(router).use(ElementPlus, { locale: zhCn }).mount('#app');

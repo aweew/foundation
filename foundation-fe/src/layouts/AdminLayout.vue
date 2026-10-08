@@ -6,7 +6,7 @@
         <span>Foundation</span>
       </div>
       <el-menu :default-active="route.path" router class="sidebar-menu">
-        <el-menu-item v-for="item in navItems" :key="item.path" :index="item.path">
+        <el-menu-item v-for="item in visibleNavItems" :key="item.path" :index="item.path">
           <el-icon>
             <component :is="item.icon" />
           </el-icon>
@@ -53,20 +53,23 @@ const displayName = computed(
   () => auth.userInfo?.nickName || auth.userInfo?.realName || auth.userInfo?.phone || '管理员',
 );
 const navItems = [
-  { path: '/dashboard', title: '工作台', icon: 'HomeFilled' },
-  { path: '/system/user', title: '用户管理', icon: 'User' },
-  { path: '/system/role', title: '角色管理', icon: 'UserFilled' },
-  { path: '/system/menu', title: '菜单管理', icon: 'Menu' },
-  { path: '/system/operation-log', title: '操作审计', icon: 'Document' },
-  { path: '/system/storage-provider', title: '云存储配置', icon: 'Files' },
-  { path: '/system/storage-file', title: '文件管理', icon: 'FolderOpened' },
+  { path: '/dashboard', title: '工作台', icon: 'HomeFilled', permission: '' },
+  { path: '/system/user', title: '用户管理', icon: 'User', permission: 'sys:user:list' },
+  { path: '/system/role', title: '角色管理', icon: 'UserFilled', permission: 'sys:role:list' },
+  { path: '/system/menu', title: '菜单管理', icon: 'Menu', permission: 'sys:menu:list' },
+  { path: '/system/operation-log', title: '操作审计', icon: 'Document', permission: 'sys:operation-log:list' },
+  { path: '/system/storage-provider', title: '云存储配置', icon: 'Files', permission: 'sys:storage:list' },
+  { path: '/system/storage-file', title: '文件管理', icon: 'FolderOpened', permission: 'sys:storage:file:list' },
 ];
+const visibleNavItems = computed(() =>
+  navItems.filter((item) => !item.permission || auth.hasPermission(item.permission)),
+);
 
 /**
  * 清理当前会话并返回登录页
  */
 const logout = () => {
-  auth.signOut();
+  void auth.signOut();
   router.replace('/login');
 };
 </script>

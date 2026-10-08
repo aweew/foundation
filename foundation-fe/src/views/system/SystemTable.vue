@@ -4,7 +4,7 @@
       <h1>{{ title }}</h1>
       <p>维护平台基础数据</p>
     </div>
-    <el-button type="primary" :icon="Plus" @click="openEditor()">新增</el-button>
+    <el-button v-permission="`sys:${resource}:save`" type="primary" :icon="Plus" @click="openEditor()">新增</el-button>
   </div>
   <el-card>
     <el-table v-loading="loading" :data="rows" stripe>
@@ -27,13 +27,16 @@
 
       <el-table-column label="操作" width="160">
         <template #default="{ row }">
-          <el-button link type="primary" :icon="Edit" @click="openEditor(row)">编辑</el-button>
+          <el-button v-permission="`sys:${resource}:update`" link type="primary" :icon="Edit" @click="openEditor(row)">
+            编辑
+          </el-button>
           <el-button
             link
             type="danger"
             :icon="Delete"
             :loading="deletingId === row.id"
             :disabled="deletingId !== undefined"
+            v-permission="`sys:${resource}:delete`"
             @click="deleteItem(row)"
           >
             删除
@@ -115,7 +118,8 @@ import { computed, nextTick, onMounted, ref } from 'vue';
 import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus';
 import { Delete, Edit, Plus } from '@element-plus/icons-vue';
 import { createSystemItem, deleteSystemItem, getSystemItem, updateSystemItem } from '@/api/system';
-import type { QueryPage, SystemFormField, SystemRecord, SystemResource } from '@/api/system/types';
+import type { ApiResult, PageResponse } from '@/types/api';
+import type { QueryPage, SystemFormField, SystemPageRecord, SystemRecord, SystemResource } from '@/api/system/types';
 import StatusBadge from '@/components/StatusBadge.vue';
 
 interface TableColumn {
@@ -128,13 +132,13 @@ interface TableColumn {
 const props = defineProps<{
   title: string;
   resource: SystemResource;
-  loader: (params: QueryPage) => Promise<any>;
+  loader: (params: QueryPage) => Promise<{ data: ApiResult<PageResponse<SystemPageRecord>> }>;
   fields: SystemFormField[];
   preservedFields?: string[];
   columns: TableColumn[];
 }>();
 const loading = ref(false);
-const rows = ref<Record<string, unknown>[]>([]);
+const rows = ref<SystemPageRecord[]>([]);
 const total = ref(0);
 const page = ref({ current: 1, size: 10 });
 const editorVisible = ref(false);
@@ -172,7 +176,7 @@ const formRules = computed<FormRules>(() => {
  * 打开新增或编辑弹窗，并准备表单初始数据
  * @param row 待编辑的列表记录，不传时进入新增模式
  */
-const openEditor = async (row?: Record<string, unknown>) => {
+const openEditor = async (row?: SystemPageRecord) => {
   editingId.value = row?.id as string | number | undefined;
   originalRecord.value = {};
   formModel.value = {};
@@ -231,8 +235,9 @@ const saveItem = async () => {
     editorVisible.value = false;
     ElMessage.success(editingId.value !== undefined ? '修改成功' : '新增成功');
     await load();
-  } catch {
-    // 请求拦截器显示接口错误，保留表单以便重试
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : '保存失败');
+    // 保留表单以便修正后重试
   } finally {
     saving.value = false;
   }
@@ -242,7 +247,7 @@ const saveItem = async () => {
  * 二次确认后删除指定系统资源，并同步刷新当前页
  * @param row 待删除的列表记录
  */
-const deleteItem = async (row: Record<string, unknown>) => {
+const deleteItem = async (row: SystemPageRecord) => {
   if (deletingId.value !== undefined) return;
   const id = row.id as string | number;
   const name = row.nickName || row.name || row.title || id;
@@ -282,7 +287,7 @@ const closeEditor = (done: () => void) => {
  * @param row 当前行数据
  * @param column 当前列配置
  */
-const formatCell = (row: Record<string, unknown>, column: TableColumn) => {
+const formatCell = (row: SystemPageRecord, column: TableColumn) => {
   const fieldValue = row[column.prop];
   if (fieldValue === null || fieldValue === undefined) return '';
 

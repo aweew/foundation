@@ -16,34 +16,39 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'system/user',
         component: () => import('@/views/system/UserView.vue'),
-        meta: { title: '用户管理', icon: 'User' },
+        meta: { title: '用户管理', icon: 'User', permission: 'sys:user:list' },
       },
       {
         path: 'system/role',
         component: () => import('@/views/system/RoleView.vue'),
-        meta: { title: '角色管理', icon: 'UserFilled' },
+        meta: { title: '角色管理', icon: 'UserFilled', permission: 'sys:role:list' },
       },
       {
         path: 'system/menu',
         component: () => import('@/views/system/MenuView.vue'),
-        meta: { title: '菜单管理', icon: 'Menu' },
+        meta: { title: '菜单管理', icon: 'Menu', permission: 'sys:menu:list' },
       },
       {
         path: 'system/operation-log',
         component: () => import('@/views/system/OperationLogView.vue'),
-        meta: { title: '操作审计', icon: 'Document' },
+        meta: { title: '操作审计', icon: 'Document', permission: 'sys:operation-log:list' },
       },
       {
         path: 'system/storage-provider',
         component: () => import('@/views/system/StorageProviderView.vue'),
-        meta: { title: '云存储配置', icon: 'Files' },
+        meta: { title: '云存储配置', icon: 'Files', permission: 'sys:storage:list' },
       },
       {
         path: 'system/storage-file',
         component: () => import('@/views/system/StorageFileView.vue'),
-        meta: { title: '文件管理', icon: 'FolderOpened' },
+        meta: { title: '文件管理', icon: 'FolderOpened', permission: 'sys:storage:file:list' },
       },
     ],
+  },
+  {
+    path: '/403',
+    component: () => import('@/views/error/ForbiddenView.vue'),
+    meta: { public: true, title: '无权访问' },
   },
   { path: '/:pathMatch(.*)*', redirect: '/dashboard' },
 ];
@@ -67,6 +72,8 @@ router.beforeEach(async (to) => {
       return '/login';
     }
   }
+  const permission = to.meta.permission as string | undefined;
+  if (permission && !auth.hasPermission(permission)) return '/403';
   return true;
 });
 export default router;

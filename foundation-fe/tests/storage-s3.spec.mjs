@@ -18,7 +18,9 @@ test('S3 配置校验、保存与编辑保留凭证', async ({ page }, testInfo)
     }
     await route.fulfill({ json: { code: 0, msg: '成功', data: result } });
   });
-  await page.goto('http://127.0.0.1:5178/system/storage-provider');
+  await page.goto(
+    new URL('/system/storage-provider', process.env.FOUNDATION_TEST_URL || testInfo.project.use.baseURL).href,
+  );
   await page.getByRole('button', { name: '新增配置', exact: true }).click();
   let dialog = page.getByRole('dialog');
   await dialog.locator('.el-select__wrapper').click();

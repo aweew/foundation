@@ -19,7 +19,7 @@ export interface LoginResponse {
 }
 
 export interface UserInfo {
-  id: number;
+  id: string | number;
   phone?: string;
   nickName?: string;
   realName?: string;
