@@ -61,8 +61,23 @@ const navItems = [
   { path: '/system/storage-provider', title: '云存储配置', icon: 'Files', permission: 'sys:storage:list' },
   { path: '/system/storage-file', title: '文件管理', icon: 'FolderOpened', permission: 'sys:storage:file:list' },
 ];
+const menuPaths = computed(() => {
+  const paths = new Set<string>();
+  const visit = (items: typeof auth.menus) => {
+    for (const item of items) {
+      if (item.path) paths.add(item.path.startsWith('/') ? item.path : `/${item.path}`);
+      if (item.childList?.length) visit(item.childList);
+    }
+  };
+  visit(auth.menus);
+  return paths;
+});
 const visibleNavItems = computed(() =>
-  navItems.filter((item) => !item.permission || auth.hasPermission(item.permission)),
+  navItems.filter((item) => {
+    if (!item.permission || auth.isSuperAdmin || auth.hasPermission('*')) return true;
+    if (menuPaths.value.size > 0) return menuPaths.value.has(item.path);
+    return auth.hasPermission(item.permission);
+  }),
 );
 
 /**

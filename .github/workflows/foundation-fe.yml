@@ -1,0 +1,30 @@
+name: Foundation FE
+
+on:
+  push:
+    paths:
+      - 'foundation-fe/**'
+      - '.github/workflows/foundation-fe.yml'
+  pull_request:
+    paths:
+      - 'foundation-fe/**'
+      - '.github/workflows/foundation-fe.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: foundation-fe
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: foundation-fe/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test:e2e

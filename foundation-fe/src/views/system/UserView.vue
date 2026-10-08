@@ -11,13 +11,26 @@
       { prop: 'email', label: '邮箱' },
       { prop: 'status', label: '状态', enumName: 'StatusEnum' },
     ]"
+    :relation="{ label: '分配角色', permission: 'sys:user-role:save' }"
+    @manage-relation="openRoleDialog"
   />
+  <UserRoleDialog v-model="roleDialogVisible" :user="selectedUser" />
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import SystemTable from './SystemTable.vue';
 import { getUserPage } from '@/api/system';
 import type { SystemFormField } from '@/api/system/types';
+import type { SystemPageRecord } from '@/api/system/types';
+import UserRoleDialog from './UserRoleDialog.vue';
+
+const roleDialogVisible = ref(false);
+const selectedUser = ref<SystemPageRecord>();
+const openRoleDialog = (row: SystemPageRecord) => {
+  selectedUser.value = row;
+  roleDialogVisible.value = true;
+};
 
 const fields: SystemFormField[] = [
   { prop: 'phone', label: '电话', required: true },

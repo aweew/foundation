@@ -24,7 +24,13 @@ export interface UserInfo {
   nickName?: string;
   realName?: string;
   avatar?: string;
-  roles: unknown[];
+  roles: RoleInfo[];
   menus: MenuItem[];
   permissions: string[];
+}
+
+export interface RoleInfo {
+  id?: string | number;
+  code?: string;
+  name?: string;
 }

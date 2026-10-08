@@ -31,6 +31,15 @@
             编辑
           </el-button>
           <el-button
+            v-if="relation"
+            v-permission="relation.permission"
+            link
+            type="primary"
+            @click="emit('manage-relation', row)"
+          >
+            {{ relation.label }}
+          </el-button>
+          <el-button
             link
             type="danger"
             :icon="Delete"
@@ -136,7 +145,9 @@ const props = defineProps<{
   fields: SystemFormField[];
   preservedFields?: string[];
   columns: TableColumn[];
+  relation?: { label: string; permission: string };
 }>();
+const emit = defineEmits<{ 'manage-relation': [row: SystemPageRecord] }>();
 const loading = ref(false);
 const rows = ref<SystemPageRecord[]>([]);
 const total = ref(0);

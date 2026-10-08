@@ -13,6 +13,8 @@ export const useAuthStore = defineStore('auth', {
   getters: {
     menus: (state): MenuItem[] => state.userInfo?.menus || [],
     permissions: (state) => state.userInfo?.permissions || [],
+    isSuperAdmin: (state) =>
+      state.userInfo?.roles?.some((role) => role.code?.trim().toUpperCase() === 'SUPER_ADMIN') || false,
   },
   actions: {
     /**
@@ -64,7 +66,7 @@ export const useAuthStore = defineStore('auth', {
      * @param code 权限编码
      */
     hasPermission(code: string) {
-      return this.permissions.includes(code) || this.permissions.includes('*');
+      return this.isSuperAdmin || this.permissions.includes(code) || this.permissions.includes('*');
     },
   },
 });

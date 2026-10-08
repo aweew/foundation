@@ -10,6 +10,8 @@ import type {
   SystemPageRecord,
   SystemRecord,
   SystemResource,
+  RoleMenuRelation,
+  UserRoleRelation,
 } from './types';
 
 /**
@@ -134,5 +136,96 @@ export const getOperationLogPage = (params: OperationLogQuery) => {
     url: '/sys/operation-log/page',
     method: 'get',
     params,
+  });
+};
+
+/**
+ * 查询用户已分配的角色
+ * @param userId 用户 ID
+ */
+export const getUserRoles = (userId: string | number) => {
+  return request<ApiResult<UserRoleRelation[]>>({
+    url: `/sys/user-role/user/${userId}`,
+    method: 'get',
+  });
+};
+
+/**
+ * 分配角色给用户
+ * @param userId 用户 ID
+ * @param roleId 角色 ID
+ */
+export const assignUserRole = (userId: string | number, roleId: string | number) => {
+  return request<ApiResult<void>>({
+    url: '/sys/user-role',
+    method: 'post',
+    data: { userId, roleId },
+  });
+};
+
+/**
+ * 删除用户角色关联
+ * @param id 关联 ID
+ */
+export const deleteUserRole = (id: string | number) => {
+  return request<ApiResult<void>>({
+    url: `/sys/user-role/${id}`,
+    method: 'delete',
+  });
+};
+
+/**
+ * 查询全部启用菜单树
+ */
+export const getMenuTree = () => {
+  return request<ApiResult<MenuItem[]>>({
+    url: '/sys/menu/tree',
+    method: 'get',
+  });
+};
+
+/**
+ * 查询角色已分配的菜单树
+ * @param roleId 角色 ID
+ */
+export const getRoleMenuTree = (roleId: string | number) => {
+  return request<ApiResult<MenuItem[]>>({
+    url: `/sys/menu/tree/role/${roleId}`,
+    method: 'get',
+  });
+};
+
+/**
+ * 查询角色菜单关联记录
+ * @param roleId 角色 ID
+ */
+export const getRoleMenus = (roleId: string | number) => {
+  return request<ApiResult<RoleMenuRelation[]>>({
+    url: `/sys/role-menu/role/${roleId}`,
+    method: 'get',
+  });
+};
+
+/**
+ * 分配菜单给角色
+ * @param roleId 角色 ID
+ * @param menuId 菜单 ID
+ */
+export const assignRoleMenu = (roleId: string | number, menuId: string | number) => {
+  return request<ApiResult<void>>({
+    url: '/sys/role-menu',
+    method: 'post',
+    data: { roleId, menuId },
+  });
+};
+
+/**
+ * 删除角色菜单关联
+ * @param id 关联 ID
+ */
+export const deleteRoleMenu = (id: string | number) => {
+  return request<ApiResult<void>>({
+    url: `/sys/role-menu/${id}`,
+    method: 'delete',
   });
 };

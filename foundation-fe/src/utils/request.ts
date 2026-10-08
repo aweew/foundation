@@ -4,6 +4,9 @@ import { ElMessage } from 'element-plus';
 import { tokenStorage } from './storage';
 
 let refreshPromise: Promise<string> | undefined;
+let lastTraceId = '';
+
+export const getLastTraceId = () => lastTraceId;
 
 type RetryRequestConfig = AxiosRequestConfig & { _retry?: boolean };
 
@@ -23,6 +26,7 @@ request.interceptors.request.use((config) => {
 request.interceptors.response.use(
   // 响应阶段保持统一响应结构，调用方只处理业务数据
   (response: AxiosResponse) => {
+    lastTraceId = String(response.headers?.['traceId'] || response.headers?.['trace-id'] || response.data?.traceId || '');
     const result = response.data;
     if (typeof result?.code === 'number' && result.code !== 0) {
       const error = new Error(result.msg || '请求失败');

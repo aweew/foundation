@@ -33,11 +33,11 @@ export interface EnumOption {
 export type EnumDictionary = Record<string, EnumOption[]>;
 
 export interface MenuItem extends SystemPageRecord {
-  id: number;
+  id: string | number;
   name: string;
   title: string;
   code?: string;
-  parentId?: number;
+  parentId?: string | number;
   type: number;
   icon?: string;
   path?: string;
@@ -46,6 +46,18 @@ export interface MenuItem extends SystemPageRecord {
   isVisible?: boolean;
   sort?: number;
   childList?: MenuItem[];
+}
+
+export interface UserRoleRelation {
+  id: string | number;
+  userId: string | number;
+  roleId: string | number;
+}
+
+export interface RoleMenuRelation {
+  id: string | number;
+  roleId: string | number;
+  menuId: string | number;
 }
 
 export interface OperationLogQuery extends QueryPage {

@@ -36,6 +36,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   success: [file: StorageFile];
   error: [error: Error];
+  progress: [percent: number];
 }>();
 const pendingUploads = ref(0);
 const uploading = computed(() => pendingUploads.value > 0);
@@ -56,7 +57,12 @@ const uploadFile = async (options: UploadRequestOptions) => {
     const file = options.file.size > props.maxSize ? await compressImage(options.file) : options.file;
     const result = props.upload
       ? await props.upload(file)
-      : (await uploadStorageFile(file, props.businessType, props.businessId)).data.data;
+      : (
+          await uploadStorageFile(file, props.businessType, props.businessId, (percent) => {
+            options.onProgress(Object.assign(new ProgressEvent('progress'), { percent }));
+            emit('progress', percent);
+          })
+        ).data.data;
     options.onSuccess(result);
     emit('success', result);
     ElMessage.success('上传成功');

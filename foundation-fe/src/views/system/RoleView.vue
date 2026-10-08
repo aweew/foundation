@@ -9,13 +9,26 @@
       { prop: 'code', label: '角色编码' },
       { prop: 'status', label: '状态', enumName: 'StatusEnum' },
     ]"
+    :relation="{ label: '分配权限', permission: 'sys:role-menu:save' }"
+    @manage-relation="openMenuDialog"
   />
+  <RoleMenuDialog v-model="menuDialogVisible" :role="selectedRole" />
 </template>
 
 <script setup lang="ts">
 import SystemTable from './SystemTable.vue';
 import { getRolePage } from '@/api/system';
 import type { SystemFormField } from '@/api/system/types';
+import { ref } from 'vue';
+import type { SystemPageRecord } from '@/api/system/types';
+import RoleMenuDialog from './RoleMenuDialog.vue';
+
+const menuDialogVisible = ref(false);
+const selectedRole = ref<SystemPageRecord>();
+const openMenuDialog = (row: SystemPageRecord) => {
+  selectedRole.value = row;
+  menuDialogVisible.value = true;
+};
 
 const fields: SystemFormField[] = [
   { prop: 'name', label: '角色名称', required: true },

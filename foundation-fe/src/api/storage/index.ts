@@ -98,7 +98,12 @@ export const getStorageFileAccessUrl = (id: number) => {
  * @param businessType 业务类型
  * @param businessId 业务 ID
  */
-export const uploadStorageFile = (file: File, businessType?: string, businessId?: string) => {
+export const uploadStorageFile = (
+  file: File,
+  businessType?: string,
+  businessId?: string,
+  onUploadProgress?: (percent: number) => void,
+) => {
   const formData = new FormData();
   formData.append('file', file);
   if (businessType) formData.append('businessType', businessType);
@@ -108,6 +113,9 @@ export const uploadStorageFile = (file: File, businessType?: string, businessId?
     method: 'post',
     data: formData,
     headers: { 'Content-Type': 'multipart/form-data' },
+    onUploadProgress: (event) => {
+      if (event.total) onUploadProgress?.(Math.round((event.loaded / event.total) * 100));
+    },
   });
 };
 
