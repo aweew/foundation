@@ -11,7 +11,9 @@
       <div class="pro-table__tools">
         <slot name="toolbar" />
         <el-tooltip content="刷新数据" placement="top" :show-after="450">
-          <el-button class="pro-table__tool" text :icon="Refresh" aria-label="刷新数据" @click="emit('refresh')">刷新</el-button>
+          <el-button class="pro-table__tool" text :icon="Refresh" aria-label="刷新数据" @click="emit('refresh')">
+            刷新
+          </el-button>
         </el-tooltip>
         <el-popover v-if="hasConfigurableColumns" placement="bottom-end" :width="248" trigger="click">
           <template #reference>
@@ -35,7 +37,9 @@
               >
                 <el-checkbox v-model="column.visible" :disabled="column.required" @change="saveColumns" />
                 <span>{{ column.label }}</span>
-                <el-icon class="column-setting__drag"><Rank /></el-icon>
+                <el-icon class="column-setting__drag">
+                  <Rank />
+                </el-icon>
               </label>
             </div>
           </div>
@@ -73,7 +77,9 @@
           :class-name="column.className"
         >
           <template v-if="column.filters?.length" #filter-icon>
-            <el-icon class="pro-table__filter-icon"><Filter /></el-icon>
+            <el-icon class="pro-table__filter-icon">
+              <Filter />
+            </el-icon>
           </template>
           <template #default="scope">
             <slot :name="column.slot || column.prop || column.key" v-bind="scope">
@@ -97,7 +103,9 @@
                 :src="String(scope.row[column.prop as string] || '')"
                 fit="cover"
               />
-              <span v-else-if="column.type === 'action'" class="pro-table__actions"><slot name="action" v-bind="scope" /></span>
+              <span v-else-if="column.type === 'action'" class="pro-table__actions">
+                <slot name="action" v-bind="scope" />
+              </span>
               <span v-else class="pro-table__cell" :class="{ 'is-number': column.type === 'number' }">
                 <span>{{ formatValue(column, scope.row) }}</span>
                 <el-tooltip
@@ -121,13 +129,17 @@
         </el-table-column>
         <template #empty>
           <div v-if="error" class="pro-table__empty pro-table__empty--error">
-            <el-icon><WarningFilled /></el-icon>
+            <el-icon>
+              <WarningFilled />
+            </el-icon>
             <strong>加载失败</strong>
             <span>{{ error }}</span>
             <el-button text type="primary" @click="emit('retry')">重新加载</el-button>
           </div>
           <div v-else class="pro-table__empty">
-            <el-icon><Document /></el-icon>
+            <el-icon>
+              <Document />
+            </el-icon>
             <strong>{{ emptyDescription }}</strong>
             <span>调整筛选条件后再试试</span>
           </div>
@@ -213,7 +225,12 @@ const loadColumns = () => {
     return;
   }
   try {
-    const saved = JSON.parse(localStorage.getItem(props.storageKey) || 'null') as { key: string; visible: boolean }[] | null;
+    const saved = JSON.parse(localStorage.getItem(props.storageKey) || 'null') as
+      | {
+          key: string;
+          visible: boolean;
+        }[]
+      | null;
     if (!saved?.length) {
       columnState.value = defaults;
       return;
@@ -226,7 +243,8 @@ const loadColumns = () => {
     });
     columnState.value = restoredColumns;
     defaults.forEach((column) => {
-      if (!columnState.value.some((item) => item.key === column.key)) columnState.value = [...columnState.value, column];
+      if (!columnState.value.some((item) => item.key === column.key))
+        columnState.value = [...columnState.value, column];
     });
   } catch {
     columnState.value = defaults;
@@ -235,7 +253,15 @@ const loadColumns = () => {
 
 const saveColumns = () => {
   if (props.storageKey) {
-    localStorage.setItem(props.storageKey, JSON.stringify(columnState.value.map(({ key, visible }) => ({ key, visible }))));
+    localStorage.setItem(
+      props.storageKey,
+      JSON.stringify(
+        columnState.value.map(({ key, visible }) => ({
+          key,
+          visible,
+        })),
+      ),
+    );
   }
 };
 
@@ -384,55 +410,279 @@ defineExpose({
   margin-bottom: 4px;
 }
 
-.pro-table__summary { gap: 12px; color: var(--table-text-secondary); font-size: 13px; }
-.pro-table__tools { gap: 2px; }
-.pro-table__tool { color: var(--table-text-secondary); }
-.pro-table__tool:hover { color: var(--table-blue); background: #f5f8ff; }
-.pro-table__surface { overflow: hidden; border-top: 1px solid var(--table-border); }
-.pro-table__table { width: 100%; --el-table-border-color: var(--table-border); --el-table-row-hover-bg-color: var(--table-hover-bg); --el-table-current-row-bg-color: var(--table-selected-bg); }
-.pro-table__table :deep(.el-table__inner-wrapper::before) { display: none; }
-.pro-table__table :deep(.el-table__cell) { border-bottom-color: var(--table-border); }
-.pro-table__table :deep(th.el-table__cell) { height: 44px; padding: 0 16px; border-bottom: 2px solid #e6e9ee; background: #f8fafc; color: var(--table-text-secondary); font-size: 12px; font-weight: 600; }
-.pro-table__table :deep(th.el-table__cell .cell) { display: flex; align-items: center; padding: 0; }
-.pro-table__table :deep(th.el-table__cell.is-center .cell) { justify-content: center; }
-.pro-table__table :deep(th.el-table__cell.is-right .cell) { justify-content: flex-end; }
-.pro-table__table :deep(td.el-table__cell) { height: 56px; color: var(--table-text-primary); font-size: 13px; }
-.pro-table__table :deep(.el-table__fixed-right::before), .pro-table__table :deep(.el-table__fixed::before) { display: none; }
-.pro-table__table :deep(.el-table__fixed-right) { box-shadow: -4px 0 10px rgb(16 24 40 / 4%); }
-.pro-table__table :deep(.el-checkbox__inner) { border-color: #cbd5e1; }
-.pro-table__filter-icon { color: var(--table-text-tertiary); }
-.pro-table__table :deep(.el-table__column-filter-trigger) { position: static; display: inline-flex; align-items: center; margin-left: 8px; }
-.pro-table__table :deep(.el-table__column-filter-trigger:hover) .pro-table__filter-icon { color: var(--table-blue); }
-.pro-table__cell { display: inline-flex; align-items: center; max-width: 100%; color: inherit; }
-.pro-table__cell.is-number { font-variant-numeric: tabular-nums; }
-.pro-table__copy { margin-left: 4px; padding: 2px; color: var(--table-text-tertiary); opacity: 0; transition: opacity 180ms ease, color 180ms ease; }
-.pro-table__table :deep(.el-table__row:hover) .pro-table__copy { opacity: 1; }
-.pro-table__copy.is-copied { opacity: 1; color: #287d5a; }
-.pro-table__copy:hover { color: var(--table-blue); }
-.pro-table__status { display: inline-flex; align-items: center; gap: 7px; color: var(--table-text-secondary); }
-.pro-table__status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.pro-table__status.is-success { color: #287d5a; }.pro-table__status.is-warning { color: #b7791f; }.pro-table__status.is-danger { color: #c2413b; }.pro-table__status.is-primary { color: #356ae6; }.pro-table__status.is-info { color: #667085; }
-.pro-table__actions { justify-content: center; gap: 4px; }
-.pro-table__image { display: block; border-radius: 6px; }
-.pro-table__empty { display: flex; min-height: 220px; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--table-text-tertiary); }
-.pro-table__empty .el-icon { margin-bottom: 4px; font-size: 28px; color: #cbd5e1; }
-.pro-table__empty strong { color: var(--table-text-secondary); font-size: 13px; font-weight: 500; }
-.pro-table__empty span { font-size: 12px; }
-.pro-table__empty--error strong { color: #c2413b; }
-.pro-table__empty--error .el-icon { color: #c2413b; }
-.pro-table__pagination { justify-content: flex-end; gap: 16px; padding-top: 16px; }
-.pro-table__pagination-total { margin-right: auto; color: var(--table-text-tertiary); font-size: 12px; }
-.pro-table__pagination :deep(.el-pagination) { --el-pagination-button-bg-color: transparent; --el-pagination-hover-color: var(--table-blue); }
-.column-setting__header { justify-content: space-between; margin-bottom: 8px; }
-.column-setting__header strong { color: var(--table-text-primary); font-size: 13px; }
-.column-setting__list { display: grid; gap: 2px; }
-.column-setting__item { display: flex; align-items: center; gap: 6px; min-height: 32px; cursor: default; color: var(--table-text-secondary); font-size: 13px; }
-.column-setting__drag { margin-left: auto; color: #cbd5e1; cursor: move; }
+.pro-table__summary {
+  gap: 12px;
+  color: var(--table-text-secondary);
+  font-size: 13px;
+}
+
+.pro-table__tools {
+  gap: 2px;
+}
+
+.pro-table__tool {
+  color: var(--table-text-secondary);
+}
+
+.pro-table__tool:hover {
+  color: var(--table-blue);
+  background: #f5f8ff;
+}
+
+.pro-table__surface {
+  overflow: hidden;
+  border-top: 1px solid var(--table-border);
+}
+
+.pro-table__table {
+  width: 100%;
+  --el-table-border-color: var(--table-border);
+  --el-table-row-hover-bg-color: var(--table-hover-bg);
+  --el-table-current-row-bg-color: var(--table-selected-bg);
+}
+
+.pro-table__table :deep(.el-table__inner-wrapper::before) {
+  display: none;
+}
+
+.pro-table__table :deep(.el-table__cell) {
+  border-bottom-color: var(--table-border);
+}
+
+.pro-table__table :deep(th.el-table__cell) {
+  height: 44px;
+  padding: 0 16px;
+  border-bottom: 2px solid #e6e9ee;
+  background: #f8fafc;
+  color: var(--table-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pro-table__table :deep(th.el-table__cell .cell) {
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.pro-table__table :deep(th.el-table__cell.is-center .cell) {
+  justify-content: center;
+}
+
+.pro-table__table :deep(th.el-table__cell.is-right .cell) {
+  justify-content: flex-end;
+}
+
+.pro-table__table :deep(td.el-table__cell) {
+  height: 56px;
+  color: var(--table-text-primary);
+  font-size: 13px;
+}
+
+.pro-table__table :deep(.el-table__fixed-right::before),
+.pro-table__table :deep(.el-table__fixed::before) {
+  display: none;
+}
+
+.pro-table__table :deep(.el-table__fixed-right) {
+  box-shadow: -4px 0 10px rgb(16 24 40 / 4%);
+}
+
+.pro-table__table :deep(.el-checkbox__inner) {
+  border-color: #cbd5e1;
+}
+
+.pro-table__filter-icon {
+  color: var(--table-text-tertiary);
+}
+
+.pro-table__table :deep(.el-table__column-filter-trigger) {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.pro-table__table :deep(.el-table__column-filter-trigger:hover) .pro-table__filter-icon {
+  color: var(--table-blue);
+}
+
+.pro-table__cell {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  color: inherit;
+}
+
+.pro-table__cell.is-number {
+  font-variant-numeric: tabular-nums;
+}
+
+.pro-table__copy {
+  margin-left: 4px;
+  padding: 2px;
+  color: var(--table-text-tertiary);
+  opacity: 0;
+  transition:
+    opacity 180ms ease,
+    color 180ms ease;
+}
+
+.pro-table__table :deep(.el-table__row:hover) .pro-table__copy {
+  opacity: 1;
+}
+
+.pro-table__copy.is-copied {
+  opacity: 1;
+  color: #287d5a;
+}
+
+.pro-table__copy:hover {
+  color: var(--table-blue);
+}
+
+.pro-table__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--table-text-secondary);
+}
+
+.pro-table__status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.pro-table__status.is-success {
+  color: #287d5a;
+}
+
+.pro-table__status.is-warning {
+  color: #b7791f;
+}
+
+.pro-table__status.is-danger {
+  color: #c2413b;
+}
+
+.pro-table__status.is-primary {
+  color: #356ae6;
+}
+
+.pro-table__status.is-info {
+  color: #667085;
+}
+
+.pro-table__actions {
+  justify-content: center;
+  gap: 4px;
+}
+
+.pro-table__image {
+  display: block;
+  border-radius: 6px;
+}
+
+.pro-table__empty {
+  display: flex;
+  min-height: 220px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--table-text-tertiary);
+}
+
+.pro-table__empty .el-icon {
+  margin-bottom: 4px;
+  font-size: 28px;
+  color: #cbd5e1;
+}
+
+.pro-table__empty strong {
+  color: var(--table-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.pro-table__empty span {
+  font-size: 12px;
+}
+
+.pro-table__empty--error strong {
+  color: #c2413b;
+}
+
+.pro-table__empty--error .el-icon {
+  color: #c2413b;
+}
+
+.pro-table__pagination {
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 16px;
+}
+
+.pro-table__pagination-total {
+  margin-right: auto;
+  color: var(--table-text-tertiary);
+  font-size: 12px;
+}
+
+.pro-table__pagination :deep(.el-pagination) {
+  --el-pagination-button-bg-color: transparent;
+  --el-pagination-hover-color: var(--table-blue);
+}
+
+.column-setting__header {
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.column-setting__header strong {
+  color: var(--table-text-primary);
+  font-size: 13px;
+}
+
+.column-setting__list {
+  display: grid;
+  gap: 2px;
+}
+
+.column-setting__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  cursor: default;
+  color: var(--table-text-secondary);
+  font-size: 13px;
+}
+
+.column-setting__drag {
+  margin-left: auto;
+  color: #cbd5e1;
+  cursor: move;
+}
 
 @media (max-width: 768px) {
-  .pro-table__search { padding: 12px; }
-  .pro-table__toolbar { align-items: flex-start; }
-  .pro-table__pagination { flex-wrap: wrap; justify-content: flex-start; }
-  .pro-table__pagination-total { width: 100%; }
+  .pro-table__search {
+    padding: 12px;
+  }
+
+  .pro-table__toolbar {
+    align-items: flex-start;
+  }
+
+  .pro-table__pagination {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .pro-table__pagination-total {
+    width: 100%;
+  }
 }
 </style>

@@ -67,7 +67,7 @@
               :icon="showMoreFilters ? ArrowUp : ArrowDown"
               @click="showMoreFilters = !showMoreFilters"
             >
-              {{ showMoreFilters ? '收起筛选' : '更多' }}
+              {{ showMoreFilters ? '收起' : '更多' }}
             </el-button>
           </el-form-item>
         </el-form>
@@ -318,24 +318,24 @@ onMounted(loadRows);
 
 .search-form {
   display: grid;
-  grid-template-columns: minmax(300px, 440px) 220px minmax(360px, 560px) auto;
+  grid-template-columns: minmax(220px, 360px) minmax(170px, 220px) minmax(320px, 1fr) auto;
   align-items: center;
-  gap: 0 24px;
+  gap: 0 16px;
   justify-content: start;
   width: 100%;
 }
 
 .search-form.has-more-filters {
-  grid-template-columns: minmax(300px, 440px) 220px minmax(360px, 560px) auto;
+  grid-template-columns: minmax(220px, 360px) minmax(170px, 220px) minmax(320px, 1fr) auto;
   row-gap: 12px;
 }
 
 .search-form.has-more-filters .search-form__actions {
   grid-column: 4;
   grid-row: 2;
-  justify-self: start;
+  justify-self: end;
   width: auto !important;
-  justify-content: flex-start;
+  justify-content: flex-end;
 }
 
 .search-form :deep(.el-form-item) {

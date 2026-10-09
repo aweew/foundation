@@ -1,15 +1,7 @@
 import type { CSSProperties } from 'vue';
 
 export type ProTableAlign = 'left' | 'center' | 'right';
-export type ProTableColumnType =
-  | 'selection'
-  | 'index'
-  | 'text'
-  | 'status'
-  | 'datetime'
-  | 'number'
-  | 'image'
-  | 'action';
+export type ProTableColumnType = 'selection' | 'index' | 'text' | 'status' | 'datetime' | 'number' | 'image' | 'action';
 
 export interface ProTableStatusOption {
   label: string;
