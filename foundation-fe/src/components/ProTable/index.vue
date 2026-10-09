@@ -10,7 +10,7 @@
       </div>
       <div class="pro-table__tools">
         <slot name="toolbar" />
-        <el-tooltip content="刷新数据" placement="top">
+        <el-tooltip content="刷新数据" placement="top" :show-after="450">
           <el-button class="pro-table__tool" text :icon="Refresh" aria-label="刷新数据" @click="emit('refresh')">刷新</el-button>
         </el-tooltip>
         <el-popover v-if="hasConfigurableColumns" placement="bottom-end" :width="248" trigger="click">
@@ -104,7 +104,7 @@
                   v-if="column.copyable && scope.row[column.prop as string]"
                   content="复制"
                   placement="top"
-                  :show-after="300"
+                  :show-after="450"
                 >
                   <el-button
                     text
@@ -405,7 +405,7 @@ defineExpose({
 .pro-table__table :deep(.el-table__column-filter-trigger:hover) .pro-table__filter-icon { color: var(--table-blue); }
 .pro-table__cell { display: inline-flex; align-items: center; max-width: 100%; color: inherit; }
 .pro-table__cell.is-number { font-variant-numeric: tabular-nums; }
-.pro-table__copy { margin-left: 4px; padding: 2px; color: var(--table-text-tertiary); opacity: 0; transition: opacity 120ms ease, color 120ms ease; }
+.pro-table__copy { margin-left: 4px; padding: 2px; color: var(--table-text-tertiary); opacity: 0; transition: opacity 180ms ease, color 180ms ease; }
 .pro-table__table :deep(.el-table__row:hover) .pro-table__copy { opacity: 1; }
 .pro-table__copy.is-copied { opacity: 1; color: #287d5a; }
 .pro-table__copy:hover { color: var(--table-blue); }

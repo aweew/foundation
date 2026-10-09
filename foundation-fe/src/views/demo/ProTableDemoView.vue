@@ -59,15 +59,15 @@
             <el-input v-model="filters.owner" clearable placeholder="联系人姓名" />
           </el-form-item>
           <el-form-item class="search-form__actions">
-            <el-button type="primary" @click="queryRows">查询</el-button>
-            <el-button @click="resetFilters">重置</el-button>
+            <el-button type="primary" :icon="Search" @click="queryRows">查询</el-button>
+            <el-button :icon="RefreshRight" @click="resetFilters">重置</el-button>
             <el-button
               text
               class="filter-toggle"
               :icon="showMoreFilters ? ArrowUp : ArrowDown"
               @click="showMoreFilters = !showMoreFilters"
             >
-              {{ showMoreFilters ? '收起筛选' : '更多筛选' }}
+              {{ showMoreFilters ? '收起筛选' : '更多' }}
             </el-button>
           </el-form-item>
         </el-form>
@@ -89,21 +89,21 @@
       </template>
 
       <template #action="{ row }">
-        <el-tooltip content="查看" placement="top" :show-after="300">
+        <el-tooltip content="查看" placement="top" :show-after="450">
           <el-button text type="primary" class="action-icon" :icon="View" aria-label="查看" @click="viewSource(row)" />
         </el-tooltip>
-        <el-dropdown trigger="click" @command="handleAction($event, row)">
-          <el-tooltip content="更多操作" placement="top" :show-after="300">
+        <el-tooltip content="更多操作" placement="top" :show-after="450">
+          <el-dropdown trigger="click" @command="handleAction($event, row)">
             <el-button text class="action-icon more-action" :icon="MoreFilled" aria-label="更多操作" />
-          </el-tooltip>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item command="edit">编辑</el-dropdown-item>
-              <el-dropdown-item command="copy">复制</el-dropdown-item>
-              <el-dropdown-item command="close" divided>关闭货源</el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="edit">编辑</el-dropdown-item>
+                <el-dropdown-item command="copy">复制</el-dropdown-item>
+                <el-dropdown-item command="close" divided>关闭货源</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </el-tooltip>
       </template>
     </ProTable>
   </div>
@@ -112,7 +112,17 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { ArrowDown, ArrowUp, Calendar, Download, MoreFilled, Plus, View } from '@element-plus/icons-vue';
+import {
+  ArrowDown,
+  ArrowUp,
+  Calendar,
+  Download,
+  MoreFilled,
+  Plus,
+  RefreshRight,
+  Search,
+  View,
+} from '@element-plus/icons-vue';
 import ProTable from '@/components/ProTable/index.vue';
 import type { ProTableColumn, ProTableFilterOption, ProTablePagination } from '@/components/ProTable/types';
 
@@ -308,14 +318,24 @@ onMounted(loadRows);
 
 .search-form {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 1.2fr) auto;
+  grid-template-columns: minmax(300px, 440px) 220px minmax(360px, 560px) auto;
   align-items: center;
   gap: 0 24px;
+  justify-content: start;
   width: 100%;
 }
 
 .search-form.has-more-filters {
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.7fr) minmax(0, 1.1fr) minmax(0, 0.7fr) auto;
+  grid-template-columns: minmax(300px, 440px) 220px minmax(360px, 560px) auto;
+  row-gap: 12px;
+}
+
+.search-form.has-more-filters .search-form__actions {
+  grid-column: 4;
+  grid-row: 2;
+  justify-self: start;
+  width: auto !important;
+  justify-content: flex-start;
 }
 
 .search-form :deep(.el-form-item) {
@@ -353,9 +373,14 @@ onMounted(loadRows);
   align-items: center;
   width: auto !important;
   min-width: max-content;
-  gap: 8px;
+  gap: 4px;
   margin-left: 0;
   white-space: nowrap;
+}
+
+.search-form__actions :deep(.el-form-item__content) {
+  flex-wrap: nowrap;
+  gap: 4px;
 }
 
 .filter-toggle {
@@ -426,16 +451,19 @@ onMounted(loadRows);
   height: 30px;
   padding: 0;
   color: #356ae6;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease;
 }
 
 .more-action {
   color: #667085;
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1500px) {
   .search-form,
   .search-form.has-more-filters {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(280px, 1.1fr) 220px minmax(360px, 1.2fr);
     gap: 12px 18px;
   }
 
@@ -450,6 +478,21 @@ onMounted(loadRows);
     width: 100% !important;
     justify-content: flex-start;
     flex-wrap: wrap;
+  }
+
+  .search-form.has-more-filters .search-form__actions {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    justify-self: stretch;
+    width: 100% !important;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 1100px) {
+  .search-form,
+  .search-form.has-more-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
