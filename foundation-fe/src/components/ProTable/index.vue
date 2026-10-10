@@ -12,14 +12,12 @@
       </div>
       <div class="pro-table__tools">
         <slot name="toolbar" />
-        <el-tooltip content="刷新数据" placement="top" :show-after="450">
-          <el-button class="pro-table__tool" text :icon="Refresh" aria-label="刷新数据" @click="emit('refresh')">
-            刷新
-          </el-button>
+        <el-tooltip content="刷新数据" placement="top" :show-after="2000">
+          <el-button class="pro-table__tool" text :icon="Refresh" aria-label="刷新数据" @click="emit('refresh')" />
         </el-tooltip>
         <el-popover v-if="hasConfigurableColumns" placement="bottom-end" :width="248" trigger="click">
           <template #reference>
-            <el-button class="pro-table__tool" text :icon="Setting" aria-label="列设置">列设置</el-button>
+            <el-button class="pro-table__tool" text :icon="Setting" title="列设置" aria-label="列设置" />
           </template>
           <div class="column-setting">
             <div class="column-setting__header">
@@ -87,7 +85,7 @@
           <template #default="scope">
             <slot :name="column.slot || column.prop || column.key" v-bind="scope">
               <el-checkbox
-                v-if="column.type === 'selection'"
+                v-if="props.selectable && column.type === 'selection'"
                 :model-value="isRowSelected(scope.row)"
                 aria-label="选择当前行"
                 @update:model-value="toggleRowSelection(scope.row, Boolean($event))"
@@ -112,7 +110,7 @@
               <span v-else class="pro-table__cell" :class="{ 'is-number': column.type === 'number' }">
                 <span>{{ formatValue(column, scope.row) }}</span>
                 <el-tooltip
-                  v-if="column.copyable && scope.row[column.prop as string]"
+                  v-if="column.copyable && hasCopyValue(scope.row[column.prop as string])"
                   content="复制"
                   placement="top"
                   :show-after="450"
@@ -154,13 +152,14 @@
     <footer v-if="pagination" class="pro-table__footer">
       <span class="pro-table__pagination-total">共 {{ (total || 0).toLocaleString() }} 条</span>
       <el-pagination
-        v-model:current-page="pagination.current"
-        v-model:page-size="pagination.size"
+        :current-page="pagination.current"
+        :page-size="pagination.size"
         background
         layout="sizes, prev, pager, next"
         :total="total || 0"
         :page-sizes="[10, 20, 50]"
-        @change="handlePaginationChange"
+        @update:current-page="handleCurrentPageChange"
+        @update:page-size="handlePageSizeChange"
       />
     </footer>
   </section>
@@ -170,7 +169,6 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { type TableInstance } from 'element-plus';
 import { Check, CopyDocument, Document, Filter, Rank, Refresh, Setting, WarningFilled } from '@element-plus/icons-vue';
-import { PRO_TABLE_STATUS_CLASS } from './constants';
 import type { ProTableColumn, ProTablePagination, ProTableProps } from './types';
 
 interface ColumnState<T extends Record<string, unknown>> extends ProTableColumn<T> {
@@ -183,6 +181,15 @@ interface SortChange {
   order: 'ascending' | 'descending' | null;
 }
 
+// 业务状态类型样式
+const statusClassMap = {
+  success: 'is-success',
+  warning: 'is-warning',
+  danger: 'is-danger',
+  info: 'is-info',
+  primary: 'is-primary',
+} as const;
+
 // 组件参数提供表格列、数据、分页和状态展示能力
 const props = withDefaults(defineProps<ProTableProps<T>>(), {
   loading: false,
@@ -193,7 +200,7 @@ const props = withDefaults(defineProps<ProTableProps<T>>(), {
   error: '',
   emptyDescription: '暂无数据',
   tableHeight: undefined,
-  selectable: false,
+  selectable: true,
   stripe: false,
   headerCellStyle: undefined,
 });
@@ -215,9 +222,13 @@ const copiedKey = ref<string>();
 const selectedRows = ref<T[]>([]);
 const columnState = ref<ColumnState<T>[]>([]);
 const hasConfigurableColumns = computed(() => columnState.value.some((column) => !column.required));
-const visibleColumns = computed(() => columnState.value.filter((column) => column.visible || column.required));
+const visibleColumns = computed(() =>
+  columnState.value.filter(
+    (column) => (column.visible || column.required) && (props.selectable || column.type !== 'selection'),
+  ),
+);
 
-// 根据传入列定义建立可持久化的列状态
+/** 根据传入列定义建立可持久化的列状态 */
 const buildColumnState = () =>
   props.columns.map((column, index) => ({
     ...column,
@@ -226,6 +237,7 @@ const buildColumnState = () =>
     visible: column.visible !== false,
   }));
 
+/** 加载本地保存的列配置，并补齐当前新增列 */
 const loadColumns = () => {
   const defaults = buildColumnState();
   if (!props.storageKey) {
@@ -249,17 +261,15 @@ const loadColumns = () => {
       const column = byKey.get(item.key);
       if (column) restoredColumns.push({ ...column, visible: item.visible !== false });
     });
-    columnState.value = restoredColumns;
-    defaults.forEach((column) => {
-      if (!columnState.value.some((item) => item.key === column.key))
-        columnState.value = [...columnState.value, column];
-    });
+    const restoredKeys = new Set(restoredColumns.map((column) => column.key));
+    const missingColumns = defaults.filter((column) => !restoredKeys.has(column.key));
+    columnState.value = [...restoredColumns, ...missingColumns];
   } catch {
     columnState.value = defaults;
   }
 };
 
-// 保存用户调整后的列显示状态和顺序
+/** 保存用户调整后的列显示状态和顺序 */
 const saveColumns = () => {
   if (props.storageKey) {
     localStorage.setItem(
@@ -274,16 +284,18 @@ const saveColumns = () => {
   }
 };
 
+/** 恢复列的默认显示状态和顺序 */
 const resetColumns = () => {
   columnState.value = buildColumnState();
   saveColumns();
 };
 
-// 处理列设置面板中的拖拽排序
+/** 记录列设置面板开始拖拽的列 */
 const startColumnDrag = (key: string) => {
   draggedColumnKey.value = key;
 };
 
+/** 根据拖拽目标调整列顺序并即时保存 */
 const moveColumn = (targetKey: string) => {
   if (!draggedColumnKey.value || draggedColumnKey.value === targetKey) return;
   const sourceIndex = columnState.value.findIndex((column) => column.key === draggedColumnKey.value);
@@ -296,12 +308,13 @@ const moveColumn = (targetKey: string) => {
   saveColumns();
 };
 
+/** 清理拖拽状态并保存最终列顺序 */
 const finishColumnDrag = () => {
   draggedColumnKey.value = undefined;
   saveColumns();
 };
 
-// 统一处理单元格展示值、状态样式和行标识
+/** 格式化普通单元格的展示值 */
 const formatValue = (column: ProTableColumn<T>, row: T) => {
   const value = column.prop ? row[column.prop] : undefined;
   if (column.formatter) return column.formatter(row, column, value);
@@ -316,28 +329,32 @@ const formatValue = (column: ProTableColumn<T>, row: T) => {
   return String(value);
 };
 
+/** 根据状态配置获取单元格显示文本 */
 const statusLabel = (column: ProTableColumn<T>, row: T) => {
   const value = column.prop ? row[column.prop] : undefined;
   return column.statusMap?.[String(value)]?.label || String(value ?? '-');
 };
 
+/** 根据状态配置获取单元格样式类型 */
 const statusClass = (column: ProTableColumn<T>, row: T) => {
   const value = column.prop ? row[column.prop] : undefined;
   const type = column.statusMap?.[String(value)]?.type || 'info';
-  return PRO_TABLE_STATUS_CLASS[type];
+  return statusClassMap[type];
 };
 
+/** 获取行选择和复制功能使用的稳定行标识 */
 const getRowIdentifier = (row: T) => {
   const identifier = typeof props.rowKey === 'function' ? props.rowKey(row) : row[props.rowKey];
   return identifier === undefined || identifier === null ? undefined : String(identifier);
 };
 
+/** 生成单元格复制状态使用的唯一键 */
 const getCopyKey = (row: T, column: ProTableColumn<T>) => {
   const rowIdentifier = getRowIdentifier(row) || String(row);
   return `${String(rowIdentifier)}-${column.prop || column.type || 'column'}`;
 };
 
-// 复制单元格内容并记录最近一次复制的单元格
+/** 复制单元格内容并记录最近一次复制的单元格 */
 const copyValue = async (value: unknown, key: string) => {
   try {
     await navigator.clipboard.writeText(String(value));
@@ -347,7 +364,10 @@ const copyValue = async (value: unknown, key: string) => {
   }
 };
 
-// 处理表格行选择并同步给外部调用方
+/** 判断值是否适合展示复制按钮，保留数字 0 和布尔值 false */
+const hasCopyValue = (value: unknown) => value !== undefined && value !== null && value !== '';
+
+/** 判断指定行当前是否处于选中状态 */
 const isRowSelected = (row: T) => {
   const rowIdentifier = getRowIdentifier(row);
   return selectedRows.value.some((selectedRow) => {
@@ -357,20 +377,34 @@ const isRowSelected = (row: T) => {
   });
 };
 
+/** 切换指定行的选中状态 */
 const toggleRowSelection = (row: T, selected: boolean) => {
   tableRef.value?.toggleRowSelection(row, selected);
 };
 
+/** 将 Element Plus 的选中结果同步给父组件 */
 const handleSelectionChange = (rows: T[]) => {
   selectedRows.value = rows;
   emit('selection-change', rows);
 };
 
-const handlePaginationChange = () => {
-  if (!props.pagination) return;
-  const nextPagination = { ...props.pagination };
+/** 更新分页参数并通知父组件重新加载数据 */
+const updatePagination = (current: number, size: number) => {
+  const nextPagination = { current, size };
   emit('update:pagination', nextPagination);
   emit('pagination-change', nextPagination);
+};
+
+/** 处理当前页切换 */
+const handleCurrentPageChange = (current: number) => {
+  if (!props.pagination) return;
+  updatePagination(current, props.pagination.size);
+};
+
+/** 处理每页条数切换 */
+const handlePageSizeChange = (size: number) => {
+  if (!props.pagination) return;
+  updatePagination(props.pagination.current, size);
 };
 
 // 列定义变化时重新计算可见列，组件挂载时恢复本地列配置
@@ -438,10 +472,18 @@ defineExpose({
 }
 
 .pro-table__tools {
+  margin-left: auto;
+  padding: 2px;
+  border: 1px solid var(--table-border);
+  border-radius: 6px;
+  background: #fff;
   gap: 0;
 }
 
-.pro-table__tools :deep(.el-button) {
+.pro-table__tools :deep(.pro-table__tool) {
+  width: 30px;
+  height: 30px;
+  padding: 0;
   margin-left: 0 !important;
 }
 

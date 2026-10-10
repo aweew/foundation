@@ -70,7 +70,9 @@
       </template>
 
       <template #toolbar>
-        <el-button text :icon="Download" @click="exportRows">导出</el-button>
+        <el-tooltip content="导出" placement="top" :show-after="2000">
+          <el-button text class="pro-table__tool" :icon="Download" aria-label="导出" @click="exportRows" />
+        </el-tooltip>
         <el-button v-if="selectedRows.length" text type="danger" @click="clearSelection">
           批量关闭 ({{ selectedRows.length }})
         </el-button>
