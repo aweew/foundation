@@ -5,7 +5,6 @@
         <h1>货源管理</h1>
         <p>统一表格组件示例，展示筛选、状态、列设置与批量选择</p>
       </div>
-      <el-button type="primary" :icon="Plus" @click="publishSource">发布货源</el-button>
     </div>
 
     <ProTable
@@ -59,8 +58,8 @@
             <el-input v-model="filters.owner" clearable placeholder="联系人姓名" />
           </el-form-item>
           <el-form-item class="search-form__actions">
-            <el-button type="primary" :icon="Search" @click="queryRows">查询</el-button>
-            <el-button :icon="RefreshRight" @click="resetFilters">重置</el-button>
+            <el-button class="compact-action" type="primary" :icon="Search" @click="queryRows">查询</el-button>
+            <el-button class="compact-action" :icon="RefreshRight" @click="resetFilters">重置</el-button>
             <el-button
               text
               class="filter-toggle"
@@ -71,6 +70,10 @@
             </el-button>
           </el-form-item>
         </el-form>
+      </template>
+
+      <template #summary>
+        <el-button class="compact-action" type="primary" :icon="Plus" @click="publishSource">发布货源</el-button>
       </template>
 
       <template #toolbar>
@@ -330,12 +333,17 @@ onMounted(loadRows);
   row-gap: 12px;
 }
 
-.search-form.has-more-filters .search-form__actions {
-  grid-column: 4;
+.search-form.has-more-filters > :deep(.el-form-item:nth-child(4)) {
+  grid-column: 1;
   grid-row: 2;
-  justify-self: end;
+}
+
+.search-form.has-more-filters .search-form__actions {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: start;
   width: auto !important;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .search-form :deep(.el-form-item) {
@@ -381,6 +389,11 @@ onMounted(loadRows);
 .search-form__actions :deep(.el-form-item__content) {
   flex-wrap: nowrap;
   gap: 4px;
+}
+
+.compact-action {
+  font-size: 13px;
+  font-weight: 400;
 }
 
 .filter-toggle {
@@ -481,11 +494,11 @@ onMounted(loadRows);
   }
 
   .search-form.has-more-filters .search-form__actions {
-    grid-column: 1 / -1;
-    grid-row: auto;
-    justify-self: stretch;
-    width: 100% !important;
-    justify-content: flex-end;
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+    width: auto !important;
+    justify-content: flex-start;
   }
 }
 
@@ -494,6 +507,12 @@ onMounted(loadRows);
   .search-form.has-more-filters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .search-form.has-more-filters > :deep(.el-form-item:nth-child(4)),
+  .search-form.has-more-filters .search-form__actions {
+    grid-column: auto;
+    grid-row: auto;
+  }
 }
 
 @media (max-width: 900px) {
@@ -501,6 +520,12 @@ onMounted(loadRows);
   .search-form.has-more-filters {
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
+  }
+
+  .search-form.has-more-filters > :deep(.el-form-item:nth-child(4)),
+  .search-form.has-more-filters .search-form__actions {
+    grid-column: auto;
+    grid-row: auto;
   }
 
   .search-form :deep(.el-select) {
