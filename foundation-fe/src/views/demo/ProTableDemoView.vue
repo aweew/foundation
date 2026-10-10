@@ -1,12 +1,5 @@
 <template>
   <div class="demo-page">
-    <div class="page-heading">
-      <div>
-        <h1>货源管理</h1>
-        <p>统一表格组件示例，展示筛选、状态、列设置与批量选择</p>
-      </div>
-    </div>
-
     <ProTable
       ref="sourceTable"
       :columns="columns"

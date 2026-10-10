@@ -1,9 +1,11 @@
 <template>
   <section class="pro-table">
-    <div v-if="$slots.search" class="pro-table__search">
+    <!-- 筛选区：承载页面传入的查询条件和筛选操作 -->
+    <div v-if="$slots.search" class="pro-table__filter">
       <slot name="search" />
     </div>
 
+    <!-- 工具栏：左侧放置摘要或新增操作，右侧放置表格级操作 -->
     <div class="pro-table__toolbar">
       <div v-if="$slots.summary" class="pro-table__summary">
         <slot name="summary" />
@@ -47,7 +49,8 @@
       </div>
     </div>
 
-    <div class="pro-table__surface">
+    <!-- 表格区域：包含表头、数据行、加载态和空数据状态 -->
+    <div class="pro-table__table-region">
       <el-table
         ref="tableRef"
         v-loading="loading"
@@ -147,7 +150,8 @@
       </el-table>
     </div>
 
-    <div v-if="pagination" class="pro-table__pagination">
+    <!-- 分页页脚：展示总条数和分页控制器 -->
+    <footer v-if="pagination" class="pro-table__footer">
       <span class="pro-table__pagination-total">共 {{ (total || 0).toLocaleString() }} 条</span>
       <el-pagination
         v-model:current-page="pagination.current"
@@ -158,7 +162,7 @@
         :page-sizes="[10, 20, 50]"
         @change="handlePaginationChange"
       />
-    </div>
+    </footer>
   </section>
 </template>
 
@@ -179,6 +183,7 @@ interface SortChange {
   order: 'ascending' | 'descending' | null;
 }
 
+// 组件参数提供表格列、数据、分页和状态展示能力
 const props = withDefaults(defineProps<ProTableProps<T>>(), {
   loading: false,
   total: undefined,
@@ -193,6 +198,7 @@ const props = withDefaults(defineProps<ProTableProps<T>>(), {
   headerCellStyle: undefined,
 });
 
+// 对外通知刷新、重试、选择、分页和排序等表格事件
 const emit = defineEmits<{
   refresh: [];
   retry: [];
@@ -202,6 +208,7 @@ const emit = defineEmits<{
   'sort-change': [sort: SortChange];
 }>();
 
+// 维护表格实例、列配置、复制状态和当前选中行
 const tableRef = ref<TableInstance>();
 const draggedColumnKey = ref<string>();
 const copiedKey = ref<string>();
@@ -210,6 +217,7 @@ const columnState = ref<ColumnState<T>[]>([]);
 const hasConfigurableColumns = computed(() => columnState.value.some((column) => !column.required));
 const visibleColumns = computed(() => columnState.value.filter((column) => column.visible || column.required));
 
+// 根据传入列定义建立可持久化的列状态
 const buildColumnState = () =>
   props.columns.map((column, index) => ({
     ...column,
@@ -251,6 +259,7 @@ const loadColumns = () => {
   }
 };
 
+// 保存用户调整后的列显示状态和顺序
 const saveColumns = () => {
   if (props.storageKey) {
     localStorage.setItem(
@@ -270,6 +279,7 @@ const resetColumns = () => {
   saveColumns();
 };
 
+// 处理列设置面板中的拖拽排序
 const startColumnDrag = (key: string) => {
   draggedColumnKey.value = key;
 };
@@ -291,6 +301,7 @@ const finishColumnDrag = () => {
   saveColumns();
 };
 
+// 统一处理单元格展示值、状态样式和行标识
 const formatValue = (column: ProTableColumn<T>, row: T) => {
   const value = column.prop ? row[column.prop] : undefined;
   if (column.formatter) return column.formatter(row, column, value);
@@ -326,6 +337,7 @@ const getCopyKey = (row: T, column: ProTableColumn<T>) => {
   return `${String(rowIdentifier)}-${column.prop || column.type || 'column'}`;
 };
 
+// 复制单元格内容并记录最近一次复制的单元格
 const copyValue = async (value: unknown, key: string) => {
   try {
     await navigator.clipboard.writeText(String(value));
@@ -335,6 +347,7 @@ const copyValue = async (value: unknown, key: string) => {
   }
 };
 
+// 处理表格行选择并同步给外部调用方
 const isRowSelected = (row: T) => {
   const rowIdentifier = getRowIdentifier(row);
   return selectedRows.value.some((selectedRow) => {
@@ -360,9 +373,11 @@ const handlePaginationChange = () => {
   emit('pagination-change', nextPagination);
 };
 
+// 列定义变化时重新计算可见列，组件挂载时恢复本地列配置
 watch(() => props.columns, loadColumns, { deep: true });
 onMounted(loadColumns);
 
+// 暴露表格实例和常用选择操作，供父组件按需控制表格
 defineExpose({
   tableRef,
   clearSelection: () => {
@@ -382,11 +397,12 @@ defineExpose({
   --table-hover-bg: #f8fafc;
   --table-selected-bg: #f5f8ff;
   --table-blue: #356ae6;
+  --pro-table-section-gap: 12px;
   color: var(--table-text-primary);
 }
 
-.pro-table__search {
-  margin-bottom: 12px;
+.pro-table__filter {
+  margin-bottom: var(--pro-table-section-gap);
   padding: 16px 18px;
   border: 1px solid var(--table-border);
   border-radius: 8px;
@@ -394,7 +410,7 @@ defineExpose({
 }
 
 .pro-table__toolbar,
-.pro-table__pagination,
+.pro-table__footer,
 .pro-table__tools,
 .pro-table__summary,
 .pro-table__actions,
@@ -407,7 +423,12 @@ defineExpose({
   min-height: 32px;
   justify-content: flex-end;
   gap: 16px;
-  margin-bottom: 4px;
+  padding: 0 18px;
+  margin-bottom: var(--pro-table-section-gap);
+}
+
+.pro-table__toolbar:has(.pro-table__summary) {
+  justify-content: space-between;
 }
 
 .pro-table__summary {
@@ -417,7 +438,11 @@ defineExpose({
 }
 
 .pro-table__tools {
-  gap: 2px;
+  gap: 0;
+}
+
+.pro-table__tools :deep(.el-button) {
+  margin-left: 0 !important;
 }
 
 .pro-table__tool {
@@ -429,7 +454,7 @@ defineExpose({
   background: #f5f8ff;
 }
 
-.pro-table__surface {
+.pro-table__table-region {
   overflow: hidden;
   border-top: 1px solid var(--table-border);
 }
@@ -619,7 +644,7 @@ defineExpose({
   color: #c2413b;
 }
 
-.pro-table__pagination {
+.pro-table__footer {
   justify-content: flex-end;
   gap: 16px;
   padding-top: 16px;
@@ -631,7 +656,7 @@ defineExpose({
   font-size: 12px;
 }
 
-.pro-table__pagination :deep(.el-pagination) {
+.pro-table__footer :deep(.el-pagination) {
   --el-pagination-button-bg-color: transparent;
   --el-pagination-hover-color: var(--table-blue);
 }
@@ -668,15 +693,16 @@ defineExpose({
 }
 
 @media (max-width: 768px) {
-  .pro-table__search {
+  .pro-table__filter {
     padding: 12px;
   }
 
   .pro-table__toolbar {
     align-items: flex-start;
+    padding: 0 12px;
   }
 
-  .pro-table__pagination {
+  .pro-table__footer {
     flex-wrap: wrap;
     justify-content: flex-start;
   }

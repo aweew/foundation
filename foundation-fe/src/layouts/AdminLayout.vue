@@ -12,7 +12,7 @@
           class="sidebar-toggle"
           text
           circle
-          :icon="sidebarCollapsed ? Expand : Fold"
+          :icon="sidebarCollapsed ? ArrowRight : ArrowLeft"
           :aria-label="sidebarCollapsed ? '展开侧边栏' : '收起侧边栏'"
           @click="toggleSidebar"
         />
@@ -25,6 +25,17 @@
           <span>{{ item.title }}</span>
         </el-menu-item>
       </el-menu>
+      <el-tooltip :content="sidebarCollapsed ? '展开侧边栏' : '折叠侧边栏'" placement="right" :show-after="2000">
+        <el-button
+          class="sidebar-center-toggle"
+          :class="{ 'is-visible': centerToggleVisible }"
+          text
+          circle
+          :icon="sidebarCollapsed ? ArrowRight : ArrowLeft"
+          :aria-label="sidebarCollapsed ? '展开侧边栏' : '折叠侧边栏'"
+          @click.stop="toggleSidebar"
+        />
+      </el-tooltip>
     </el-aside>
     <el-container>
       <el-header class="topbar">
@@ -56,22 +67,30 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { Expand, Fold } from '@element-plus/icons-vue';
+import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue';
 import { useAuthStore } from '@/stores/auth';
 
 const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
 const sidebarCollapsed = ref(window.matchMedia('(max-width: 768px)').matches);
+const centerToggleVisible = ref(false);
 const sidebarAnimating = ref(false);
 const sidebarWidth = computed(() => (sidebarCollapsed.value ? '64px' : '208px'));
 let sidebarAnimationTimer: number | undefined;
+let centerToggleTimer: number | undefined;
 
 /**
  * 切换侧边栏状态并锁定动画期间的重复交互
  */
 const toggleSidebar = () => {
   sidebarCollapsed.value = !sidebarCollapsed.value;
+  centerToggleVisible.value = true;
+  if (centerToggleTimer) window.clearTimeout(centerToggleTimer);
+  centerToggleTimer = window.setTimeout(() => {
+    centerToggleVisible.value = false;
+    centerToggleTimer = undefined;
+  }, 1600);
   sidebarAnimating.value = true;
   if (sidebarAnimationTimer) window.clearTimeout(sidebarAnimationTimer);
   sidebarAnimationTimer = window.setTimeout(() => {
