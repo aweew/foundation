@@ -437,10 +437,11 @@ defineExpose({
 
 .pro-table__filter {
   margin-bottom: var(--pro-table-section-gap);
-  padding: 16px 18px;
-  border: 1px solid var(--table-border);
-  border-radius: 8px;
+  padding: 20px 24px;
+  border: 1px solid #e8ebf0;
+  border-radius: 10px;
   background: #fff;
+  box-shadow: 0 2px 8px rgb(16 24 40 / 3%);
 }
 
 .pro-table__toolbar,
@@ -457,7 +458,7 @@ defineExpose({
   min-height: 32px;
   justify-content: flex-end;
   gap: 16px;
-  padding: 0 18px;
+  padding: 0 4px;
   margin-bottom: var(--pro-table-section-gap);
 }
 
@@ -474,7 +475,7 @@ defineExpose({
 .pro-table__tools {
   margin-left: auto;
   padding: 2px;
-  border: 1px solid var(--table-border);
+  border: 1px solid #e5e9ef;
   border-radius: 6px;
   background: #fff;
   gap: 0;
@@ -498,7 +499,11 @@ defineExpose({
 
 .pro-table__table-region {
   overflow: hidden;
-  border-top: 1px solid var(--table-border);
+  border: 1px solid #e8ebf0;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgb(16 24 40 / 3%);
+  margin-bottom: var(--pro-table-section-gap);
 }
 
 .pro-table__table {
@@ -689,7 +694,12 @@ defineExpose({
 .pro-table__footer {
   justify-content: flex-end;
   gap: 16px;
-  padding-top: 16px;
+  min-height: 56px;
+  padding: 12px 24px;
+  border: 1px solid #e8ebf0;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgb(16 24 40 / 3%);
 }
 
 .pro-table__pagination-total {
@@ -741,7 +751,11 @@ defineExpose({
 
   .pro-table__toolbar {
     align-items: flex-start;
-    padding: 0 12px;
+    padding: 0 4px;
+  }
+
+  .pro-table__footer {
+    padding: 12px;
   }
 
   .pro-table__footer {

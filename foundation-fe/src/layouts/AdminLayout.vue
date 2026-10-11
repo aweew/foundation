@@ -39,24 +39,103 @@
     </el-aside>
     <el-container>
       <el-header class="topbar">
-        <div class="breadcrumb">
-          管理台
-          <span>/</span>
-          {{ (route.meta.title as string) || '工作台' }}
+        <div class="topbar-title">
+          <strong>{{ pageTitle }}</strong>
+          <span v-if="pageTitle !== '工作台'">维护平台基础数据</span>
         </div>
-        <el-dropdown @command="logout">
-          <span class="user-menu">
-            <el-avatar :size="30">{{ displayName.slice(0, 1) }}</el-avatar>
-            {{ displayName }}
-            <el-icon><ArrowDown /></el-icon>
-          </span>
+        <div class="topbar-actions">
+          <el-tooltip :content="isDark ? '切换亮色主题' : '切换暗色主题'" placement="bottom">
+            <el-button
+              text
+              circle
+              :icon="isDark ? Sunny : Moon"
+              :aria-label="isDark ? '切换亮色主题' : '切换暗色主题'"
+              @click="toggleTheme"
+            />
+          </el-tooltip>
+          <el-tooltip content="刷新当前页面" placement="bottom">
+            <el-button text circle :icon="Refresh" aria-label="刷新当前页面" @click="refreshPage" />
+          </el-tooltip>
+          <el-tooltip :content="isFullscreen ? '退出全屏' : '进入全屏'" placement="bottom">
+            <el-button
+              text
+              circle
+              :icon="FullScreen"
+              :aria-label="isFullscreen ? '退出全屏' : '进入全屏'"
+              @click="toggleFullscreen"
+            />
+          </el-tooltip>
+          <el-popover placement="bottom-end" :width="180" trigger="click">
+            <template #reference>
+              <el-button text circle :icon="Setting" aria-label="标签页设置" />
+            </template>
+            <div class="tab-setting">
+              <span>显示标签页</span>
+              <el-switch :model-value="showPageTabs" @update:model-value="updatePageTabsVisibility" />
+            </div>
+          </el-popover>
+          <el-dropdown @command="logout">
+            <span class="user-menu">
+              <el-avatar :size="30">{{ displayName.slice(0, 1) }}</el-avatar>
+              <span class="user-name">{{ displayName }}</span>
+              <el-icon><ArrowDown /></el-icon>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+      </el-header>
+      <nav v-if="showPageTabs" class="page-tabs" aria-label="已打开页面">
+        <div class="page-tabs__items">
+          <button
+            v-for="tab in tabs"
+            :key="tab.path"
+            type="button"
+            class="page-tab"
+            :class="{ 'is-active': tab.path === route.path }"
+            @click="router.push(tab.path)"
+            @contextmenu.prevent.stop="openTabContextMenu($event, tab.path)"
+          >
+            <span>{{ tab.title }}</span>
+            <el-icon v-if="tab.path !== '/dashboard'" class="page-tab__close" @click.stop="closeTab(tab.path)">
+              <Close />
+            </el-icon>
+          </button>
+        </div>
+        <el-dropdown trigger="click" @command="handleTabCommand">
+          <el-button text class="page-tabs__more" aria-label="标签页操作">
+            <MoreFilled />
+          </el-button>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+              <el-dropdown-item command="closeOthers">关闭其他</el-dropdown-item>
+              <el-dropdown-item command="closeAll">关闭全部</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-      </el-header>
+      </nav>
+      <div
+        v-if="tabContextMenu"
+        class="tab-context-menu"
+        :style="{ left: `${tabContextMenu.left}px`, top: `${tabContextMenu.top}px` }"
+        role="menu"
+        @pointerdown.stop
+        @click.stop
+      >
+        <button
+          type="button"
+          role="menuitem"
+          :disabled="tabContextMenu.path === '/dashboard'"
+          @click="handleTabContextCommand('close')"
+        >
+          关闭当前
+        </button>
+        <button type="button" role="menuitem" @click="handleTabContextCommand('closeOthers')">关闭其他</button>
+        <button type="button" role="menuitem" @click="handleTabContextCommand('closeAll')">关闭全部</button>
+      </div>
       <el-main class="page-main">
         <router-view />
       </el-main>
@@ -65,9 +144,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue';
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  Close,
+  FullScreen,
+  Moon,
+  MoreFilled,
+  Refresh,
+  Setting,
+  Sunny,
+} from '@element-plus/icons-vue';
 import { useAuthStore } from '@/stores/auth';
 
 const route = useRoute();
@@ -76,6 +166,11 @@ const auth = useAuthStore();
 const sidebarCollapsed = ref(window.matchMedia('(max-width: 768px)').matches);
 const centerToggleVisible = ref(false);
 const sidebarAnimating = ref(false);
+const isDark = ref(localStorage.getItem('foundation_theme') === 'dark');
+const isFullscreen = ref(Boolean(document.fullscreenElement));
+const showPageTabs = ref(localStorage.getItem('foundation_show_tabs') !== 'false');
+const tabs = ref<{ path: string; title: string }[]>([]);
+const tabContextMenu = ref<{ path: string; left: number; top: number } | null>(null);
 const sidebarWidth = computed(() => (sidebarCollapsed.value ? '64px' : '208px'));
 let sidebarAnimationTimer: number | undefined;
 let centerToggleTimer: number | undefined;
@@ -101,6 +196,7 @@ const toggleSidebar = () => {
 const displayName = computed(
   () => auth.userInfo?.nickName || auth.userInfo?.realName || auth.userInfo?.phone || '管理员',
 );
+const pageTitle = computed(() => (route.meta.title as string) || '工作台');
 const navItems = [
   { path: '/dashboard', title: '工作台', icon: 'HomeFilled', permission: '' },
   { path: '/pro-table', title: '表格示例', icon: 'Grid', permission: '' },
@@ -129,6 +225,93 @@ const visibleNavItems = computed(() =>
     return auth.hasPermission(item.permission);
   }),
 );
+
+const syncTheme = () => {
+  document.documentElement.classList.toggle('dark', isDark.value);
+  localStorage.setItem('foundation_theme', isDark.value ? 'dark' : 'light');
+};
+const toggleTheme = () => {
+  isDark.value = !isDark.value;
+  syncTheme();
+};
+const refreshPage = () => router.go(0);
+const toggleFullscreen = async () => {
+  if (document.fullscreenElement) await document.exitFullscreen();
+  else await document.documentElement.requestFullscreen();
+};
+const updateFullscreen = () => {
+  isFullscreen.value = Boolean(document.fullscreenElement);
+};
+const updatePageTabsVisibility = (visible: boolean) => {
+  showPageTabs.value = visible;
+  localStorage.setItem('foundation_show_tabs', String(visible));
+  tabContextMenu.value = null;
+};
+const closeTab = async (path: string) => {
+  const index = tabs.value.findIndex((tab) => tab.path === path);
+  tabs.value = tabs.value.filter((tab) => tab.path !== path);
+  if (route.path === path) await router.push(tabs.value[Math.max(0, index - 1)]?.path || '/dashboard');
+};
+const openTabContextMenu = (event: MouseEvent, path: string) => {
+  const menuWidth = 148;
+  const menuHeight = 132;
+  tabContextMenu.value = {
+    path,
+    left: Math.min(event.clientX, window.innerWidth - menuWidth - 8),
+    top: Math.min(event.clientY, window.innerHeight - menuHeight - 8),
+  };
+};
+const handleTabCommand = async (command: string) => {
+  if (command === 'closeAll') {
+    tabs.value = tabs.value.filter((tab) => tab.path === '/dashboard');
+    await router.push('/dashboard');
+  } else if (command === 'closeOthers') {
+    tabs.value = tabs.value.filter((tab) => tab.path === '/dashboard' || tab.path === route.path);
+  }
+};
+const handleTabContextCommand = async (command: 'close' | 'closeOthers' | 'closeAll') => {
+  const path = tabContextMenu.value?.path;
+  tabContextMenu.value = null;
+  if (command === 'close' && path && path !== '/dashboard') await closeTab(path);
+  if (command === 'closeOthers' && path) {
+    tabs.value = tabs.value.filter((tab) => tab.path === '/dashboard' || tab.path === path);
+    if (route.path !== path) await router.push(path);
+  }
+  if (command === 'closeAll') await handleTabCommand('closeAll');
+};
+const closeTabContextMenu = () => {
+  tabContextMenu.value = null;
+};
+watch(
+  tabs,
+  (value) => {
+    localStorage.setItem('foundation_tabs', JSON.stringify(value));
+  },
+  { deep: true },
+);
+watch(
+  () => route.path,
+  (path) => {
+    const title = (route.meta.title as string) || '当前页面';
+    if (!tabs.value.some((tab) => tab.path === path)) tabs.value.push({ path, title });
+  },
+  { immediate: true },
+);
+onMounted(() => {
+  try {
+    const savedTabs = JSON.parse(localStorage.getItem('foundation_tabs') || '[]') as { path: string; title: string }[];
+    if (savedTabs.some((tab) => tab.path === '/dashboard')) tabs.value = savedTabs;
+  } catch {
+    tabs.value = [];
+  }
+  syncTheme();
+  document.addEventListener('fullscreenchange', updateFullscreen);
+  document.addEventListener('pointerdown', closeTabContextMenu);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener('fullscreenchange', updateFullscreen);
+  document.removeEventListener('pointerdown', closeTabContextMenu);
+});
 
 /**
  * 清理当前会话并返回登录页

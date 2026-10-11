@@ -1,9 +1,5 @@
 <template>
   <div class="page-heading">
-    <div>
-      <h1>{{ title }}</h1>
-      <p>维护平台基础数据</p>
-    </div>
     <el-button v-permission="`sys:${resource}:save`" type="primary" :icon="Plus" @click="openEditor()">新增</el-button>
   </div>
   <el-card :class="{ 'plain-surface': plain }">

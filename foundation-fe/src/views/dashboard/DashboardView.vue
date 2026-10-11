@@ -1,7 +1,7 @@
 <template>
   <div class="page-heading">
     <div>
-      <h1>工作台</h1>
+      <!--<h1>工作台</h1>-->
       <p>欢迎回来，{{ auth.userInfo?.nickName || auth.userInfo?.realName || '管理员' }}</p>
     </div>
   </div>
