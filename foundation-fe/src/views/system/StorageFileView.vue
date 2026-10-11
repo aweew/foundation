@@ -37,7 +37,7 @@
 
   <el-card>
     <el-table v-loading="loading" :data="rows" stripe>
-      <el-table-column label="预览" width="88" fixed="left">
+      <el-table-column label="预览" width="88">
         <template #default="{ row }">
           <button
             v-if="isImage(row)"
