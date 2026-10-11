@@ -65,6 +65,9 @@
               @click="toggleFullscreen"
             />
           </el-tooltip>
+          <el-tooltip content="快捷导航" placement="bottom">
+            <el-button text circle :icon="Search" aria-label="快捷导航" @click="openQuickSearch" />
+          </el-tooltip>
           <el-popover placement="bottom-end" :width="180" trigger="click">
             <template #reference>
               <el-button text circle :icon="Setting" aria-label="标签页设置" />
@@ -136,6 +139,40 @@
         <button type="button" role="menuitem" @click="handleTabContextCommand('closeOthers')">关闭其他</button>
         <button type="button" role="menuitem" @click="handleTabContextCommand('closeAll')">关闭全部</button>
       </div>
+      <el-dialog
+        v-model="quickSearchVisible"
+        title="快捷导航"
+        width="min(520px, 92vw)"
+        class="quick-search-dialog"
+        @opened="focusQuickSearch"
+      >
+        <el-input
+          ref="quickSearchInput"
+          v-model="quickSearchKeyword"
+          :prefix-icon="Search"
+          clearable
+          placeholder="搜索菜单名称或路径"
+          aria-label="搜索菜单名称或路径"
+          @keydown.enter="navigateQuickSearch(filteredQuickNav[0])"
+        />
+        <div class="quick-search-list" role="listbox" aria-label="快捷导航结果">
+          <button
+            v-for="item in filteredQuickNav"
+            :key="item.path"
+            type="button"
+            class="quick-search-item"
+            role="option"
+            @click="navigateQuickSearch(item)"
+          >
+            <el-icon>
+              <component :is="item.icon" />
+            </el-icon>
+            <span>{{ item.title }}</span>
+            <small>{{ item.path }}</small>
+          </button>
+          <el-empty v-if="!filteredQuickNav.length" description="没有匹配的菜单" :image-size="56" />
+        </div>
+      </el-dialog>
       <el-main class="page-main">
         <router-view />
       </el-main>
@@ -155,6 +192,7 @@ import {
   Moon,
   MoreFilled,
   Refresh,
+  Search,
   Setting,
   Sunny,
 } from '@element-plus/icons-vue';
@@ -171,6 +209,9 @@ const isFullscreen = ref(Boolean(document.fullscreenElement));
 const showPageTabs = ref(localStorage.getItem('foundation_show_tabs') !== 'false');
 const tabs = ref<{ path: string; title: string }[]>([]);
 const tabContextMenu = ref<{ path: string; left: number; top: number } | null>(null);
+const quickSearchVisible = ref(false);
+const quickSearchKeyword = ref('');
+const quickSearchInput = ref<{ focus: () => void }>();
 const sidebarWidth = computed(() => (sidebarCollapsed.value ? '64px' : '208px'));
 let sidebarAnimationTimer: number | undefined;
 let centerToggleTimer: number | undefined;
@@ -225,6 +266,12 @@ const visibleNavItems = computed(() =>
     return auth.hasPermission(item.permission);
   }),
 );
+const filteredQuickNav = computed(() => {
+  const keyword = quickSearchKeyword.value.trim().toLowerCase();
+  return visibleNavItems.value.filter(
+    (item) => !keyword || `${item.title} ${item.path}`.toLowerCase().includes(keyword),
+  );
+});
 
 const syncTheme = () => {
   document.documentElement.classList.toggle('dark', isDark.value);
@@ -238,6 +285,22 @@ const refreshPage = () => router.go(0);
 const toggleFullscreen = async () => {
   if (document.fullscreenElement) await document.exitFullscreen();
   else await document.documentElement.requestFullscreen();
+};
+const openQuickSearch = () => {
+  quickSearchKeyword.value = '';
+  quickSearchVisible.value = true;
+};
+const focusQuickSearch = () => quickSearchInput.value?.focus();
+const navigateQuickSearch = async (item?: (typeof navItems)[number]) => {
+  if (!item) return;
+  quickSearchVisible.value = false;
+  await router.push(item.path);
+};
+const handleQuickSearchShortcut = (event: KeyboardEvent) => {
+  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+    event.preventDefault();
+    openQuickSearch();
+  }
 };
 const updateFullscreen = () => {
   isFullscreen.value = Boolean(document.fullscreenElement);
@@ -307,10 +370,12 @@ onMounted(() => {
   syncTheme();
   document.addEventListener('fullscreenchange', updateFullscreen);
   document.addEventListener('pointerdown', closeTabContextMenu);
+  document.addEventListener('keydown', handleQuickSearchShortcut);
 });
 onBeforeUnmount(() => {
   document.removeEventListener('fullscreenchange', updateFullscreen);
   document.removeEventListener('pointerdown', closeTabContextMenu);
+  document.removeEventListener('keydown', handleQuickSearchShortcut);
 });
 
 /**

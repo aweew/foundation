@@ -1,5 +1,5 @@
 <template>
-  <section class="pro-table">
+  <section class="pro-table" :class="{ 'is-fullscreen': isFullscreen }">
     <!-- 筛选区：承载页面传入的查询条件和筛选操作 -->
     <div v-if="$slots.search" class="pro-table__filter">
       <slot name="search" />
@@ -15,6 +15,21 @@
         <el-tooltip content="刷新数据" placement="top" :show-after="2000">
           <el-button class="pro-table__tool" text :icon="Refresh" aria-label="刷新数据" @click="emit('refresh')" />
         </el-tooltip>
+        <el-dropdown trigger="click" @command="setTableSize">
+          <el-button class="pro-table__tool" text :icon="Sort" aria-label="表格密度" title="表格密度" />
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item
+                v-for="option in tableSizeOptions"
+                :key="option.value"
+                :command="option.value"
+                :class="{ 'is-active': tableSize === option.value }"
+              >
+                {{ option.label }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
         <el-popover v-if="hasConfigurableColumns" placement="bottom-end" :width="248" trigger="click">
           <template #reference>
             <el-button class="pro-table__tool" text :icon="Setting" title="列设置" aria-label="列设置" />
@@ -44,6 +59,15 @@
             </div>
           </div>
         </el-popover>
+        <el-tooltip :content="isFullscreen ? '退出全屏' : '全屏查看'" placement="top" :show-after="2000">
+          <el-button
+            class="pro-table__tool"
+            text
+            :icon="FullScreen"
+            :aria-label="isFullscreen ? '退出全屏' : '全屏查看'"
+            @click="toggleFullscreen"
+          />
+        </el-tooltip>
       </div>
     </div>
 
@@ -55,6 +79,7 @@
         class="pro-table__table"
         :data="data"
         :row-key="rowKey"
+        :size="tableSize"
         :height="tableHeight"
         :stripe="stripe"
         :header-cell-style="headerCellStyle"
@@ -166,9 +191,20 @@
 </template>
 
 <script setup lang="ts" generic="T extends Record<string, unknown>">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { type TableInstance } from 'element-plus';
-import { Check, CopyDocument, Document, Filter, Rank, Refresh, Setting, WarningFilled } from '@element-plus/icons-vue';
+import {
+  Check,
+  CopyDocument,
+  Document,
+  Filter,
+  FullScreen,
+  Rank,
+  Refresh,
+  Setting,
+  Sort,
+  WarningFilled,
+} from '@element-plus/icons-vue';
 import type { ProTableColumn, ProTablePagination, ProTableProps } from './types';
 
 interface ColumnState<T extends Record<string, unknown>> extends ProTableColumn<T> {
@@ -180,6 +216,8 @@ interface SortChange {
   prop: string | undefined;
   order: 'ascending' | 'descending' | null;
 }
+
+type TableSize = 'default' | 'small' | 'large';
 
 // 业务状态类型样式
 const statusClassMap = {
@@ -221,6 +259,13 @@ const draggedColumnKey = ref<string>();
 const copiedKey = ref<string>();
 const selectedRows = ref<T[]>([]);
 const columnState = ref<ColumnState<T>[]>([]);
+const tableSize = ref<TableSize>('default');
+const isFullscreen = ref(false);
+const tableSizeOptions: { value: TableSize; label: string }[] = [
+  { value: 'large', label: '宽松' },
+  { value: 'default', label: '默认' },
+  { value: 'small', label: '紧凑' },
+];
 const hasConfigurableColumns = computed(() => columnState.value.some((column) => !column.required));
 const visibleColumns = computed(() =>
   columnState.value.filter(
@@ -407,9 +452,25 @@ const handlePageSizeChange = (size: number) => {
   updatePagination(props.pagination.current, size);
 };
 
+/** 切换表格行高，便于在不同信息密度下浏览数据 */
+const setTableSize = (size: TableSize) => {
+  tableSize.value = size;
+};
+
+/** 切换表格全屏模式，保留筛选区和工具栏以支持连续操作 */
+const toggleFullscreen = () => {
+  isFullscreen.value = !isFullscreen.value;
+};
+
+const handleFullscreenKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && isFullscreen.value) isFullscreen.value = false;
+};
+
 // 列定义变化时重新计算可见列，组件挂载时恢复本地列配置
 watch(() => props.columns, loadColumns, { deep: true });
 onMounted(loadColumns);
+onMounted(() => document.addEventListener('keydown', handleFullscreenKeydown));
+onBeforeUnmount(() => document.removeEventListener('keydown', handleFullscreenKeydown));
 
 // 暴露表格实例和常用选择操作，供父组件按需控制表格
 defineExpose({
@@ -435,12 +496,30 @@ defineExpose({
   color: var(--table-text-primary);
 }
 
+.pro-table.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  overflow: auto;
+  padding: 24px;
+  background: var(--el-bg-color-page, #f5f7fa);
+}
+
+.pro-table.is-fullscreen .pro-table__table-region {
+  min-height: calc(100vh - 150px);
+}
+
+.pro-table :deep(.el-dropdown-menu__item.is-active) {
+  color: var(--el-color-primary);
+  background: var(--el-color-primary-light-9);
+}
+
 .pro-table__filter {
   margin-bottom: var(--pro-table-section-gap);
   padding: 20px 24px;
   border: 1px solid #e8ebf0;
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface, #fff);
   box-shadow: 0 2px 8px rgb(16 24 40 / 3%);
 }
 
@@ -477,7 +556,7 @@ defineExpose({
   padding: 2px;
   border: 1px solid #e5e9ef;
   border-radius: 6px;
-  background: #fff;
+  background: var(--surface, #fff);
   gap: 0;
 }
 
@@ -501,7 +580,7 @@ defineExpose({
   overflow: hidden;
   border: 1px solid #e8ebf0;
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface, #fff);
   box-shadow: 0 2px 8px rgb(16 24 40 / 3%);
   margin-bottom: var(--pro-table-section-gap);
 }
@@ -525,7 +604,7 @@ defineExpose({
   height: 44px;
   padding: 0 16px;
   border-bottom: 2px solid #e6e9ee;
-  background: #f8fafc;
+  background: var(--surface-muted, #f8fafc);
   color: var(--table-text-secondary);
   font-size: 12px;
   font-weight: 600;
@@ -677,6 +756,15 @@ defineExpose({
   color: var(--table-text-secondary);
   font-size: 13px;
   font-weight: 500;
+}
+
+:global(:root.dark) .pro-table {
+  --table-text-primary: var(--text);
+  --table-text-secondary: var(--text-muted);
+  --table-text-tertiary: #94a3b8;
+  --table-border: var(--border);
+  --table-hover-bg: var(--surface-muted);
+  --table-selected-bg: rgb(22 119 255 / 14%);
 }
 
 .pro-table__empty span {

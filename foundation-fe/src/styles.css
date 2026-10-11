@@ -404,6 +404,52 @@ button {
     opacity: 0.55;
 }
 
+.quick-search-dialog :deep(.el-dialog__body) {
+    padding-top: 4px;
+}
+
+.quick-search-list {
+    display: grid;
+    max-height: 360px;
+    gap: 4px;
+    margin-top: 14px;
+    overflow-y: auto;
+}
+
+.quick-search-item {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    color: var(--text);
+    text-align: left;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.quick-search-item:hover,
+.quick-search-item:focus-visible {
+    color: #1677ff;
+    background: var(--surface-muted);
+    border-color: rgb(22 119 255 / 18%);
+    outline: none;
+}
+
+.quick-search-item span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.quick-search-item small {
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
 .page-main {
     min-width: 0;
     padding: 20px 24px;
